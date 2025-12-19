@@ -1,0 +1,32 @@
+package com.ssafy.pizza;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.boot.web.servlet.error.ErrorController;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+
+/**
+ * ?ˆë¡œê³ ì¹¨ ?¤ë¥˜?€?‘ìš©?¼ë¡œ ë§Œë“¤?ˆìŒ. 
+ * SpringBoot?ì„œ Vue.jsë¥?service?˜ê³  ?ˆë‹¤.
+ * Spring?´ë?ë¡?ëª¨ë“ ?”ì²­??DispatcherServlet??ë°›ëŠ”??  
+ * /comment/1 --> 1ë²??í’ˆ ì¡°íšŒì²˜ë¦¬ê°€ ?˜ì–´???˜ì?ë§? ?ˆë¡œê³ ì¹¨?˜ë©´ comment/1 ë¡?Spring?ì„œ ë°›ê³  404?¤ë¥˜ê°€ ?œë‹¤.
+ * ?¤ë¥˜ê°€ ë°œìƒ?˜ë©´ index.htmlë¡??´ë™?œì¼œ?? vuejs?ì„œ ì²˜ë¦¬?œë‹¤.      
+ * 
+ */
+@Controller
+public class Custom404ErrorController implements ErrorController {
+
+    private static final Logger logger = LoggerFactory.getLogger(Custom404ErrorController.class);
+
+	private final String ERROR_PATH = "/error";
+
+	@GetMapping(ERROR_PATH)
+	public String redirectRoot() {
+		return "index.html";
+	}
+
+	public String getErrorPath() {
+		return null;
+	}
+}

@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename Java project &apos;mobile_o2o_SPRING_project_server_starter&apos; to &apos;PizzaEatHo&apos;&#x0D;&#x0A;- Original element: &apos;mobile_o2o_SPRING_project_server_starter&apos;&#x0D;&#x0A;- Renamed element: &apos;mobile_o2o_SPRING_project_server_starter&apos;&#x0D;&#x0A;- Update references to refactored element" description="Rename Java project &apos;mobile_o2o_SPRING_project_server_starter&apos;" flags="7" id="org.eclipse.jdt.ui.rename.java.project" input="=mobile_o2o_SPRING_project_server_starter" name="PizzaEatHo" references="true" stamp="1766126581148" version="1.0"/>
+</session>

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ssafy.pizza.model.dao.OrderDao">
+
+    <insert id="insertOrder" parameterType="Order" useGeneratedKeys="true" keyProperty="orderId">
+        INSERT INTO ORDERS (user_id, order_table, status)
+        VALUES (#{userId}, #{orderTable}, #{status})
+    </insert>
+
+    <update id="updateStatus">
+        UPDATE ORDERS
+        SET status = #{status}
+        WHERE order_id = #{orderId}
+    </update>
+
+    <select id="selectByUser" resultType="OrderListItem">
+        SELECT
+            o.order_id,
+            o.order_time,
+            o.status,
+            SUM(od.unit_price * od.quantity) AS total_price
+        FROM ORDERS o
+        JOIN ORDER_DETAIL od ON o.order_id = od.order_id
+        WHERE o.user_id = #{userId}
+        GROUP BY o.order_id, o.order_time, o.status
+        ORDER BY o.order_time DESC
+    </select>
+
+    <select id="selectOrderDetailView" resultType="OrderDetailView">
+        SELECT
+            o.order_id,
+            o.status,
+            od.order_detail_id,
+            p.name AS product,
+            d.name AS dough,
+            c.name AS crust,
+            od.unit_price
+        FROM ORDERS o
+        JOIN ORDER_DETAIL od ON o.order_id = od.order_id
+        JOIN PRODUCT p ON od.product_id = p.product_id
+        JOIN DOUGH d ON od.dough_id = d.dough_id
+        LEFT JOIN CRUST c ON od.crust_id = c.crust_id
+        WHERE o.order_id = #{orderId}
+        ORDER BY od.order_detail_id ASC
+        LIMIT 1
+    </select>
+
+    <select id="selectToppingsByOrderDetail" resultType="OrderToppingInfo">
+        SELECT
+            t.name,
+            odt.quantity
+        FROM ORDER_DETAIL_TOPPING odt
+        JOIN TOPPING t ON odt.topping_id = t.topping_id
+        WHERE odt.order_detail_id = #{orderDetailId}
+        ORDER BY t.topping_id ASC
+    </select>
+
+    <select id="selectRecent6Months" resultType="OrderListItem">
+        SELECT
+            o.order_id,
+            o.order_time,
+            o.status,
+            SUM(od.unit_price * od.quantity) AS total_price
+        FROM ORDERS o
+        JOIN ORDER_DETAIL od ON o.order_id = od.order_id
+        WHERE o.order_time > DATE_ADD(NOW(), INTERVAL -6 MONTH)
+        GROUP BY o.order_id, o.order_time, o.status
+        ORDER BY o.order_time DESC
+    </select>
+</mapper>
+
+

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ssafy.pizza.model.dao.ProductDao">
+
+    <select id="selectAll" resultType="Product">
+        SELECT product_id, name, base_price
+        FROM PRODUCT
+    </select>
+
+    <select id="selectDefaultToppings" resultType="Topping">
+        SELECT t.topping_id, t.name, t.price
+        FROM PRODUCT_DEFAULT_TOPPING pdt
+        JOIN TOPPING t ON pdt.topping_id = t.topping_id
+        WHERE pdt.product_id = #{productId}
+        ORDER BY t.topping_id ASC
+    </select>
+
+    <select id="selectAllToppings" resultType="Topping">
+        SELECT topping_id, name, price
+        FROM TOPPING
+        ORDER BY topping_id ASC
+    </select>
+
+    <select id="selectAllDough" resultType="Dough">
+        SELECT dough_id, name, extra_price
+        FROM DOUGH
+        ORDER BY dough_id ASC
+    </select>
+
+    <select id="selectAllCrust" resultType="Crust">
+        SELECT crust_id, name, extra_price
+        FROM CRUST
+        ORDER BY crust_id ASC
+    </select>
+</mapper>
+
