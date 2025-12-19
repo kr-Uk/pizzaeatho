@@ -11,7 +11,14 @@ class _EventViewState extends State<EventView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Text("이벤트 페이지"),
+      body: Column(
+        children: [
+          Container(
+            color: Colors.green,
+            child: Text("이벤트 탭"),
+          )
+        ],
+      ),
     );
   }
 }

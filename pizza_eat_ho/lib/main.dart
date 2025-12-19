@@ -18,39 +18,55 @@ class _MainState extends State<Main> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        bottomNavigationBar: BottomNavigationBar(
-          backgroundColor: Colors.amber,
-          currentIndex: _selectedIndex,
-          selectedItemColor: Colors.white,
-          onTap: (index) {
-            setState(() {
-              _selectedIndex = index;
-            });
-          },
-          items: [
-            BottomNavigationBarItem(
-              icon: Icon(Icons.home, size: 24, color: Colors.black),
-              label: "홈",
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.star, size: 24, color: Colors.black),
-              label: "이벤트",
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.menu, size: 24, color: Colors.black),
-              label: "주문하기",
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.person, size: 24, color: Colors.black,),
-              label: "마이페이지",
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.receipt_long, size: 24, color: Colors.black),
-              label: "주문내역",
-            ),
-          ],
-        ),
-        body: _screenList.elementAt(_selectedIndex)
+      appBar: AppBar(
+        title: Text('Pizza잇호!', style: TextStyle(color: Colors.white)),
+        backgroundColor: Color(0xFFA11111),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.shopping_cart_outlined, color: Colors.white),
+            onPressed: () {
+              // 장바구니 페이지 이동
+              Navigator.pushNamed(context, "/shoppingcart");
+
+            },
+          ),
+        ],
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: Colors.white,
+        currentIndex: _selectedIndex,
+        selectedItemColor: Colors.black,
+        unselectedItemColor: Colors.black,
+        type: BottomNavigationBarType.fixed,
+        onTap: (index) {
+          setState(() {
+            _selectedIndex = index;
+          });
+        },
+        items: [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home_outlined, size: 24, color: Colors.black),
+            label: "홈",
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.star_outline, size: 24, color: Colors.black),
+            label: "이벤트",
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.menu_outlined, size: 24, color: Colors.black),
+            label: "주문하기",
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person_outlined, size: 24, color: Colors.black),
+            label: "마이페이지",
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.receipt_long_outlined, size: 24, color: Colors.black),
+            label: "주문내역",
+          ),
+        ],
+      ),
+      body: _screenList.elementAt(_selectedIndex),
     );
   }
 }
@@ -60,5 +76,5 @@ List _screenList = [
   EventView(),
   OrderView(),
   MypageView(),
-  OrderDetailView()
+  OrderDetailView(),
 ];
