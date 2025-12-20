@@ -20,7 +20,7 @@ class _MainState extends State<Main> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Pizza잇호!', style: TextStyle(color: Colors.white)),
-        backgroundColor: Color(0xFFA11111),
+        backgroundColor: Color(0xFFCE1933),
         actions: [
           IconButton(
             icon: Icon(Icons.shopping_cart_outlined, color: Colors.white),

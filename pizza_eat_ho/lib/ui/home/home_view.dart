@@ -18,7 +18,7 @@ class _HomeViewState extends State<HomeView> {
           children: [
             Container(
               decoration: BoxDecoration(
-                color: Color(0xFFA11111),
+                color: Color(0xFFCE1933),
                 borderRadius: BorderRadius.only(
                   bottomLeft: Radius.circular(30.r),
                   bottomRight: Radius.circular(30.r),
@@ -37,15 +37,15 @@ class _HomeViewState extends State<HomeView> {
                       height: 500.h,
                       child: Center(child: Text("배너")),
                     ),
-                    SizedBox(height: 20.h),
+                    SizedBox(height: 60.h),
                     InkWell(
                       onTap: () {
                         Navigator.pushNamed(context, "/login");
                       },
                       child: Container(
                         decoration: BoxDecoration(
-                          color: Color(0xFFA11111),
-                          border: Border.all(color: Colors.white, width: 4.w),
+                          color: Color(0xFFEC1435),
+                          border: Border.all(color: Color(0xFFFF3939), width: 4.w),
                           borderRadius: BorderRadius.circular(30.r),
                         ),
                         width: double.infinity,
