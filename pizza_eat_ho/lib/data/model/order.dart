@@ -1,0 +1,165 @@
+import 'enums.dart';
+
+class OrderCreateToppingReqDto {
+  final int toppingId;
+  final int quantity;
+
+  OrderCreateToppingReqDto({
+    required this.toppingId,
+    required this.quantity,
+  });
+
+  Map<String, dynamic> toJson() => {
+    'toppingId': toppingId,
+    'quantity': quantity,
+  };
+}
+
+class OrderCreateRequestDto {
+  final int userId;
+  final String orderTable;
+  final int productId;
+  final int doughId;
+  final int crustId;
+  final List<OrderCreateToppingReqDto> toppings;
+  final int unitPrice;
+
+  OrderCreateRequestDto({
+    required this.userId,
+    required this.orderTable,
+    required this.productId,
+    required this.doughId,
+    required this.crustId,
+    required this.toppings,
+    required this.unitPrice,
+  });
+
+  Map<String, dynamic> toJson() => {
+    'userId': userId,
+    'orderTable': orderTable,
+    'productId': productId,
+    'doughId': doughId,
+    'crustId': crustId,
+    'toppings': toppings.map((e) => e.toJson()).toList(),
+    'unitPrice': unitPrice,
+  };
+}
+
+class OrderCreateResponseDto {
+  final int orderId;
+  final OrderStatus status;
+
+  OrderCreateResponseDto({
+    required this.orderId,
+    required this.status,
+  });
+
+  factory OrderCreateResponseDto.fromJson(Map<String, dynamic> json) {
+    return OrderCreateResponseDto(
+      orderId: (json['orderId'] as num).toInt(),
+      status: OrderStatus.fromJson(json['status'] as String),
+    );
+  }
+}
+
+class UserOrderListItemDto {
+  final int orderId;
+  final DateTime orderTime;
+  final OrderStatus status;
+  final int totalPrice;
+
+  UserOrderListItemDto({
+    required this.orderId,
+    required this.orderTime,
+    required this.status,
+    required this.totalPrice,
+  });
+
+  factory UserOrderListItemDto.fromJson(Map<String, dynamic> json) {
+    return UserOrderListItemDto(
+      orderId: (json['orderId'] as num).toInt(),
+      orderTime: DateTime.parse(json['orderTime'] as String),
+      status: OrderStatus.fromJson(json['status'] as String),
+      totalPrice: (json['totalPrice'] as num).toInt(),
+    );
+  }
+}
+
+class OrderDetailToppingDto {
+  final String name;
+  final int quantity;
+
+  OrderDetailToppingDto({
+    required this.name,
+    required this.quantity,
+  });
+
+  factory OrderDetailToppingDto.fromJson(Map<String, dynamic> json) {
+    return OrderDetailToppingDto(
+      name: json['name'] as String,
+      quantity: (json['quantity'] as num).toInt(),
+    );
+  }
+}
+
+class OrderDetailResponseDto {
+  final int orderId;
+  final String product;
+  final String dough;
+  final String crust;
+  final List<OrderDetailToppingDto> toppings;
+  final int unitPrice;
+  final OrderStatus status;
+
+  OrderDetailResponseDto({
+    required this.orderId,
+    required this.product,
+    required this.dough,
+    required this.crust,
+    required this.toppings,
+    required this.unitPrice,
+    required this.status,
+  });
+
+  factory OrderDetailResponseDto.fromJson(Map<String, dynamic> json) {
+    final toppingsJson = (json['toppings'] as List<dynamic>? ?? const []);
+    return OrderDetailResponseDto(
+      orderId: (json['orderId'] as num).toInt(),
+      product: json['product'] as String,
+      dough: json['dough'] as String,
+      crust: json['crust'] as String,
+      toppings: toppingsJson
+          .map((e) => OrderDetailToppingDto.fromJson(e as Map<String, dynamic>))
+          .toList(),
+      unitPrice: (json['unitPrice'] as num).toInt(),
+      status: OrderStatus.fromJson(json['status'] as String),
+    );
+  }
+}
+
+class OrderStatusPatchRequestDto {
+  final OrderStatus status;
+
+  OrderStatusPatchRequestDto({required this.status});
+
+  Map<String, dynamic> toJson() => {
+    'status': status.toJson(),
+  };
+}
+
+class OrderStatusPatchResponseDto {
+  final int orderId;
+  final OrderStatus status;
+
+  OrderStatusPatchResponseDto({
+    required this.orderId,
+    required this.status,
+  });
+
+  factory OrderStatusPatchResponseDto.fromJson(Map<String, dynamic> json) {
+    return OrderStatusPatchResponseDto(
+      orderId: (json['orderId'] as num).toInt(),
+      status: OrderStatus.fromJson(json['status'] as String),
+    );
+  }
+}

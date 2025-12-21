@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pizzaeatho/ui/event/event_view.dart';
 import 'package:pizzaeatho/ui/home/home_view.dart';
 import 'package:pizzaeatho/ui/mypage/mypage_view.dart';
 import 'package:pizzaeatho/ui/order/order_detail_view.dart';
-import 'package:pizzaeatho/ui/order/order_view.dart';
+import 'package:pizzaeatho/ui/order/order_page.dart';
+import 'package:pizzaeatho/util/common.dart';
 
 class Main extends StatefulWidget {
   const Main({super.key});
@@ -13,30 +15,18 @@ class Main extends StatefulWidget {
 }
 
 class _MainState extends State<Main> {
-  int _selectedIndex = 0;
+  int _selectedIndex = 2;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Pizza잇호!', style: TextStyle(color: Colors.white)),
-        backgroundColor: Color(0xFFCE1933),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.shopping_cart_outlined, color: Colors.white),
-            onPressed: () {
-              // 장바구니 페이지 이동
-              Navigator.pushNamed(context, "/shoppingcart");
-
-            },
-          ),
-        ],
-      ),
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Colors.white,
         currentIndex: _selectedIndex,
         selectedItemColor: Colors.black,
         unselectedItemColor: Colors.black,
+        showSelectedLabels: false,
+        showUnselectedLabels: false,
         type: BottomNavigationBarType.fixed,
         onTap: (index) {
           setState(() {
@@ -45,23 +35,75 @@ class _MainState extends State<Main> {
         },
         items: [
           BottomNavigationBarItem(
-            icon: Icon(Icons.home_outlined, size: 24, color: Colors.black),
-            label: "홈",
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.star_outline, size: 24, color: Colors.black),
-            label: "이벤트",
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.menu_outlined, size: 24, color: Colors.black),
+            icon: Column(
+              children: [
+                Icon(Icons.menu_outlined, size: 60.w, color: Colors.black),
+                SizedBox(height: 12.h),
+                Text("주문하기")
+              ],
+            ),
             label: "주문하기",
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.person_outlined, size: 24, color: Colors.black),
+            icon: Column(
+              children: [
+                Icon(Icons.star_border_outlined, size: 60.w, color: Colors.black),
+                SizedBox(height: 12.h),
+                Text("이벤트")
+              ],
+            ),
+            label: "이벤트",
+          ),
+          BottomNavigationBarItem(
+            icon: SizedBox(
+              width: 150.w,
+              height: 150.w,
+              child: Center(
+                child: Container(
+                  width: 150.w,
+                  height: 150.w,
+                  decoration: BoxDecoration(
+                    color: redBackground,
+                    shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Color(0XFF4B4747),
+                        blurRadius: 20,
+                        offset: Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.home_outlined, color: Colors.white, size: 60.w),
+                      SizedBox(height: 6.h),
+                      Text("HOME", style: TextStyle(color: Colors.white)),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            label: "홈",
+          ),
+          BottomNavigationBarItem(
+            icon: Column(
+              children: [
+                Icon(Icons.person_outlined, size: 60.w, color: Colors.black),
+                SizedBox(height: 12.h),
+                Text("마이페이지")
+              ],
+            ),
             label: "마이페이지",
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.receipt_long_outlined, size: 24, color: Colors.black),
+            icon: Column(
+              children: [
+                Icon(Icons.receipt_long_outlined, size: 60.w, color: Colors.black),
+                SizedBox(height: 12.h),
+                Text("주문내역")
+              ],
+            ),
             label: "주문내역",
           ),
         ],
@@ -72,9 +114,9 @@ class _MainState extends State<Main> {
 }
 
 List _screenList = [
-  HomeView(),
+  OrderPage(),
   EventView(),
-  OrderView(),
+  HomeView(),
   MypageView(),
   OrderDetailView(),
 ];
