@@ -1,14 +1,58 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:pizzaeatho/data/repository/user_repository.dart';
+import 'package:pizzaeatho/splash.dart';
 import 'package:pizzaeatho/ui/auth/login_page.dart';
 import 'package:pizzaeatho/ui/event/event_view.dart';
 import 'package:pizzaeatho/ui/home/home_page.dart';
-import 'package:pizzaeatho/ui/home/home_view.dart';
 import 'package:pizzaeatho/ui/mypage/mypage_view.dart';
 import 'package:pizzaeatho/ui/order/order_history_page.dart';
 import 'package:pizzaeatho/ui/order/order_history_view.dart';
 import 'package:pizzaeatho/ui/order/order_page.dart';
+import 'package:pizzaeatho/ui/order/order_detail_page.dart';
+import 'package:pizzaeatho/ui/order/shoppingcart_view.dart';
+import 'package:pizzaeatho/ui/order/shoppingcart_viewmodel.dart';
+import 'package:pizzaeatho/ui/store/store_finder_view.dart';
 import 'package:pizzaeatho/util/common.dart';
+import 'package:provider/provider.dart';
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await UserRepository.restoreSession();
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => ShoppingcartViewModel()),
+        ChangeNotifierProvider(create: (_) => ShoppingcartViewModel()),
+      ],
+      child: const MyApp(),
+    ),
+  );
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return ScreenUtilInit(
+      designSize: const Size(1080, 2340),
+      builder: (context, child) {
+        return MaterialApp(
+          initialRoute: '/',
+          routes: {
+            '/': (context) => const Splash(),
+            '/main': (context) => const Main(),
+            '/shoppingcart': (context) => const ShoppingcartView(),
+            '/order_detail': (context) => const OrderDetailPage(),
+            '/login': (context) => const LoginPage(),
+            '/store': (context) => const StoreFinderView(),
+          },
+        );
+      },
+    );
+  }
+}
 
 class Main extends StatefulWidget {
   const Main({super.key});
@@ -19,6 +63,54 @@ class Main extends StatefulWidget {
 
 class _MainState extends State<Main> {
   int _selectedIndex = 2;
+
+  Widget _navItem(IconData icon, String label) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(icon, size: 28, color: Colors.black),
+        const SizedBox(height: 4),
+        FittedBox(
+          child: Text(
+            label,
+            style: const TextStyle(fontSize: 10),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _homeNavItem() {
+    return SizedBox(
+      width: 72,
+      height: 72,
+      child: Center(
+        child: Container(
+          width: 64,
+          height: 64,
+          decoration: const BoxDecoration(
+            color: redBackground,
+            shape: BoxShape.circle,
+            boxShadow: [
+              BoxShadow(
+                color: Color(0XFF4B4747),
+                blurRadius: 12,
+                offset: Offset(0, 2),
+              ),
+            ],
+          ),
+          child: const Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.home_outlined, color: Colors.white, size: 28),
+              SizedBox(height: 2),
+              Text('HOME', style: TextStyle(color: Colors.white, fontSize: 10)),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,76 +130,24 @@ class _MainState extends State<Main> {
         },
         items: [
           BottomNavigationBarItem(
-            icon: Column(
-              children: [
-                Icon(Icons.menu_outlined, size: 60.w, color: Colors.black),
-                SizedBox(height: 12.h),
-                Text("주문하기")
-              ],
-            ),
-            label: "주문하기",
+            icon: _navItem(Icons.menu_outlined, '주문하기'),
+            label: '주문하기',
           ),
           BottomNavigationBarItem(
-            icon: Column(
-              children: [
-                Icon(Icons.star_border_outlined, size: 60.w, color: Colors.black),
-                SizedBox(height: 12.h),
-                Text("이벤트")
-              ],
-            ),
-            label: "이벤트",
+            icon: _navItem(Icons.star_border_outlined, '이벤트'),
+            label: '이벤트',
           ),
           BottomNavigationBarItem(
-            icon: SizedBox(
-              width: 150.w,
-              height: 150.w,
-              child: Center(
-                child: Container(
-                  width: 150.w,
-                  height: 150.w,
-                  decoration: BoxDecoration(
-                    color: redBackground,
-                    shape: BoxShape.circle,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Color(0XFF4B4747),
-                        blurRadius: 20,
-                        offset: Offset(0, 4),
-                      ),
-                    ],
-                  ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.home_outlined, color: Colors.white, size: 60.w),
-                      SizedBox(height: 6.h),
-                      Text("HOME", style: TextStyle(color: Colors.white)),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-            label: "홈",
+            icon: _homeNavItem(),
+            label: '홈',
           ),
           BottomNavigationBarItem(
-            icon: Column(
-              children: [
-                Icon(Icons.person_outlined, size: 60.w, color: Colors.black),
-                SizedBox(height: 12.h),
-                Text("마이페이지")
-              ],
-            ),
-            label: "마이페이지",
+            icon: _navItem(Icons.person_outlined, '마이페이지'),
+            label: '마이페이지',
           ),
           BottomNavigationBarItem(
-            icon: Column(
-              children: [
-                Icon(Icons.receipt_long_outlined, size: 60.w, color: Colors.black),
-                SizedBox(height: 12.h),
-                Text("주문내역")
-              ],
-            ),
-            label: "주문내역",
+            icon: _navItem(Icons.receipt_long_outlined, '주문내역'),
+            label: '주문내역',
           ),
         ],
       ),
@@ -122,4 +162,5 @@ List _screenList = [
   HomePage(),
   MypageView(),
   OrderHistoryPage(),
+
 ];

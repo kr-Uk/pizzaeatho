@@ -1,4 +1,4 @@
-name: pizzaeatho
+﻿name: pizzaeatho
 description: "A new Flutter project."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
@@ -40,7 +40,9 @@ dependencies:
   shared_preferences: ^2.5.4
   permission_handler: ^11.3.0
   flutter_blue_plus: ^1.32.7
+  http: ^1.2.2
   google_fonts: ^6.3.0
+  google_maps_flutter: ^2.6.1
 
 dev_dependencies:
   flutter_test:
