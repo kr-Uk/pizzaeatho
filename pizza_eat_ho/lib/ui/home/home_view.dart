@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pizzaeatho/data/model/user.dart';
 import 'package:pizzaeatho/data/repository/user_repository.dart';
+import 'package:pizzaeatho/util/beacon_service.dart';
 import 'package:pizzaeatho/util/common.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
@@ -18,6 +19,8 @@ class _HomeViewState extends State<HomeView> {
   final PageController _controller = PageController();
   int _currentPage = 0;
   Timer? _timer;
+  BeaconService? _beaconService;
+  bool _dialogOpen = false;
 
   final banners = List.generate(
     6,
@@ -45,13 +48,51 @@ class _HomeViewState extends State<HomeView> {
         curve: Curves.easeInOut,
       );
     });
+
+    _beaconService = BeaconService(
+      uuid: 'C300001C-6618-0000-0000-000000000000',
+      major: 40011,
+      minor: 45369,
+      enterDistanceMeters: 3.0,
+      onEnter: () {
+        _showBeaconDialog('피짜잇호에 오신 것을 환영합니다!');
+      },
+      onExit: () {
+        _showBeaconDialog('다음에 또 이용해주세요!');
+      },
+    );
+    _beaconService?.start();
   }
 
   @override
   void dispose() {
     _timer?.cancel();
     _controller.dispose();
+    _beaconService?.dispose();
     super.dispose();
+  }
+
+  void _showBeaconDialog(String message) {
+    if (!mounted || _dialogOpen) return;
+    _dialogOpen = true;
+    showDialog<void>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          content: Text(message),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('확인'),
+            ),
+          ],
+        );
+      },
+    ).then((_) {
+      if (mounted) {
+        _dialogOpen = false;
+      }
+    });
   }
 
   @override

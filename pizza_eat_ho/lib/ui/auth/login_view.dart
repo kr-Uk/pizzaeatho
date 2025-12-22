@@ -2,7 +2,7 @@
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
-import 'join_view.dart';
+import 'join_page.dart';
 import 'login_viewmodel.dart';
 
 class LoginView extends StatefulWidget {
@@ -105,7 +105,7 @@ class _LoginViewState extends State<LoginView> {
                 onPressed: () {
                   Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (context) => const JoinView(),
+                      builder: (context) => const JoinPage(),
                     ),
                   );
                 },
