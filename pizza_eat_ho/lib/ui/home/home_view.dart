@@ -52,19 +52,20 @@ class _HomeViewState extends State<HomeView> {
       );
     });
 
-    // _beaconService = BeaconService(
-    //   uuid: 'C300001C-6618-0000-0000-000000000000',
-    //   major: 40011,
-    //   minor: 45369,
-    //   enterDistanceMeters: 3.0,
-    //   onEnter: () {
-    //     _showBeaconDialog('피짜잇호에 오신 것을 환영합니다!');
-    //   },
-    //   onExit: () {
-    //     _showBeaconDialog('다음에 또 이용해주세요!');
-    //   },
-    // );
-    // _beaconService?.start();
+
+    _beaconService = BeaconService(
+      uuid: 'e2c56db5-dffb-48d2-b060-d0f5a71096e0',
+      major: 40011,
+      minor: 45369,
+      enterDistanceMeters: 3.0,
+      onEnter: () {
+        _showBeaconDialog('피짜잇호에 오신 것을 환영합니다!');
+      },
+      onExit: () {
+        _showBeaconDialog('다음에 또 이용해주세요!');
+      },
+    );
+    _beaconService?.start();
   }
 
   @override
