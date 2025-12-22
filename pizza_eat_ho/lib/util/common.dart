@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import 'common.dart' as Fluttertoast;
+
 const Color redBackground = Color(0xFFA10505);
 const Color greyBackground = Color(0xFFF1F1F1);
 
@@ -28,3 +30,4 @@ final TextStyle textProductPrice = GoogleFonts.nunito(
     fontWeight: FontWeight.bold,
     color: Colors.black
 );
+
