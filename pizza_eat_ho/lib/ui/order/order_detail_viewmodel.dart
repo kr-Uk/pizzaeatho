@@ -64,6 +64,14 @@ class OrderDetailViewModel with ChangeNotifier {
     notifyListeners();
   }
 
+  List<ToppingDto> get selectedToppings {
+    return toppings
+        .where((topping) =>
+        selectedToppingIds.contains(topping.toppingId))
+        .toList();
+  }
+
+
   // 총 가격 계산
   int totalPrice(int basePrice) {
     final doughPrice = selectedDough?.price ?? 0;

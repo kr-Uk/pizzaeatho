@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:pizzaeatho/ui/order/shoppingcart_viewmodel.dart';
 import 'package:pizzaeatho/util/common.dart';
 import 'package:provider/provider.dart';
 
 import '../../data/model/product.dart';
+import '../../data/model/shoppingcart.dart';
 import 'order_detail_viewmodel.dart';
 
 class OrderDetailView extends StatefulWidget {
@@ -18,7 +20,8 @@ class _OrderDetailViewState extends State<OrderDetailView> {
   @override
   Widget build(BuildContext context) {
     final product = ModalRoute.of(context)!.settings.arguments as ProductDto;
-    final viewModel = context.watch<OrderDetailViewModel>();
+    final orderDetailViewModel = context.watch<OrderDetailViewModel>();
+    final shoppingcartViewModel = context.read<ShoppingcartViewModel>();
 
     return Scaffold(
       backgroundColor: greyBackground,
@@ -48,7 +51,7 @@ class _OrderDetailViewState extends State<OrderDetailView> {
           ),
         ],
       ),
-      body: _buildOrderDetail(product, viewModel),
+      body: _buildOrderDetail(product, orderDetailViewModel),
       bottomNavigationBar: SafeArea(
         child: Container(
           padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
@@ -69,13 +72,24 @@ class _OrderDetailViewState extends State<OrderDetailView> {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text("총 가격: ${viewModel.totalPrice(product.price)}")
+                    Text("총 가격: ${orderDetailViewModel.totalPrice(product.price)}")
                   ],
                 ),
               ),
               ElevatedButton(
                 onPressed: () {
-                  // 장바구니 담기
+                  final cartItem = ShoppingcartDto(
+                    product: product,
+                    dough: orderDetailViewModel.selectedDough!,
+                    crust: orderDetailViewModel.selectedCrust!,
+                    toppings: orderDetailViewModel.selectedToppings,
+                    quantity: 1,
+                    totalPrice: orderDetailViewModel.totalPrice(product.price),
+                  );
+
+                  shoppingcartViewModel.addItem(cartItem);
+
+                  Navigator.pop(context);
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.black,
@@ -85,7 +99,8 @@ class _OrderDetailViewState extends State<OrderDetailView> {
                   ),
                 ),
                 child: Text("장바구니 담기"),
-              ),
+              )
+
             ],
           ),
         ),

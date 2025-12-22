@@ -16,4 +16,26 @@ class ShoppingcartDto {
     required this.quantity,
     required this.totalPrice,
   });
+
+  Map<String, dynamic> toJson() => {
+    'product': product.toJson(),
+    'dough': dough.toJson(),
+    'crust': crust.toJson(),
+    'toppings': toppings.map((e) => e.toJson()).toList(),
+    'quantity': quantity,
+    'totalPrice': totalPrice,
+  };
+
+  factory ShoppingcartDto.fromJson(Map<String, dynamic> json) {
+    return ShoppingcartDto(
+      product: ProductDto.fromJson(json['product']),
+      dough: DoughDto.fromJson(json['dough']),
+      crust: CrustDto.fromJson(json['crust']),
+      toppings: (json['toppings'] as List)
+          .map((e) => ToppingDto.fromJson(e))
+          .toList(),
+      quantity: json['quantity'],
+      totalPrice: json['totalPrice'],
+    );
+  }
 }
