@@ -6,6 +6,7 @@ import 'package:pizzaeatho/ui/auth/login_page.dart';
 import 'package:pizzaeatho/ui/event/event_view.dart';
 import 'package:pizzaeatho/ui/home/home_page.dart';
 import 'package:pizzaeatho/ui/mypage/mypage_view.dart';
+import 'package:pizzaeatho/ui/order/order_history_page.dart';
 import 'package:pizzaeatho/ui/order/order_history_view.dart';
 import 'package:pizzaeatho/ui/order/order_page.dart';
 import 'package:pizzaeatho/ui/order/order_detail_page.dart';
@@ -155,10 +156,11 @@ class _MainState extends State<Main> {
   }
 }
 
-final List<Widget> _screenList = [
-  const OrderPage(),
-  const EventView(),
-  const HomePage(),
-  const MypageView(),
-  const OrderHistoryView(),
+List _screenList = [
+  OrderPage(),
+  EventView(),
+  HomePage(),
+  MypageView(),
+  OrderHistoryPage(),
+
 ];

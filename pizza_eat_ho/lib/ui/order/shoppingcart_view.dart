@@ -26,7 +26,37 @@ class _ShoppingcartViewState extends State<ShoppingcartView> {
           onPressed: () => Navigator.pop(context),
         ),
       ),
-      body: _buildShoppingcart(shoppingcartViewModel)
+      body: _buildShoppingcart(shoppingcartViewModel),
+      bottomNavigationBar: SafeArea(
+        child: Container(
+          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.08),
+                blurRadius: 10,
+                offset: Offset(0, -2),
+              )
+            ],
+          ),
+          child:
+              ElevatedButton(
+                onPressed: () async {
+                  shoppingcartViewModel.placeOrder(context);
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.black,
+                  padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 14.h),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12.r),
+                  ),
+                ),
+                child: Text("주문하기"),
+              )
+          ),
+
+      ),
     );
   }
 
