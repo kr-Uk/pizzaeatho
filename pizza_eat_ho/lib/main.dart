@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:pizzaeatho/ui/auth/login_page.dart';
 import 'package:pizzaeatho/ui/event/event_view.dart';
 import 'package:pizzaeatho/ui/home/home_view.dart';
 import 'package:pizzaeatho/ui/mypage/mypage_view.dart';
@@ -119,4 +120,5 @@ List _screenList = [
   HomeView(),
   MypageView(),
   OrderDetailView(),
+  LoginPage(),
 ];

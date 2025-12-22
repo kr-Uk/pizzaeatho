@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:pizzaeatho/data/model/user.dart';
+import 'package:pizzaeatho/data/repository/user_repository.dart';
 import 'package:pizzaeatho/util/common.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
@@ -122,40 +124,66 @@ class _HomeViewState extends State<HomeView> {
                       ],
                     ),
                     SizedBox(height: 60.h),
-                    InkWell(
-                      onTap: () {
-                        Navigator.pushNamed(context, "/login");
-                      },
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: redBackground,
-                          border: Border.all(color: Colors.white, width: 4.w),
-                          borderRadius: BorderRadius.circular(30.r),
-                        ),
-                        width: double.infinity,
-                        height: 250.h,
-                        child: Center(
-                          child: Row(
-                            mainAxisAlignment: .center,
-                            children: [
-                              Icon(
-                                Icons.power_settings_new_outlined,
-                                color: Colors.white,
-                                size: 100.w,
+                    ValueListenableBuilder<UserLoginResponseDto?>(
+                      valueListenable: UserRepository.currentUser,
+                      builder: (context, user, _) {
+                        final isLoggedIn = user != null;
+                        return InkWell(
+                          onTap: () {
+                            if (isLoggedIn) {
+                              UserRepository().logout();
+                            } else {
+                              Navigator.pushNamed(context, "/login");
+                            }
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: redBackground,
+                              border:
+                                  Border.all(color: Colors.white, width: 4.w),
+                              borderRadius: BorderRadius.circular(30.r),
+                            ),
+                            width: double.infinity,
+                            height: 250.h,
+                            child: Center(
+                              child: Row(
+                                mainAxisAlignment: .center,
+                                children: [
+                                  Icon(
+                                    Icons.power_settings_new_outlined,
+                                    color: Colors.white,
+                                    size: 100.w,
+                                  ),
+                                  SizedBox(width: 10.w),
+                                  Text(
+                                    isLoggedIn ? "LOG OUT" : "LOG IN",
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 80.sp,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  if (isLoggedIn) ...[
+                                    SizedBox(width: 20.w),
+                                    Flexible(
+                                      child: Text(
+                                        "${user.name}님",
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 50.sp,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ],
                               ),
-                              SizedBox(width: 10.w),
-                              Text(
-                                "LOG IN",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 80.sp,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ],
+                            ),
                           ),
-                        ),
-                      ),
+                        );
+                      },
                     ),
                     SizedBox(height: 40.h),
                   ],

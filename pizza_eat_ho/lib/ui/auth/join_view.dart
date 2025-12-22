@@ -14,17 +14,19 @@ class _JoinViewState extends State<JoinView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       body: SafeArea(
-        child: Padding(
+        child: SingleChildScrollView(
+          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
           padding: const EdgeInsets.all(24),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               SizedBox(
                 height: 300,
-                child: Image.asset("../assets/ganadi1.png"),
+                child: Image.asset("assets/ganadi1.png"),
               ),
-              const Spacer(flex: 3),
+              const SizedBox(height: 24),
               const TextField(
                 decoration: InputDecoration(
                   labelText: '아이디',
@@ -63,7 +65,7 @@ class _JoinViewState extends State<JoinView> {
                   child: const Text('가입하기'),
                 ),
               ),
-              const Spacer(flex: 2),
+              const SizedBox(height: 24),
             ],
           ),
         ),

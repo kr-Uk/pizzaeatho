@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:pizzaeatho/data/model/product.dart';
+import 'package:pizzaeatho/data/model/user.dart';
 
 class RemoteDataSource {
 
@@ -40,4 +41,32 @@ class RemoteDataSource {
     //   throw Exception("Error on server");
     // }
   }
+
+  Future<UserLoginResponseDto> login(UserLoginRequestDto request) async {
+    final server = """
+      {
+        "userId": 1,
+        "id": "id01",
+        "pw": "pw01",
+        "name": "grigjnrigjri",
+        "stamp": 0
+      }
+    """;
+
+    final Map<String, dynamic> json =
+        jsonDecode(server) as Map<String, dynamic>;
+
+    if (request.id != json['id'] || request.pw != json['pw']) {
+      throw Exception('Invalid credentials');
+    }
+
+    final responseJson = <String, dynamic>{
+      'userId': json['userId'],
+      'name': json['name'],
+      'stamp': json['stamp'],
+    };
+
+    return UserLoginResponseDto.fromJson(responseJson);
+  }
+
 }
