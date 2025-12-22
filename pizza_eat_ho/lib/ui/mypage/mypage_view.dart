@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:pizzaeatho/util/common.dart';
 
 class MypageView extends StatefulWidget {
   const MypageView({super.key});
@@ -93,6 +94,46 @@ class _UserLogin extends StatelessWidget {
               ],
             ),
           ),
+          SizedBox(height: 24.h),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24),
+            child: InkWell(
+              onTap: () {
+                Navigator.pushNamed(context, "/store");
+              },
+              child: Container(
+                decoration: BoxDecoration(
+                  color: redBackground,
+                  border: Border.all(color: Colors.white, width: 4.w),
+                  borderRadius: BorderRadius.circular(30.r),
+                ),
+                width: double.infinity,
+                height: 200.h,
+                child: Center(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.map_outlined,
+                        color: Colors.white,
+                        size: 80.w,
+                      ),
+                      SizedBox(width: 12.w),
+                      Text(
+                        "매장 찾기",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 64.sp,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+          SizedBox(height: 40.h),
         ],
       ),
     );
