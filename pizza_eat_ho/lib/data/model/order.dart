@@ -17,7 +17,7 @@ class OrderCreateToppingReqDto {
 
 class OrderCreateRequestDto {
   final int userId;
-  final String orderTable;
+  final String userName;
   final int productId;
   final int doughId;
   final int crustId;
@@ -26,7 +26,7 @@ class OrderCreateRequestDto {
 
   OrderCreateRequestDto({
     required this.userId,
-    required this.orderTable,
+    required this.userName,
     required this.productId,
     required this.doughId,
     required this.crustId,
@@ -36,7 +36,7 @@ class OrderCreateRequestDto {
 
   Map<String, dynamic> toJson() => {
     'userId': userId,
-    'orderTable': orderTable,
+    'userName': userName,
     'productId': productId,
     'doughId': doughId,
     'crustId': crustId,

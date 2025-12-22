@@ -5,6 +5,7 @@ import 'package:pizzaeatho/splash.dart';
 import 'package:pizzaeatho/ui/home/home_view.dart';
 import 'package:pizzaeatho/ui/auth/login_view.dart';
 import 'package:pizzaeatho/ui/order/order_detail_page.dart';
+import 'package:pizzaeatho/ui/order/order_history_viewmodel.dart';
 import 'package:pizzaeatho/ui/order/shoppingcart_view.dart';
 import 'package:pizzaeatho/ui/auth/login_page.dart';
 import 'package:pizzaeatho/ui/order/shoppingcart_viewmodel.dart';
@@ -19,7 +20,6 @@ Future<void> main() async {
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => ShoppingcartViewModel()),
         ChangeNotifierProvider(create: (_) => ShoppingcartViewModel()),
       ],
       child: MyApp(),

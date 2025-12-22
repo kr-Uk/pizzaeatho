@@ -5,6 +5,7 @@ import 'package:pizzaeatho/ui/event/event_view.dart';
 import 'package:pizzaeatho/ui/home/home_page.dart';
 import 'package:pizzaeatho/ui/home/home_view.dart';
 import 'package:pizzaeatho/ui/mypage/mypage_view.dart';
+import 'package:pizzaeatho/ui/order/order_history_page.dart';
 import 'package:pizzaeatho/ui/order/order_history_view.dart';
 import 'package:pizzaeatho/ui/order/order_page.dart';
 import 'package:pizzaeatho/util/common.dart';
@@ -120,5 +121,5 @@ List _screenList = [
   EventView(),
   HomePage(),
   MypageView(),
-  OrderHistoryView(),
+  OrderHistoryPage(),
 ];

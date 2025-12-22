@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:pizzaeatho/data/model/order.dart';
 import 'package:pizzaeatho/data/model/product.dart';
 import 'package:pizzaeatho/data/model/user.dart';
 
@@ -197,6 +198,60 @@ class RemoteDataSource {
     };
 
     return UserLoginResponseDto.fromJson(responseJson);
+  }
+
+  Future<bool> placeOrder(List<Map<String, dynamic>> orderRequest) async {
+    final server = """
+        {
+          "orderId": 10,
+          "status": "RECEIVED"
+        }
+    """;
+
+    final Map<String, dynamic> jsonMap = jsonDecode(server);
+
+    final order = OrderCreateResponseDto.fromJson(jsonMap);
+
+    return true;
+
+    // final response = await http.post(
+    //   Uri.parse(_baseUrl),
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //   },
+    //   body: jsonEncode(orderRequest),
+    // );
+    //
+    // if (response.statusCode != 200) {
+    //   throw Exception("주문 실패");
+    // }
+
+  }
+
+  Future<List<UserOrderListItemDto>> getOrderHistory(int userId) async {
+    final server = """
+    [
+      {
+        "orderId": 10,
+        "orderTime": "2025-09-19T12:30:00",
+        "status": "COOKING",
+        "totalPrice": 12700
+      }
+    ]
+  """;
+
+    final List<dynamic> jsonList = jsonDecode(server);
+
+    final orderHistory = jsonList
+        .map((e) => UserOrderListItemDto.fromJson(e as Map<String, dynamic>))
+        .toList();
+
+    return orderHistory;
+    // final response = await http.get(Uri.parse("https://.../orders/$userId"));
+    // if (response.statusCode != 200) {
+    //   throw Exception("Failed to fetch order history");
+    // }
+    // return jsonDecode(response.body) as List<dynamic>;
   }
 
 }

@@ -22,7 +22,7 @@ class _HomeViewState extends State<HomeView> {
   final PageController _controller = PageController();
   int _currentPage = 0;
   Timer? _timer;
-  // BeaconService? _beaconService;
+  BeaconService? _beaconService;
   bool _dialogOpen = false;
 
   final banners = List.generate(
