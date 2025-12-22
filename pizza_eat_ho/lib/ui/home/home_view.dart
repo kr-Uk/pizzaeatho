@@ -6,7 +6,10 @@ import 'package:pizzaeatho/data/model/user.dart';
 import 'package:pizzaeatho/data/repository/user_repository.dart';
 import 'package:pizzaeatho/util/beacon_service.dart';
 import 'package:pizzaeatho/util/common.dart';
+import 'package:provider/provider.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+
+import 'home_viewmodel.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -19,7 +22,7 @@ class _HomeViewState extends State<HomeView> {
   final PageController _controller = PageController();
   int _currentPage = 0;
   Timer? _timer;
-  BeaconService? _beaconService;
+  // BeaconService? _beaconService;
   bool _dialogOpen = false;
 
   final banners = List.generate(
@@ -49,26 +52,26 @@ class _HomeViewState extends State<HomeView> {
       );
     });
 
-    _beaconService = BeaconService(
-      uuid: 'C300001C-6618-0000-0000-000000000000',
-      major: 40011,
-      minor: 45369,
-      enterDistanceMeters: 3.0,
-      onEnter: () {
-        _showBeaconDialog('피짜잇호에 오신 것을 환영합니다!');
-      },
-      onExit: () {
-        _showBeaconDialog('다음에 또 이용해주세요!');
-      },
-    );
-    _beaconService?.start();
+    // _beaconService = BeaconService(
+    //   uuid: 'C300001C-6618-0000-0000-000000000000',
+    //   major: 40011,
+    //   minor: 45369,
+    //   enterDistanceMeters: 3.0,
+    //   onEnter: () {
+    //     _showBeaconDialog('피짜잇호에 오신 것을 환영합니다!');
+    //   },
+    //   onExit: () {
+    //     _showBeaconDialog('다음에 또 이용해주세요!');
+    //   },
+    // );
+    // _beaconService?.start();
   }
 
   @override
   void dispose() {
     _timer?.cancel();
     _controller.dispose();
-    _beaconService?.dispose();
+    // _beaconService?.dispose();
     super.dispose();
   }
 
@@ -97,6 +100,10 @@ class _HomeViewState extends State<HomeView> {
 
   @override
   Widget build(BuildContext context) {
+    final homeViewModel = context.watch<HomeViewModel>();
+    final user = homeViewModel.user;
+    final isLoggedIn = homeViewModel.isLoggedIn;
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Pizza잇호!', style: TextStyle(color: Colors.white)),
@@ -165,68 +172,56 @@ class _HomeViewState extends State<HomeView> {
                       ],
                     ),
                     SizedBox(height: 60.h),
-                    ValueListenableBuilder<UserLoginResponseDto?>(
-                      valueListenable: UserRepository.currentUser,
-                      builder: (context, user, _) {
-                        final isLoggedIn = user != null;
-                        return InkWell(
-                          onTap: () {
-                            if (isLoggedIn) {
-                              UserRepository().logout();
-                            } else {
-                              Navigator.pushNamed(context, "/login");
-                            }
-                          },
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: redBackground,
-                              border:
-                                  Border.all(color: Colors.white, width: 4.w),
-                              borderRadius: BorderRadius.circular(30.r),
+                  InkWell(
+                    onTap: () => homeViewModel.onLoginButtonTap(context),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: redBackground,
+                        border: Border.all(color: Colors.white, width: 4.w),
+                        borderRadius: BorderRadius.circular(30.r),
+                      ),
+                      width: double.infinity,
+                      height: 250.h,
+                      child: Center(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.power_settings_new_outlined,
+                              color: Colors.white,
+                              size: 100.w,
                             ),
-                            width: double.infinity,
-                            height: 250.h,
-                            child: Center(
-                              child: Row(
-                                mainAxisAlignment: .center,
-                                children: [
-                                  Icon(
-                                    Icons.power_settings_new_outlined,
-                                    color: Colors.white,
-                                    size: 100.w,
-                                  ),
-                                  SizedBox(width: 10.w),
-                                  Text(
-                                    isLoggedIn ? "LOG OUT" : "LOG IN",
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 80.sp,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  if (isLoggedIn) ...[
-                                    SizedBox(width: 20.w),
-                                    Flexible(
-                                      child: Text(
-                                        "${user.name}님",
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 50.sp,
-                                          fontWeight: FontWeight.w600,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ],
+                            SizedBox(width: 10.w),
+                            Text(
+                              isLoggedIn ? "LOG OUT" : "LOG IN",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 80.sp,
+                                fontWeight: FontWeight.bold,
                               ),
                             ),
-                          ),
-                        );
-                      },
+                            if (isLoggedIn) ...[
+                              SizedBox(width: 20.w),
+                              Flexible(
+                                child: Text(
+                                  "${user!.name}님",
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 50.sp,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ],
+                        ),
+                      ),
                     ),
-                    SizedBox(height: 40.h),
+                  ),
+
+                  SizedBox(height: 40.h),
                   ],
                 ),
               ),

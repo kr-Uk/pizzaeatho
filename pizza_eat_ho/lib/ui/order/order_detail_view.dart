@@ -77,7 +77,8 @@ class _OrderDetailViewState extends State<OrderDetailView> {
                 ),
               ),
               ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
+
                   final cartItem = ShoppingcartDto(
                     product: product,
                     dough: orderDetailViewModel.selectedDough!,
@@ -87,9 +88,14 @@ class _OrderDetailViewState extends State<OrderDetailView> {
                     totalPrice: orderDetailViewModel.totalPrice(product.price),
                   );
 
-                  shoppingcartViewModel.addItem(cartItem);
+                  final success =
+                      await shoppingcartViewModel.addItem(cartItem);
 
-                  Navigator.pop(context);
+                  if (!success) {
+                    Navigator.pushNamed(context, "/login");
+                  } else {
+                    Navigator.pop(context);
+                  }
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.black,
