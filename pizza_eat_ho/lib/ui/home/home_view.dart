@@ -234,52 +234,52 @@ class _HomeViewState extends State<HomeView> {
               ),
             ),
 
-            SizedBox(height: 20.h),
-            Container(
-              height: 70.h,
-              width: 300.w,
-              decoration: BoxDecoration(
-                color: redBackground,
-                borderRadius: .circular(100.r),
+              SizedBox(height: 20.h),
+              Container(
+                height: 70.h,
+                width: 300.w,
+                decoration: BoxDecoration(
+                  color: redBackground,
+                  borderRadius: .circular(100.r),
+                ),
+                child: Center(
+                  child: Text("이거 어때유~?", style: TextStyle(color: Colors.white)),
+                ),
               ),
-              child: Center(
-                child: Text("이거 어때유~?", style: TextStyle(color: Colors.white)),
-              ),
-            ),
-            SizedBox(height: 20.h),
-            SizedBox(
-              height: 600.h,
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: 10,
-                itemBuilder: (_, index) {
-                  return Container(
-                    width: 300.w,
-                    margin: index == 9
-                        ? EdgeInsets.symmetric(horizontal: 8.0)
-                        : EdgeInsets.only(left: 8.0),
-                    child: Column(
-                      children: [
-                        Container(
-                          height: 300.w,
-                          decoration: BoxDecoration(
-                            color: Colors.green,
-                            borderRadius: .circular(30.r),
+              SizedBox(height: 20.h),
+              SizedBox(
+                height: 600.h,
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: 10,
+                  itemBuilder: (_, index) {
+                    return Container(
+                      width: 300.w,
+                      margin: index == 9
+                          ? EdgeInsets.symmetric(horizontal: 8.0)
+                          : EdgeInsets.only(left: 8.0),
+                      child: Column(
+                        children: [
+                          Container(
+                            height: 300.w,
+                            decoration: BoxDecoration(
+                              color: Colors.green,
+                              borderRadius: .circular(30.r),
+                            ),
                           ),
-                        ),
-                        SizedBox(height: 20.h),
-                        Text("$index번 째 아이템"),
-                        SizedBox(height: 20.h),
-                        Text("가격 : 3000원"),
-                      ],
-                    ),
-                  );
-                },
+                          SizedBox(height: 20.h),
+                          Text("$index번 째 아이템"),
+                          SizedBox(height: 20.h),
+                          Text("가격 : 3000원"),
+                        ],
+                      ),
+                    );
+                  },
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
-      ),
     );
   }
 }

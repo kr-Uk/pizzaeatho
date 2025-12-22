@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:pizzaeatho/util/common.dart';
 import 'package:provider/provider.dart';
 
 import 'order_viewmodel.dart';
@@ -39,41 +40,56 @@ class _OrderViewState extends State<OrderView> {
           ),
         ],
       ),
-      backgroundColor: Colors.white,
+      backgroundColor: greyBackground,
       body: _buildOrder(viewModel)
     );
   }
 
   Widget _buildOrder(OrderViewModel viewModel) {
-    final items = viewModel.products;     // viewModel에 저장된 items
+    final items = viewModel.products;
     final itemCount = items.length;
     return ListView.builder(
+      physics: BouncingScrollPhysics(),
         scrollDirection: Axis.vertical,
         itemCount: itemCount,
         itemBuilder: (_, index) {
           final item = items[index];
-          return Container(
-            height: 1000.h,
-            color: Colors.green,
-            margin: index == itemCount-1
-                ? EdgeInsets.symmetric(vertical: 8.0)
-                : EdgeInsets.only(top: 8.0),
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                children: [
-                  Container(
-                    height: 500.h,
-                    decoration: BoxDecoration(
-                        borderRadius: .circular(30.r),
-                        color: Colors.white
+          return GestureDetector(
+            onTap: () {
+              Navigator.pushNamed(
+                context,
+                '/order_detail',
+                arguments: item,
+              );
+            },
+            child: Container(
+              height: 1000.h,
+              color: Colors.white,
+              margin: index == itemCount - 1
+                  ? EdgeInsets.symmetric(vertical: 8.0)
+                  : EdgeInsets.only(bottom: 8.0),
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      height: 500.h,
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(30.r),
+                        image: DecorationImage(
+                          image: AssetImage(item.image),
+                          fit: BoxFit.cover,
+                        ),
+                      ),
                     ),
-                  ),
-                  SizedBox(height: 20.h),
-                  Text(item.productId.toString(), style: TextStyle(color: Colors.white)),
-                  Text(item.name, style: TextStyle(color: Colors.white)),
-                  Text(item.basePrice.toString(), style: TextStyle(color: Colors.white))
-                ],
+                    SizedBox(height: 40.h),
+                    Text(item.name, style: textProductName),
+                    Text(item.description, style: textProductDescription),
+                    Text("${item.price}원", style: textProductPrice),
+                  ],
+                ),
               ),
             ),
           );

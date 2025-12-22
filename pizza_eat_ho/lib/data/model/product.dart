@@ -1,19 +1,25 @@
 class ProductDto {
   final int productId;
   final String name;
-  final int basePrice;
+  final String description;
+  final int price;
+  final String image;
 
   ProductDto({
     required this.productId,
     required this.name,
-    required this.basePrice,
+    required this.description,
+    required this.price,
+    required this.image
   });
 
   factory ProductDto.fromJson(Map<String, dynamic> json) {
     return ProductDto(
       productId: (json['productId'] as num).toInt(),
       name: json['name'] as String,
-      basePrice: (json['basePrice'] as num).toInt(),
+      description: json['description'] as String,
+      price: (json['price'] as num).toInt(),
+      image: json['image'] as String,
     );
   }
 }
@@ -41,19 +47,19 @@ class ToppingDto {
 class DoughDto {
   final int doughId;
   final String name;
-  final int extraPrice;
+  final int price;
 
   DoughDto({
     required this.doughId,
     required this.name,
-    required this.extraPrice,
+    required this.price,
   });
 
   factory DoughDto.fromJson(Map<String, dynamic> json) {
     return DoughDto(
       doughId: (json['doughId'] as num).toInt(),
       name: json['name'] as String,
-      extraPrice: (json['extraPrice'] as num).toInt(),
+      price: (json['price'] as num).toInt(),
     );
   }
 }
@@ -61,19 +67,19 @@ class DoughDto {
 class CrustDto {
   final int crustId;
   final String name;
-  final int extraPrice;
+  final int price;
 
   CrustDto({
     required this.crustId,
     required this.name,
-    required this.extraPrice,
+    required this.price,
   });
 
   factory CrustDto.fromJson(Map<String, dynamic> json) {
     return CrustDto(
       crustId: (json['crustId'] as num).toInt(),
       name: json['name'] as String,
-      extraPrice: (json['extraPrice'] as num).toInt(),
+      price: (json['price'] as num).toInt(),
     );
   }
 }
