@@ -20,6 +20,7 @@ Future<void> main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => ShoppingcartViewModel()),
+        ChangeNotifierProvider(create: (_) => ShoppingcartViewModel()),
       ],
       child: MyApp(),
     ),
