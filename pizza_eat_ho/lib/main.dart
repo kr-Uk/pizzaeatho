@@ -11,6 +11,7 @@ import 'package:pizzaeatho/ui/order/order_page.dart';
 import 'package:pizzaeatho/ui/order/order_detail_page.dart';
 import 'package:pizzaeatho/ui/order/shoppingcart_view.dart';
 import 'package:pizzaeatho/ui/order/shoppingcart_viewmodel.dart';
+import 'package:pizzaeatho/ui/store/store_finder_view.dart';
 import 'package:pizzaeatho/util/common.dart';
 import 'package:provider/provider.dart';
 
@@ -44,6 +45,7 @@ class MyApp extends StatelessWidget {
             '/shoppingcart': (context) => const ShoppingcartView(),
             '/order_detail': (context) => const OrderDetailPage(),
             '/login': (context) => const LoginPage(),
+            '/store': (context) => const StoreFinderView(),
           },
         );
       },
