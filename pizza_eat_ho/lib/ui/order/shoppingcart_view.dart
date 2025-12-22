@@ -14,7 +14,7 @@ class _ShoppingcartViewState extends State<ShoppingcartView> {
 
   @override
   Widget build(BuildContext context) {
-    final viewModel = context.watch<ShoppingcartViewModel>();
+    final shoppingcartViewModel = context.watch<ShoppingcartViewModel>();
 
     return Scaffold(
       appBar: AppBar(
@@ -26,37 +26,61 @@ class _ShoppingcartViewState extends State<ShoppingcartView> {
           onPressed: () => Navigator.pop(context),
         ),
       ),
-      body: ListView.builder(
-          scrollDirection: Axis.vertical,
-          itemCount: 10,
-          itemBuilder: (_, index) {
-            return Container(
-              height: 700.h,
-              color: Colors.grey,
-              margin: index == 9
-                  ? EdgeInsets.symmetric(vertical: 8.0)
-                  : EdgeInsets.only(top: 8.0),
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  children: [
-                    Container(
-                      height: 300.h,
-                      decoration: BoxDecoration(
-                          borderRadius: .circular(30.r),
-                          color: Colors.white
-                      ),
+      body: _buildShoppingcart(shoppingcartViewModel)
+    );
+  }
+
+  Widget _buildShoppingcart(ShoppingcartViewModel shoppingcartViewModel) {
+    final items = shoppingcartViewModel.items;
+    final itemCount = items.length;
+    return ListView.builder(
+      scrollDirection: Axis.vertical,
+      itemCount: itemCount,
+      itemBuilder: (_, index) {
+        final item = items[index];
+        return Container(
+          height: 800.h,
+          color: Colors.grey,
+          margin: index == itemCount-1
+              ? EdgeInsets.symmetric(vertical: 8.0)
+              : EdgeInsets.only(top: 8.0),
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: .start,
+              children: [
+                Container(
+                  height: 300.h,
+                  decoration: BoxDecoration(
+                      borderRadius: .circular(30.r),
+                      color: Colors.white,
+                    image: DecorationImage(
+                      image: AssetImage(item.product.image),
+                      fit: BoxFit.cover,
                     ),
-                    SizedBox(height: 20.h),
-                    Text("준규킹", style: TextStyle(color: Colors.white)),
-                    Text("준규킹", style: TextStyle(color: Colors.white)),
-                    Text("준규킹", style: TextStyle(color: Colors.white))
+                  ),
+                ),
+                SizedBox(height: 20.h),
+                Text("도우 : ${item.dough.name}"),
+                Text("크러스트 : ${item.crust.name}"),
+                Row(
+                  children: [
+                    Text("토핑 : "),
+                    Text(
+                      item.toppings.map((t) => "${t.name} ").join()
+                    ),
                   ],
                 ),
-              ),
-            );
-          },
-        ),
+                IconButton(
+                  onPressed: () => shoppingcartViewModel.removeItem(index),
+                  icon: Icon(Icons.delete_outline, color: Colors.white),
+                )
+
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }

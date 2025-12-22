@@ -22,6 +22,14 @@ class ProductDto {
       image: json['image'] as String,
     );
   }
+
+  Map<String, dynamic> toJson() => {
+    'productId': productId,
+    'name': name,
+    'description': description,
+    'price': price,
+    'image': image,
+  };
 }
 
 class ToppingDto {
@@ -34,6 +42,12 @@ class ToppingDto {
     required this.name,
     required this.price,
   });
+
+  Map<String, dynamic> toJson() => {
+    'toppingId': toppingId,
+    'name': name,
+    'price': price,
+  };
 
   factory ToppingDto.fromJson(Map<String, dynamic> json) {
     return ToppingDto(
@@ -55,6 +69,12 @@ class DoughDto {
     required this.price,
   });
 
+  Map<String, dynamic> toJson() => {
+    'doughId': doughId,
+    'name': name,
+    'price': price,
+  };
+
   factory DoughDto.fromJson(Map<String, dynamic> json) {
     return DoughDto(
       doughId: (json['doughId'] as num).toInt(),
@@ -74,6 +94,12 @@ class CrustDto {
     required this.name,
     required this.price,
   });
+
+  Map<String, dynamic> toJson() => {
+    'crustId': crustId,
+    'name': name,
+    'price': price,
+  };
 
   factory CrustDto.fromJson(Map<String, dynamic> json) {
     return CrustDto(
