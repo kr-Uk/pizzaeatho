@@ -2,15 +2,25 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pizzaeatho/splash.dart';
 import 'package:pizzaeatho/ui/auth/login_view.dart';
-import 'package:pizzaeatho/ui/home/home_view.dart';
+import 'package:pizzaeatho/ui/order/order_detail_page.dart';
 import 'package:pizzaeatho/ui/order/shoppingcart_view.dart';
+import 'package:pizzaeatho/ui/order/shoppingcart_viewmodel.dart';
+import 'package:provider/provider.dart';
 
 import 'main.dart';
 
 
 void main() {
-  runApp(MyApp());
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => ShoppingcartViewModel()),
+      ],
+      child: MyApp(),
+    ),
+  );
 }
+
 
 class MyApp extends StatelessWidget {
   @override
@@ -23,9 +33,9 @@ class MyApp extends StatelessWidget {
             routes: {
               '/': (context) => Splash(),
               '/main': (context) => Main(),
-              '/home': (context) => HomeView(),
               '/shoppingcart': (context) => ShoppingcartView(),
               '/login' : (context) => LoginView(),
+              '/order_detail': (context) => OrderDetailPage(),
             },
           );
         },

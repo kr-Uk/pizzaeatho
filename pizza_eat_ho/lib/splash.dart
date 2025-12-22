@@ -14,7 +14,7 @@ class Splash extends StatelessWidget {
 
     return Scaffold(
       body: Center(
-        child: Image.asset("../assets/splash.png")
+        child: Image.asset("assets/splash.png")
       ),
     );
   }

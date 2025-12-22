@@ -1,32 +1,34 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:pizzaeatho/ui/order/shoppingcart_viewmodel.dart';
-import 'package:provider/provider.dart';
 
-class ShoppingcartView extends StatefulWidget {
-  const ShoppingcartView({super.key});
+class OrderHistoryView extends StatefulWidget {
+  const OrderHistoryView({super.key});
 
   @override
-  State<ShoppingcartView> createState() => _ShoppingcartViewState();
+  State<OrderHistoryView> createState() => _OrderHistoryViewState();
 }
 
-class _ShoppingcartViewState extends State<ShoppingcartView> {
-
+class _OrderHistoryViewState extends State<OrderHistoryView> {
   @override
   Widget build(BuildContext context) {
-    final viewModel = context.watch<ShoppingcartViewModel>();
-
     return Scaffold(
       appBar: AppBar(
-        title: Text('장바구니', style: TextStyle(color: Colors.black)),
+        title: Text('주문내역', style: TextStyle(color: Colors.black)),
         centerTitle: true,
         backgroundColor: Colors.white,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios, color: Colors.black),
-          onPressed: () => Navigator.pop(context),
-        ),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.shopping_cart_outlined, color: Colors.black),
+            onPressed: () {
+              // 장바구니 페이지 이동
+              Navigator.pushNamed(context, "/shoppingcart");
+            },
+          ),
+        ],
       ),
-      body: ListView.builder(
+      backgroundColor: Colors.white,
+      body: Expanded(
+        child: ListView.builder(
           scrollDirection: Axis.vertical,
           itemCount: 10,
           itemBuilder: (_, index) {
@@ -57,6 +59,7 @@ class _ShoppingcartViewState extends State<ShoppingcartView> {
             );
           },
         ),
+      ),
     );
   }
 }

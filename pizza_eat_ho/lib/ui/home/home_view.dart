@@ -70,186 +70,189 @@ class _HomeViewState extends State<HomeView> {
       ),
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Container(
-              decoration: BoxDecoration(
-                color: redBackground,
-                borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(30.r),
-                  bottomRight: Radius.circular(30.r),
+        child: Container(
+          color: greyBackground,
+          child: Column(
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                  color: redBackground,
+                  borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(30.r),
+                    bottomRight: Radius.circular(30.r),
+                  ),
                 ),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  children: [
-                    Stack(
-                      alignment: .center,
-                      children: [
-                        SizedBox(
-                          height: 500.h,
-                          child: ClipRRect(
-                            borderRadius: .circular(30.r),
-                            child: PageView.builder(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    children: [
+                      Stack(
+                        alignment: .center,
+                        children: [
+                          SizedBox(
+                            height: 500.h,
+                            child: ClipRRect(
+                              borderRadius: .circular(30.r),
+                              child: PageView.builder(
+                                controller: _controller,
+                                onPageChanged: (index) {
+                                  _currentPage = index;
+                                },
+                                itemBuilder: (_, index) {
+                                  return banners[index % banners.length];
+                                },
+                              ),
+                            ),
+                          ),
+                          Positioned(
+                            bottom: 10,
+                            child: SmoothPageIndicator(
                               controller: _controller,
-                              onPageChanged: (index) {
-                                _currentPage = index;
-                              },
-                              itemBuilder: (_, index) {
-                                return banners[index % banners.length];
-                              },
-                            ),
-                          ),
-                        ),
-                        Positioned(
-                          bottom: 10,
-                          child: SmoothPageIndicator(
-                            controller: _controller,
-                            count: banners.length,
-                            effect: ScrollingDotsEffect(
-                              activeDotColor: redBackground,
-                              activeStrokeWidth: 2.6,
-                              activeDotScale: 1.3,
-                              maxVisibleDots: 5,
-                              radius: 8,
-                              spacing: 10,
-                              dotHeight: 12,
-                              dotWidth: 12,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 60.h),
-                    InkWell(
-                      onTap: () {
-                        Navigator.pushNamed(context, "/login");
-                      },
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: redBackground,
-                          border: Border.all(color: Colors.white, width: 4.w),
-                          borderRadius: BorderRadius.circular(30.r),
-                        ),
-                        width: double.infinity,
-                        height: 250.h,
-                        child: Center(
-                          child: Row(
-                            mainAxisAlignment: .center,
-                            children: [
-                              Icon(
-                                Icons.power_settings_new_outlined,
-                                color: Colors.white,
-                                size: 100.w,
+                              count: banners.length,
+                              effect: ScrollingDotsEffect(
+                                activeDotColor: redBackground,
+                                activeStrokeWidth: 2.6,
+                                activeDotScale: 1.3,
+                                maxVisibleDots: 5,
+                                radius: 8,
+                                spacing: 10,
+                                dotHeight: 12,
+                                dotWidth: 12,
                               ),
-                              SizedBox(width: 10.w),
-                              Text(
-                                "LOG IN",
-                                style: TextStyle(
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 60.h),
+                      InkWell(
+                        onTap: () {
+                          Navigator.pushNamed(context, "/login");
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: redBackground,
+                            border: Border.all(color: Colors.white, width: 4.w),
+                            borderRadius: BorderRadius.circular(30.r),
+                          ),
+                          width: double.infinity,
+                          height: 250.h,
+                          child: Center(
+                            child: Row(
+                              mainAxisAlignment: .center,
+                              children: [
+                                Icon(
+                                  Icons.power_settings_new_outlined,
                                   color: Colors.white,
-                                  fontSize: 80.sp,
-                                  fontWeight: FontWeight.bold,
+                                  size: 100.w,
                                 ),
-                              ),
-                            ],
+                                SizedBox(width: 10.w),
+                                Text(
+                                  "LOG IN",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 80.sp,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                    SizedBox(height: 40.h),
-                  ],
+                      SizedBox(height: 40.h),
+                    ],
+                  ),
                 ),
               ),
-            ),
-            SizedBox(height: 20.h),
-            Container(
-              height: 70.h,
-              width: 300.w,
-              decoration: BoxDecoration(
-                color: redBackground,
-                borderRadius: .circular(100.r),
+              SizedBox(height: 20.h),
+              Container(
+                height: 70.h,
+                width: 300.w,
+                decoration: BoxDecoration(
+                  color: redBackground,
+                  borderRadius: .circular(100.r),
+                ),
+                child: Center(
+                  child: Text("최근 주문 내역", style: TextStyle(color: Colors.white)),
+                ),
               ),
-              child: Center(
-                child: Text("최근 주문 내역", style: TextStyle(color: Colors.white)),
-              ),
-            ),
-            SizedBox(height: 20.h),
-            SizedBox(
-              height: 600.h,
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: 10,
-                itemBuilder: (_, index) {
-                  return Container(
-                    width: 300.w,
-                    margin: index == 9
-                        ? EdgeInsets.symmetric(horizontal: 8.0)
-                        : EdgeInsets.only(left: 8.0),
-                    child: Column(
-                      children: [
-                        Container(
-                          height: 300.w,
-                          decoration: BoxDecoration(
-                            color: Colors.blue,
-                            borderRadius: .circular(30.r),
+              SizedBox(height: 20.h),
+              SizedBox(
+                height: 600.h,
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: 10,
+                  itemBuilder: (_, index) {
+                    return Container(
+                      width: 300.w,
+                      margin: index == 9
+                          ? EdgeInsets.symmetric(horizontal: 8.0)
+                          : EdgeInsets.only(left: 8.0),
+                      child: Column(
+                        children: [
+                          Container(
+                            height: 300.w,
+                            decoration: BoxDecoration(
+                              color: Colors.blue,
+                              borderRadius: .circular(30.r),
+                            ),
                           ),
-                        ),
-                        SizedBox(height: 20.h),
-                        Text("$index번 째 아이템"),
-                        SizedBox(height: 20.h),
-                        Text("가격 : 3000원"),
-                      ],
-                    ),
-                  );
-                },
+                          SizedBox(height: 20.h),
+                          Text("$index번 째 아이템"),
+                          SizedBox(height: 20.h),
+                          Text("가격 : 3000원"),
+                        ],
+                      ),
+                    );
+                  },
+                ),
               ),
-            ),
 
-            SizedBox(height: 20.h),
-            Container(
-              height: 70.h,
-              width: 300.w,
-              decoration: BoxDecoration(
-                color: redBackground,
-                borderRadius: .circular(100.r),
+              SizedBox(height: 20.h),
+              Container(
+                height: 70.h,
+                width: 300.w,
+                decoration: BoxDecoration(
+                  color: redBackground,
+                  borderRadius: .circular(100.r),
+                ),
+                child: Center(
+                  child: Text("이거 어때유~?", style: TextStyle(color: Colors.white)),
+                ),
               ),
-              child: Center(
-                child: Text("이거 어때유~?", style: TextStyle(color: Colors.white)),
-              ),
-            ),
-            SizedBox(height: 20.h),
-            SizedBox(
-              height: 600.h,
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: 10,
-                itemBuilder: (_, index) {
-                  return Container(
-                    width: 300.w,
-                    margin: index == 9
-                        ? EdgeInsets.symmetric(horizontal: 8.0)
-                        : EdgeInsets.only(left: 8.0),
-                    child: Column(
-                      children: [
-                        Container(
-                          height: 300.w,
-                          decoration: BoxDecoration(
-                            color: Colors.green,
-                            borderRadius: .circular(30.r),
+              SizedBox(height: 20.h),
+              SizedBox(
+                height: 600.h,
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: 10,
+                  itemBuilder: (_, index) {
+                    return Container(
+                      width: 300.w,
+                      margin: index == 9
+                          ? EdgeInsets.symmetric(horizontal: 8.0)
+                          : EdgeInsets.only(left: 8.0),
+                      child: Column(
+                        children: [
+                          Container(
+                            height: 300.w,
+                            decoration: BoxDecoration(
+                              color: Colors.green,
+                              borderRadius: .circular(30.r),
+                            ),
                           ),
-                        ),
-                        SizedBox(height: 20.h),
-                        Text("$index번 째 아이템"),
-                        SizedBox(height: 20.h),
-                        Text("가격 : 3000원"),
-                      ],
-                    ),
-                  );
-                },
+                          SizedBox(height: 20.h),
+                          Text("$index번 째 아이템"),
+                          SizedBox(height: 20.h),
+                          Text("가격 : 3000원"),
+                        ],
+                      ),
+                    );
+                  },
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
