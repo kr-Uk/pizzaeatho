@@ -50,7 +50,7 @@ class _HomeViewState extends State<HomeView> {
     });
 
     _beaconService = BeaconService(
-      uuid: 'C300001C-6618-0000-0000-000000000000',
+      uuid: 'e2c56db5-dffb-48d2-b060-d0f5a71096e0',
       major: 40011,
       minor: 45369,
       enterDistanceMeters: 3.0,
