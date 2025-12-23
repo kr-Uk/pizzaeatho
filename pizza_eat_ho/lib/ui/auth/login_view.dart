@@ -84,7 +84,7 @@ class _LoginViewState extends State<LoginView> {
                     if (authViewModel.errorMessage != null) ...[
                       const SizedBox(height: 12),
                       Text(
-                        viewModel.errorMessage!,
+                        authViewModel.errorMessage!,
                         style: const TextStyle(color: Colors.black87),
                       ),
                     ],

@@ -125,7 +125,7 @@ class _JoinViewState extends State<JoinView> {
                             borderRadius: BorderRadius.circular(30.r),
                           ),
                         ),
-                        child: viewModel.isLoading
+                        child: authViewModel.isLoading
                             ? const SizedBox(
                                 width: 20,
                                 height: 20,
