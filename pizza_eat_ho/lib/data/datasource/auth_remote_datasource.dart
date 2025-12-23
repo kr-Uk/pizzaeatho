@@ -3,47 +3,54 @@ import 'dart:convert';
 import 'package:pizzaeatho/data/model/order.dart';
 import 'package:pizzaeatho/data/model/product.dart';
 import 'package:pizzaeatho/data/model/user.dart';
+import 'package:http/http.dart' as http;
+import 'package:pizzaeatho/util/common.dart';
 
 class AuthRemoteDataSource {
+  final String END_POINT = "pizza/user/";
 
+  /* 회원가입 */
   // POST /pizza/user (UserSignupRequestDto -> bool)
   Future<bool> signup(UserSignupRequestDto request) async {
     return true;
   }
 
+  /* 로그인 */
   // POST /pizza/user/login (UserLoginRequestDto -> UserLoginResponseDto)
   Future<UserLoginResponseDto> login(UserLoginRequestDto request) async {
-    final server = """
-      {
-        "userId": 1,
-        "id": "id01",
-        "pw": "pw01",
-        "name": "grigjnrigjri",
-        "payment": 0
-      }
-    """;
+    final url = Uri.http(IP_PORT, "${END_POINT}login");
 
-    final Map<String, dynamic> json =
-    jsonDecode(server) as Map<String, dynamic>;
+    final response = await http.post(
+      url,
+      // json 형식이라고 알려줘야 함
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      // DTO -> map -> json string
+      body: jsonEncode(request.toJson()),
+    );
 
-    if (request.id != json['id'] || request.pw != json['pw']) {
-      throw Exception('Invalid credentials');
+    // 실패시
+    if (response.statusCode != 200) {
+      throw Exception('Login failed');
     }
 
-    final responseJson = <String, dynamic>{
-      'userId': json['userId'],
-      'name': json['name'],
-      'payment': json['payment'],
-    };
+    // json은 request.body에 json String -> map
+    final Map<String, dynamic> json =
+    jsonDecode(response.body) as Map<String, dynamic>;
 
-    return UserLoginResponseDto.fromJson(responseJson);
+    // map -> DTO
+    return UserLoginResponseDto.fromJson(json);
   }
 
-  // POST /pizza/user ( -> UserInfoResponseDto)
-  Future<UserInfoResponseDto?> getUserInfo() async {
+  /* 사용자 정보 조회 */
+  // GET /pizza/user/{userId} ( -> UserInfoResponseDto)
+  Future<UserInfoResponseDto?> getUserInfo(String userId) async {
     return null;
   }
 
+  /* 아이디 중복체크 */
+  // GET /pizza/user/checkid/{userId} (userId -> bool)
   Future<bool> checkUserId(String userId) async {
     return true;
   }
