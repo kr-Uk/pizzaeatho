@@ -313,12 +313,8 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
                     ),
 
                     SizedBox(height: 64.h),
-                    ValueListenableBuilder<UserLoginResponseDto?>(
-                      valueListenable: UserRepository.currentUser,
-                      builder: (context, user, _) {
-                        final isLoggedIn = user != null;
-                        return InkWell(
-                          onTap: () {
+                    InkWell(
+                          onTap: () async {
                             if (isLoggedIn) {
                               await authViewModel.logout();
                             } else {
@@ -371,7 +367,6 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
                               ),
                             ),
                           ),
-
                     ),
                     SizedBox(height: 64.h),
                     _buildChatSection(),

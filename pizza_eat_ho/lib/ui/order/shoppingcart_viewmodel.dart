@@ -31,6 +31,7 @@ class ShoppingcartViewModel with ChangeNotifier {
     _items.clear();
 
     if (user != null) {
+      _items.clear();
       _items.addAll(
         await _orderRepository.loadCart(user.userId),
       );
