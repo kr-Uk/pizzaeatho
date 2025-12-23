@@ -326,8 +326,11 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
 
                     SizedBox(height: 64.h),
                     InkWell(
-                          onTap: () {
-                            if (!isLoggedIn) {
+                          onTap: () async {
+                            if (isLoggedIn) {
+                              await authViewModel.logout();
+                            } else {
+
                               Navigator.pushNamed(context, "/login");
                             }
                           },
@@ -377,7 +380,6 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
                               ),
                             ),
                           ),
-
                     ),
                     SizedBox(height: 64.h),
                     _buildChatSection(),

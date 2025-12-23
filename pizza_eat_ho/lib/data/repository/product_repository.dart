@@ -1,20 +1,19 @@
 import 'package:pizzaeatho/data/model/product.dart';
 
 import '../datasource/local_datasource.dart';
-import '../datasource/remote_datasource.dart';
+import '../datasource/product_remote_datasource.dart';
 
 class ProductRepository {
-  final RemoteDataSource _remoteDataSource = RemoteDataSource();
-  final LocalDataSource _localDataSource = LocalDataSource();
-
-  /// 로컬에 캐싱된 게시물 목록가져옴
-  // Future<List<Post>> getCachedPosts() {
-  // return _localDataSource.getCachedPosts();
-  // }
+  final ProductRemoteDataSource _remoteDataSource = ProductRemoteDataSource();
 
   // 피자 메뉴 갖고오기
   Future<List<ProductDto>> getProducts() {
     return _remoteDataSource.getProducts();
+  }
+
+  // 피자 기본 토핑 갖고오기
+  Future<DefaultTopping> getDefaultToppings() {
+    return _remoteDataSource.getDefaultToppings();
   }
 
   // 토핑 목록 갖고오기
