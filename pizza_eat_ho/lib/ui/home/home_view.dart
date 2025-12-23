@@ -243,11 +243,23 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('PizzaEatHo', style: TextStyle(color: Colors.white)),
+        title: Padding(
+          padding: const EdgeInsets.only(top: 6, right: 20),
+          child: Image.asset(
+            'assets/icon.png',
+            height: 80,
+          ),
+        ),
         backgroundColor: const Color(0xFFB91D2A),
         elevation: 0,
         surfaceTintColor: Colors.transparent,
         actions: [
+          IconButton(
+            icon: const Icon(Icons.map_outlined, color: Colors.white),
+            onPressed: () {
+              Navigator.pushNamed(context, "/store");
+            },
+          ),
           IconButton(
             icon: const Icon(Icons.shopping_cart_outlined, color: Colors.white),
             onPressed: () {
@@ -278,7 +290,7 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
                       alignment: .center,
                       children: [
                         SizedBox(
-                          height: 500.h,
+                          height: 600.h,
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(30.r),
                             child: PageView.builder(
@@ -313,15 +325,9 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
                     ),
 
                     SizedBox(height: 64.h),
-                    ValueListenableBuilder<UserLoginResponseDto?>(
-                      valueListenable: UserRepository.currentUser,
-                      builder: (context, user, _) {
-                        final isLoggedIn = user != null;
-                        return InkWell(
+                    InkWell(
                           onTap: () {
-                            if (isLoggedIn) {
-                              await authViewModel.logout();
-                            } else {
+                            if (!isLoggedIn) {
                               Navigator.pushNamed(context, "/login");
                             }
                           },
@@ -333,35 +339,35 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
                               borderRadius: BorderRadius.circular(30.r),
                             ),
                             width: double.infinity,
-                            height: 250.h,
+                            height: 200.h,
                             child: Center(
                               child: Row(
                                 mainAxisAlignment: .center,
                                 children: [
-                                  Icon(
-                                    Icons.power_settings_new_outlined,
-                                    color: Colors.white,
-                                    size: 100.w,
-                                  ),
-                                  SizedBox(width: 10.w),
-                                  Text(
-                                    isLoggedIn ? "로그아웃" : "로그인",
-                                    style: TextStyle(
+                                  if (!isLoggedIn) ...[
+                                    Icon(
+                                      Icons.power_settings_new_outlined,
                                       color: Colors.white,
-                                      fontSize: 80.sp,
-                                      fontWeight: FontWeight.bold,
+                                      size: 100.w,
                                     ),
-                                  ),
-                                  if (isLoggedIn) ...[
-                                    SizedBox(width: 20.w),
+                                    SizedBox(width: 10.w),
+                                    Text(
+                                      "로그인",
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 80.sp,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ] else ...[
                                     Flexible(
                                       child: Text(
-                                        "${user?.name}님",
+                                        "${user?.name}님 환영합니다.",
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
                                         style: TextStyle(
                                           color: Colors.white,
-                                          fontSize: 50.sp,
+                                          fontSize: 60.sp,
                                           fontWeight: FontWeight.w600,
                                         ),
                                       ),
@@ -401,7 +407,7 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
                           child: Container(
                             decoration: BoxDecoration(
                               color: Colors.white,
-                              borderRadius: BorderRadius.circular(24.r),
+                              borderRadius: BorderRadius.circular(30.r),
                               image: const DecorationImage(
                                 image: AssetImage("assets/ganadi1.png"),
                                 fit: BoxFit.cover,
@@ -447,7 +453,7 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
                           child: Container(
                             decoration: BoxDecoration(
                               color: Colors.white,
-                              borderRadius: BorderRadius.circular(24.r),
+                              borderRadius: BorderRadius.circular(30.r),
                               image: const DecorationImage(
                                 image: AssetImage("assets/ganadi1.png"),
                                 fit: BoxFit.cover,
@@ -589,6 +595,9 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
                   style: ElevatedButton.styleFrom(
                     backgroundColor: redBackground,
                     foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30.r),
+                    ),
                   ),
                   child: _isSending
                       ? const SizedBox(
@@ -634,7 +643,7 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
             decoration: BoxDecoration(
               color: redBackground,
-              borderRadius: BorderRadius.circular(20),
+              borderRadius: BorderRadius.circular(30.r),
               border: Border.all(color: accentColor, width: 2),
             ),
             child: Text(

@@ -24,6 +24,12 @@ class OrderHistoryView extends StatelessWidget {
         surfaceTintColor: Colors.transparent,
         actions: [
           IconButton(
+            icon: const Icon(Icons.map_outlined, color: Colors.white),
+            onPressed: () {
+              Navigator.pushNamed(context, "/store");
+            },
+          ),
+          IconButton(
             icon: const Icon(Icons.shopping_cart_outlined, color: Colors.white),
             onPressed: () {
               Navigator.pushNamed(context, "/shoppingcart");
