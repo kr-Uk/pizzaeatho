@@ -18,19 +18,10 @@ class _EventViewState extends State<EventView> {
       appBar: AppBar(
         title: const Text('이벤트', style: TextStyle(color: Colors.white)),
         centerTitle: true,
-        backgroundColor: Colors.transparent,
+        backgroundColor: const Color(0xFFB91D2A),
         elevation: 0,
         scrolledUnderElevation: 0,
         surfaceTintColor: Colors.transparent,
-        flexibleSpace: Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              colors: [Color(0xFFA10505), Color(0xFFB91D2A)],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-          ),
-        ),
         actions: [
           IconButton(
             icon: const Icon(Icons.shopping_cart_outlined, color: Colors.white),
@@ -42,13 +33,13 @@ class _EventViewState extends State<EventView> {
       ),
       backgroundColor: _snowBackground,
       body: ListView.builder(
-        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
-        scrollDirection: Axis.vertical,
+        padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 24.h),
         itemCount: 10,
         itemBuilder: (_, index) {
           return Container(
-            height: 280.h,
-            margin: const EdgeInsets.only(bottom: 16),
+            height: 240.h,
+            margin: EdgeInsets.only(bottom: 16.h),
+            padding: EdgeInsets.all(12.w),
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(24.r),
@@ -62,60 +53,62 @@ class _EventViewState extends State<EventView> {
             ),
             child: Row(
               children: [
-                Expanded(
-                  flex: 4,
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(24.r),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(20.r),
+                  child: SizedBox(
+                    width: 140.w,
+                    height: double.infinity,
                     child: Image.asset(
                       "assets/ganadi1.png",
                       fit: BoxFit.cover,
                     ),
                   ),
                 ),
+                SizedBox(width: 12.w),
                 Expanded(
-                  flex: 6,
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 10,
-                            vertical: 4,
-                          ),
-                          decoration: BoxDecoration(
-                            color: _christmasGreen,
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: const Text(
-                            "크리스마스 이벤트",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 12,
-                            ),
-                          ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 10.w,
+                          vertical: 4.h,
                         ),
-                        const SizedBox(height: 8),
-                        const Text(
-                          "연말 스페셜",
+                        decoration: BoxDecoration(
+                          color: _christmasGreen,
+                          borderRadius: BorderRadius.circular(12.r),
+                        ),
+                        child: const Text(
+                          "크리스마스 이벤트",
                           style: TextStyle(
-                            fontSize: 16,
+                            color: Colors.white,
                             fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          "기간 한정 메뉴 + 선물",
-                          style: TextStyle(
                             fontSize: 12,
-                            color: Colors.grey.shade600,
                           ),
                         ),
-                      ],
-                    ),
+                      ),
+                      SizedBox(height: 8.h),
+                      const Text(
+                        "연말 스페셜",
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      SizedBox(height: 6.h),
+                      Text(
+                        "기간 한정 메뉴 + 선물",
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.grey.shade600,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],

@@ -63,17 +63,9 @@ class _StoreFinderViewState extends State<StoreFinderView> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('매장 찾기', style: TextStyle(color: Colors.white)),
-        backgroundColor: Colors.transparent,
+        backgroundColor: const Color(0xFFB91D2A),
         elevation: 0,
-        flexibleSpace: Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              colors: [redBackground, Color(0xFFB91D2A)],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-          ),
-        ),
+        surfaceTintColor: Colors.transparent,
         iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: Stack(

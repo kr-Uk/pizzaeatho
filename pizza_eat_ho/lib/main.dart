@@ -25,7 +25,7 @@ class _MainState extends State<Main> {
         FittedBox(
           child: Text(
             label,
-            style: const TextStyle(fontSize: 10),
+            style: const TextStyle(fontSize: 13),
           ),
         ),
       ],

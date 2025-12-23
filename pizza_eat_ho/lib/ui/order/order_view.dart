@@ -24,19 +24,10 @@ class _OrderViewState extends State<OrderView> {
       appBar: AppBar(
         title: const Text('주문', style: TextStyle(color: Colors.white)),
         centerTitle: true,
-        backgroundColor: Colors.transparent,
+        backgroundColor: const Color(0xFFB91D2A),
         elevation: 0,
         scrolledUnderElevation: 0,
         surfaceTintColor: Colors.transparent,
-        flexibleSpace: Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              colors: [redBackground, Color(0xFFB91D2A)],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-          ),
-        ),
         actions: [
           IconButton(
             icon: const Icon(Icons.shopping_cart_outlined, color: Colors.white),
@@ -95,28 +86,6 @@ class _OrderViewState extends State<OrderView> {
                         image: DecorationImage(
                           image: AssetImage(item.image),
                           fit: BoxFit.cover,
-                        ),
-                      ),
-                    ),
-                    Positioned(
-                      left: 12,
-                      top: 12,
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 10,
-                          vertical: 4,
-                        ),
-                        decoration: BoxDecoration(
-                          color: _christmasGreen,
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: const Text(
-                          "크리스마스",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold,
-                          ),
                         ),
                       ),
                     ),

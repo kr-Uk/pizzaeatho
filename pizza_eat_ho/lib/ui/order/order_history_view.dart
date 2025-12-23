@@ -19,17 +19,9 @@ class OrderHistoryView extends StatelessWidget {
       appBar: AppBar(
         title: const Text('주문 내역', style: TextStyle(color: Colors.white)),
         centerTitle: true,
-        backgroundColor: Colors.transparent,
+        backgroundColor: const Color(0xFFB91D2A),
         elevation: 0,
-        flexibleSpace: Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              colors: [Color(0xFFA10505), Color(0xFFB91D2A)],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-          ),
-        ),
+        surfaceTintColor: Colors.transparent,
         actions: [
           IconButton(
             icon: const Icon(Icons.shopping_cart_outlined, color: Colors.white),

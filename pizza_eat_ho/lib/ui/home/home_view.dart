@@ -49,30 +49,11 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
         Container(
           decoration: BoxDecoration(
             image: DecorationImage(
-              image: const AssetImage("assets/ganadi1.png"),
+              image: const AssetImage("assets/banner.png"),
               fit: BoxFit.cover,
               colorFilter: ColorFilter.mode(
                 Colors.black.withOpacity(0.1),
                 BlendMode.darken,
-              ),
-            ),
-          ),
-        ),
-        Positioned(
-          right: 16,
-          top: 16,
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-            decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.85),
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: const Text(
-              "연말 추천",
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 12,
-                color: _christmasGreen,
               ),
             ),
           ),
@@ -262,18 +243,10 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Pizza잇호!', style: TextStyle(color: Colors.white)),
-        backgroundColor: Colors.transparent,
+        title: const Text('PizzaEatHo', style: TextStyle(color: Colors.white)),
+        backgroundColor: const Color(0xFFB91D2A),
         elevation: 0,
-        flexibleSpace: Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              colors: [redBackground, Color(0xFFB91D2A)],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-          ),
-        ),
+        surfaceTintColor: Colors.transparent,
         actions: [
           IconButton(
             icon: const Icon(Icons.shopping_cart_outlined, color: Colors.white),
@@ -291,11 +264,7 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
               children: [
             Container(
               decoration: BoxDecoration(
-                gradient: const LinearGradient(
-                  colors: [redBackground, Color(0xFFB91D2A)],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
+                color: const Color(0xFFB91D2A),
                 borderRadius: BorderRadius.only(
                   bottomLeft: Radius.circular(30.r),
                   bottomRight: Radius.circular(30.r),
@@ -342,11 +311,14 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
                         ),
                       ],
                     ),
-                    SizedBox(height: 40.h),
 
-                    // 로그인 페이지
-                    InkWell(
-                          onTap: () async {
+                    SizedBox(height: 64.h),
+                    ValueListenableBuilder<UserLoginResponseDto?>(
+                      valueListenable: UserRepository.currentUser,
+                      builder: (context, user, _) {
+                        final isLoggedIn = user != null;
+                        return InkWell(
+                          onTap: () {
                             if (isLoggedIn) {
                               await authViewModel.logout();
                             } else {
@@ -355,8 +327,9 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
                           },
                           child: Container(
                             decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.12),
-                              border: Border.all(color: Colors.white, width: 2.w),
+                              color: const Color(0xFFC31E2E),
+                              border:
+                                  Border.all(color: Colors.white, width: 2.w),
                               borderRadius: BorderRadius.circular(30.r),
                             ),
                             width: double.infinity,
@@ -400,7 +373,7 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
                           ),
 
                     ),
-                    SizedBox(height: 30.h),
+                    SizedBox(height: 64.h),
                     _buildChatSection(),
                     SizedBox(height: 40.h),
                   ],
@@ -408,7 +381,7 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
               ),
             ),
             SizedBox(height: 24.h),
-            _buildSectionTitle("최근 주문 내역"),
+            _buildSectionTitle("최근 주문 내역", showAccent: false, showAccentLine: true),
             SizedBox(height: 20.h),
             SizedBox(
               height: 620.h,
@@ -454,7 +427,7 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
               ),
             ),
             SizedBox(height: 20.h),
-            _buildSectionTitle("인기 메뉴"),
+            _buildSectionTitle("인기 메뉴", showAccent: false, showAccentLine: true),
             SizedBox(height: 20.h),
             SizedBox(
               height: 620.h,
@@ -525,7 +498,7 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
       width: double.infinity,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: const Color(0xFFFFE6E2),
         borderRadius: BorderRadius.circular(16.r),
         boxShadow: [
           BoxShadow(
@@ -561,7 +534,7 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
           ),
           SizedBox(height: 16.h),
           SizedBox(
-            height: 380.h,
+            height: 300.h,
             child: ListView.builder(
               controller: _chatScrollController,
               itemCount: _messages.length,
@@ -597,16 +570,20 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
               Expanded(
                 child: TextField(
                   controller: _chatController,
+                  style: TextStyle(fontSize: 28.sp),
                   decoration: const InputDecoration(
                     hintText: '메시지를 입력하세요.',
                     border: OutlineInputBorder(),
+                    isDense: true,
+                    contentPadding:
+                        EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                   ),
                   onSubmitted: (_) => _sendChatMessage(),
                 ),
               ),
               SizedBox(width: 12.w),
               SizedBox(
-                height: 48,
+                height: 34,
                 child: ElevatedButton(
                   onPressed: _isSending ? null : _sendChatMessage,
                   style: ElevatedButton.styleFrom(
@@ -615,14 +592,14 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
                   ),
                   child: _isSending
                       ? const SizedBox(
-                          width: 20,
-                          height: 20,
+                          width: 16,
+                          height: 16,
                           child: CircularProgressIndicator(
                             strokeWidth: 2,
                             color: Colors.white,
                           ),
                         )
-                      : const Text('보내기'),
+                      : const Text('보내기', style: TextStyle(fontSize: 12)),
                 ),
               ),
             ],
@@ -632,17 +609,33 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
     );
   }
 
-  Widget _buildSectionTitle(String title) {
+  Widget _buildSectionTitle(
+    String title, {
+    bool showAccent = true,
+    bool showAccentLine = false,
+  }) {
+    final accentColor = showAccent ? _christmasGreen : Colors.transparent;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Row(
         children: [
+          if (showAccentLine) ...[
+            Container(
+              width: 4,
+              height: 24,
+              decoration: BoxDecoration(
+                color: _christmasGreen,
+                borderRadius: BorderRadius.circular(4),
+              ),
+            ),
+            const SizedBox(width: 8),
+          ],
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
             decoration: BoxDecoration(
               color: redBackground,
               borderRadius: BorderRadius.circular(20),
-              border: Border.all(color: _christmasGreen, width: 2),
+              border: Border.all(color: accentColor, width: 2),
             ),
             child: Text(
               title,
@@ -656,7 +649,11 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
           Expanded(
             child: Container(
               height: 2,
-              color: _christmasGreen.withOpacity(0.3),
+              color: showAccentLine
+                  ? _christmasGreen.withOpacity(0.3)
+                  : (showAccent
+                      ? _christmasGreen.withOpacity(0.3)
+                      : Colors.transparent),
             ),
           ),
         ],
