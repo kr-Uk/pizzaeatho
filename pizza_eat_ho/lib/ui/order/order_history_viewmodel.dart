@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:pizzaeatho/data/repository/auth_repository.dart';
 import '../../data/model/order.dart';
 import '../../data/repository/order_repository.dart';
-import '../../data/repository/user_repository.dart';
 
 class OrderHistoryViewModel with ChangeNotifier {
   final OrderRepository _orderRepository = OrderRepository();
+  final AuthRepository _authRepository = AuthRepository();
 
   List<UserOrderListItemDto> _orderHistory = [];
   List<UserOrderListItemDto> get orderHistory => _orderHistory;
@@ -14,20 +15,14 @@ class OrderHistoryViewModel with ChangeNotifier {
   }
 
   Future<void> _init() async {
-    final user = UserRepository.currentUser.value;
+    final user = await _authRepository.getCurrentUser();
+
     if (user != null) {
       await _loadOrderHistory(user.userId);
+    } else {
+      _orderHistory.clear();
+      notifyListeners();
     }
-
-    UserRepository.currentUser.addListener(() async {
-      final user = UserRepository.currentUser.value;
-      if (user != null) {
-        await _loadOrderHistory(user.userId);
-      } else {
-        _orderHistory.clear();
-        notifyListeners();
-      }
-    });
   }
 
   Future<void> _loadOrderHistory(int userId) async {

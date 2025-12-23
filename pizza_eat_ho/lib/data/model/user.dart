@@ -65,6 +65,12 @@ class UserLoginResponseDto {
     required this.stamp,
   });
 
+  Map<String, dynamic> toJson() => {
+    'userId': userId,
+    'name': name,
+    'stamp': stamp,
+  };
+
   factory UserLoginResponseDto.fromJson(Map<String, dynamic> json) {
     return UserLoginResponseDto(
       userId: (json['userId'] as num).toInt(),

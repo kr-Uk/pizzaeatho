@@ -3,7 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:pizzaeatho/util/common.dart';
 
-import 'join_viewmodel.dart';
+import 'auth_viewmodel.dart';
 
 const Color _christmasGreen = Color(0xFF0F6B3E);
 const Color _snowBackground = Color(0xFFF9F6F1);
@@ -30,7 +30,7 @@ class _JoinViewState extends State<JoinView> {
 
   @override
   Widget build(BuildContext context) {
-    final viewModel = context.watch<JoinViewModel>();
+    final authViewModel = context.watch<AuthViewModel>();
 
     return Scaffold(
       resizeToAvoidBottomInset: true,
@@ -95,10 +95,10 @@ class _JoinViewState extends State<JoinView> {
                         ),
                       ),
                     ),
-                    if (viewModel.errorMessage != null) ...[
+                    if (authViewModel.errorMessage != null) ...[
                       const SizedBox(height: 12),
                       Text(
-                        viewModel.errorMessage!,
+                        authViewModel.errorMessage!,
                         style: const TextStyle(color: Colors.black87),
                       ),
                     ],
@@ -106,10 +106,10 @@ class _JoinViewState extends State<JoinView> {
                     SizedBox(
                       height: 52,
                       child: ElevatedButton(
-                        onPressed: viewModel.isLoading
+                        onPressed: authViewModel.isLoading
                             ? null
                             : () async {
-                                final success = await viewModel.signup(
+                                final success = await authViewModel.signup(
                                   id: _idController.text.trim(),
                                   pw: _pwController.text.trim(),
                                   name: _nameController.text.trim(),

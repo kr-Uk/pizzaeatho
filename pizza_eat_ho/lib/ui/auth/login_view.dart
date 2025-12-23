@@ -3,8 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:pizzaeatho/util/common.dart';
 
-import 'join_page.dart';
-import 'login_viewmodel.dart';
+import 'auth_viewmodel.dart';
 
 const Color _christmasGreen = Color(0xFF0F6B3E);
 const Color _snowBackground = Color(0xFFF9F6F1);
@@ -29,7 +28,7 @@ class _LoginViewState extends State<LoginView> {
 
   @override
   Widget build(BuildContext context) {
-    final viewModel = context.watch<LoginViewModel>();
+    final authViewModel = context.watch<AuthViewModel>();
 
     return Scaffold(
       resizeToAvoidBottomInset: true,
@@ -82,7 +81,7 @@ class _LoginViewState extends State<LoginView> {
                         ),
                       ),
                     ),
-                    if (viewModel.errorMessage != null) ...[
+                    if (authViewModel.errorMessage != null) ...[
                       const SizedBox(height: 12),
                       Text(
                         viewModel.errorMessage!,
@@ -93,10 +92,10 @@ class _LoginViewState extends State<LoginView> {
                     SizedBox(
                       height: 52,
                       child: ElevatedButton(
-                        onPressed: viewModel.isLoading
+                        onPressed: authViewModel.isLoading
                             ? null
                             : () async {
-                                final success = await viewModel.login(
+                                final success = await authViewModel.login(
                                   id: _idController.text.trim(),
                                   pw: _pwController.text.trim(),
                                 );
@@ -112,7 +111,7 @@ class _LoginViewState extends State<LoginView> {
                             borderRadius: BorderRadius.circular(30.r),
                           ),
                         ),
-                        child: viewModel.isLoading
+                        child: authViewModel.isLoading
                             ? const SizedBox(
                                 width: 20,
                                 height: 20,
@@ -127,11 +126,7 @@ class _LoginViewState extends State<LoginView> {
                     const SizedBox(height: 12),
                     TextButton(
                       onPressed: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => const JoinPage(),
-                          ),
-                        );
+                        Navigator.pushNamed(context, "/join");
                       },
                       style: TextButton.styleFrom(
                         foregroundColor: _christmasGreen,

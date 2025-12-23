@@ -1,66 +1,10 @@
-﻿import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:pizzaeatho/data/repository/user_repository.dart';
-import 'package:pizzaeatho/splash.dart';
-import 'package:pizzaeatho/ui/auth/login_page.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:pizzaeatho/ui/event/event_view.dart';
 import 'package:pizzaeatho/ui/home/home_page.dart';
 import 'package:pizzaeatho/ui/mypage/mypage_view.dart';
 import 'package:pizzaeatho/ui/order/order_history_page.dart';
-import 'package:pizzaeatho/ui/order/order_history_view.dart';
 import 'package:pizzaeatho/ui/order/order_page.dart';
-import 'package:pizzaeatho/ui/order/order_detail_page.dart';
-import 'package:pizzaeatho/ui/order/shoppingcart_view.dart';
-import 'package:pizzaeatho/ui/order/shoppingcart_viewmodel.dart';
-import 'package:pizzaeatho/ui/store/store_finder_view.dart';
 import 'package:pizzaeatho/util/common.dart';
-import 'package:pizzaeatho/util/fcm_service.dart';
-import 'package:provider/provider.dart';
-
-Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  try {
-    await Firebase.initializeApp();
-    await FcmService.instance.initialize();
-  } catch (e) {
-    debugPrint('FCM init skipped: $e');
-  }
-  await UserRepository.restoreSession();
-  runApp(
-    MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (_) => ShoppingcartViewModel()),
-        ChangeNotifierProvider(create: (_) => ShoppingcartViewModel()),
-      ],
-      child: const MyApp(),
-    ),
-  );
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return ScreenUtilInit(
-      designSize: const Size(1080, 2340),
-      builder: (context, child) {
-        return MaterialApp(
-          initialRoute: '/',
-          routes: {
-            '/': (context) => const Splash(),
-            '/main': (context) => const Main(),
-            '/shoppingcart': (context) => const ShoppingcartView(),
-            '/order_detail': (context) => const OrderDetailPage(),
-            '/login': (context) => const LoginPage(),
-            '/store': (context) => const StoreFinderView(),
-          },
-        );
-      },
-    );
-  }
-}
 
 class Main extends StatefulWidget {
   const Main({super.key});
