@@ -25,7 +25,7 @@ public class UserRestController {
     private UserService uService;
 
     @PostMapping("")
-    public UserResponse register(@RequestBody UserRegisterRequest request) {
+    public boolean register(@RequestBody UserRegisterRequest request) {
         User user = new User();
         user.setId(request.getId());
         user.setPw(request.getPw());
@@ -33,11 +33,7 @@ public class UserRestController {
         user.setStamp(0);
 
         int result = uService.join(user);
-        if (result <= 0) {
-            return null;
-        }
-
-        return new UserResponse(user.getUserId(), user.getId(), user.getName(), user.getStamp());
+        return result > 0;
     }
 
     @PostMapping("/login")
@@ -56,6 +52,11 @@ public class UserRestController {
             return null;
         }
         return new UserResponse(user.getUserId(), user.getId(), user.getName(), user.getStamp());
+    }
+
+    @GetMapping("/checkid/{userId}")
+    public boolean checkUserId(@PathVariable String userId) {
+        return uService.isUserIdAvailable(userId);
     }
 }
 

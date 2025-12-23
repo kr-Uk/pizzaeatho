@@ -3,14 +3,14 @@ package com.ssafy.pizza.model.dto;
 public class UserLoginResponse {
     private Integer userId;
     private String name;
-    private Integer stamp;
+    private Integer payment;
 
     public UserLoginResponse() {}
 
-    public UserLoginResponse(Integer userId, String name, Integer stamp) {
+    public UserLoginResponse(Integer userId, String name, Integer payment) {
         this.userId = userId;
         this.name = name;
-        this.stamp = stamp;
+        this.payment = payment;
     }
 
     public Integer getUserId() {
@@ -29,12 +29,12 @@ public class UserLoginResponse {
         this.name = name;
     }
 
-    public Integer getStamp() {
-        return stamp;
+    public Integer getPayment() {
+        return payment;
     }
 
-    public void setStamp(Integer stamp) {
-        this.stamp = stamp;
+    public void setPayment(Integer payment) {
+        this.payment = payment;
     }
 }
 

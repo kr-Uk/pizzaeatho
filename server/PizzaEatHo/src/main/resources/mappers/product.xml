@@ -5,12 +5,12 @@
 <mapper namespace="com.ssafy.pizza.model.dao.ProductDao">
 
     <select id="selectAll" resultType="Product">
-        SELECT product_id, name, base_price
+        SELECT product_id, name, description, image, base_price AS price
         FROM PRODUCT
     </select>
 
     <select id="selectDefaultToppings" resultType="Topping">
-        SELECT t.topping_id, t.name, t.price
+        SELECT t.topping_id, t.name, t.image, t.price
         FROM PRODUCT_DEFAULT_TOPPING pdt
         JOIN TOPPING t ON pdt.topping_id = t.topping_id
         WHERE pdt.product_id = #{productId}
@@ -18,19 +18,19 @@
     </select>
 
     <select id="selectAllToppings" resultType="Topping">
-        SELECT topping_id, name, price
+        SELECT topping_id, name, image, price
         FROM TOPPING
         ORDER BY topping_id ASC
     </select>
 
     <select id="selectAllDough" resultType="Dough">
-        SELECT dough_id, name, extra_price
+        SELECT dough_id, name, image, extra_price AS price
         FROM DOUGH
         ORDER BY dough_id ASC
     </select>
 
     <select id="selectAllCrust" resultType="Crust">
-        SELECT crust_id, name, extra_price
+        SELECT crust_id, name, image, extra_price AS price
         FROM CRUST
         ORDER BY crust_id ASC
     </select>

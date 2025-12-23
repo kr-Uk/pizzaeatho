@@ -28,8 +28,8 @@ public class OrderRestController {
     private OrderService oService;
 
     @PostMapping("")
-    public OrderCreateResponse createOrder(@RequestBody OrderCreateRequest request) {
-        return oService.createOrder(request);
+    public OrderCreateResponse createOrder(@RequestBody List<OrderCreateRequest> requests) {
+        return oService.createOrder(requests);
     }
 
     @GetMapping("/user/{userId}")
@@ -38,7 +38,7 @@ public class OrderRestController {
     }
 
     @GetMapping("/{orderId}")
-    public OrderDetailResponse getOrderDetail(@PathVariable Integer orderId) {
+    public List<OrderDetailResponse> getOrderDetail(@PathVariable Integer orderId) {
         return oService.getOrderDetail(orderId);
     }
 
@@ -49,9 +49,14 @@ public class OrderRestController {
         return oService.updateOrderStatus(orderId, request.getStatus());
     }
 
-    @GetMapping({"/recent", "/recent-6months"})
-    public List<OrderListItem> getRecent6MonthsOrders() {
-        return oService.getRecent6MonthsOrders();
+    @GetMapping("/user/{userId}/recent6months")
+    public List<OrderListItem> getRecent6MonthsOrders(@PathVariable Integer userId) {
+        return oService.getRecent6MonthsOrders(userId);
+    }
+
+    @GetMapping("/user/{userId}/status")
+    public List<OrderListItem> getOrdersByStatus(@PathVariable Integer userId) {
+        return oService.getActiveOrdersByUser(userId);
     }
 }
 

@@ -8,5 +8,7 @@ public interface UserService {
     User login(String id, String pw);
 
     User getByUserId(Integer userId);
+
+    boolean isUserIdAvailable(String id);
 }
 

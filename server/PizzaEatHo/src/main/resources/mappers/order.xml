@@ -44,7 +44,6 @@
         LEFT JOIN CRUST c ON od.crust_id = c.crust_id
         WHERE o.order_id = #{orderId}
         ORDER BY od.order_detail_id ASC
-        LIMIT 1
     </select>
 
     <select id="selectToppingsByOrderDetail" resultType="OrderToppingInfo">
@@ -57,7 +56,7 @@
         ORDER BY t.topping_id ASC
     </select>
 
-    <select id="selectRecent6Months" resultType="OrderListItem">
+    <select id="selectRecent6MonthsByUser" resultType="OrderListItem">
         SELECT
             o.order_id,
             o.order_time,
@@ -65,7 +64,22 @@
             SUM(od.unit_price * od.quantity) AS total_price
         FROM ORDERS o
         JOIN ORDER_DETAIL od ON o.order_id = od.order_id
-        WHERE o.order_time > DATE_ADD(NOW(), INTERVAL -6 MONTH)
+        WHERE o.user_id = #{userId}
+          AND o.order_time > DATE_ADD(NOW(), INTERVAL -6 MONTH)
+        GROUP BY o.order_id, o.order_time, o.status
+        ORDER BY o.order_time DESC
+    </select>
+
+    <select id="selectByUserNotDone" resultType="OrderListItem">
+        SELECT
+            o.order_id,
+            o.order_time,
+            o.status,
+            SUM(od.unit_price * od.quantity) AS total_price
+        FROM ORDERS o
+        JOIN ORDER_DETAIL od ON o.order_id = od.order_id
+        WHERE o.user_id = #{userId}
+          AND o.status <> 'DONE'
         GROUP BY o.order_id, o.order_time, o.status
         ORDER BY o.order_time DESC
     </select>
