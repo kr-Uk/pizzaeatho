@@ -12,10 +12,12 @@ class Splash extends StatelessWidget {
     });
 
     return Scaffold(
-      body: SizedBox.expand(
-        child: Image.asset(
-          "assets/pizza.png",
-          fit: BoxFit.cover,
+      body: Center(
+        child: SizedBox(
+          child: Image.asset(
+            "assets/pizza.png",
+            fit: BoxFit.contain,
+          ),
         ),
       ),
     );

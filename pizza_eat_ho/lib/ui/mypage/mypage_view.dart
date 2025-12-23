@@ -1,7 +1,9 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:pizzaeatho/util/common.dart';
+import 'package:pizzaeatho/ui/auth/auth_viewmodel.dart';
 import 'package:pizzaeatho/ui/order/order_history_page.dart';
+import 'package:pizzaeatho/util/common.dart';
+import 'package:provider/provider.dart';
 
 const Color _christmasGreen = Color(0xFF0F6B3E);
 const Color _snowBackground = Color(0xFFF9F6F1);
@@ -14,10 +16,11 @@ class MypageView extends StatefulWidget {
 }
 
 class _MypageViewState extends State<MypageView> {
-  String? _user = "준규";
-
   @override
   Widget build(BuildContext context) {
+    final authViewModel = context.watch<AuthViewModel>();
+    final user = authViewModel.user;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('마이페이지', style: TextStyle(color: Colors.white)),
@@ -27,15 +30,23 @@ class _MypageViewState extends State<MypageView> {
         surfaceTintColor: Colors.transparent,
         actions: [
           IconButton(
+            icon: const Icon(Icons.map_outlined, color: Colors.white),
+            onPressed: () {
+              Navigator.pushNamed(context, '/store');
+            },
+          ),
+          IconButton(
             icon: const Icon(Icons.shopping_cart_outlined, color: Colors.white),
             onPressed: () {
-              Navigator.pushNamed(context, "/shoppingcart");
+              Navigator.pushNamed(context, '/shoppingcart');
             },
           ),
         ],
       ),
       backgroundColor: _snowBackground,
-      body: _user == null ? const _NotUserLogin() : _UserLogin(userName: _user!),
+      body: authViewModel.isLoggedIn
+          ? _UserLogin(userName: user!.name)
+          : const _NotUserLogin(),
     );
   }
 }
@@ -52,10 +63,10 @@ class _NotUserLogin extends StatelessWidget {
           SizedBox(
             width: 160.w,
             height: 160.w,
-            child: Image.asset("assets/ganadi1.png", fit: BoxFit.cover),
+            child: Image.asset('assets/ganadi1.png', fit: BoxFit.cover),
           ),
           const SizedBox(height: 12),
-          const Text("로그인해줘"),
+          const Text('로그인해줘'),
         ],
       ),
     );
@@ -76,59 +87,51 @@ class _UserLogin extends StatelessWidget {
           const SizedBox(height: 16),
           _buildMenuCard(
             icon: Icons.receipt_long_outlined,
-            title: "주문 내역",
+            title: '주문 내역',
             onTap: () {
-
               Navigator.push(
-
                 context,
-
                 MaterialPageRoute(
-
                   builder: (context) => const OrderHistoryPage(),
-
                 ),
-
               );
-
             },
-
           ),
           _buildMenuCard(
             icon: Icons.favorite_border,
-            title: "즐겨찾기",
+            title: '즐겨찾기',
           ),
           _buildMenuCard(
             icon: Icons.notifications_none,
-            title: "알림",
+            title: '알림',
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: 16),
           InkWell(
             onTap: () {
-              Navigator.pushNamed(context, "/store");
+              context.read<AuthViewModel>().logout();
             },
             child: Container(
               decoration: BoxDecoration(
                 color: redBackground,
-                borderRadius: BorderRadius.circular(30.r),
+                borderRadius: BorderRadius.circular(24.r),
               ),
               width: double.infinity,
-              height: 180.h,
+              height: 140.h,
               child: Center(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Icon(
-                      Icons.map_outlined,
+                      Icons.power_settings_new_outlined,
                       color: Colors.white,
-                      size: 80.w,
+                      size: 72.w,
                     ),
                     SizedBox(width: 12.w),
                     Text(
-                      "매장 찾기",
+                      '로그아웃',
                       style: TextStyle(
                         color: Colors.white,
-                        fontSize: 64.sp,
+                        fontSize: 54.sp,
                         fontWeight: FontWeight.bold,
                       ),
                     ),

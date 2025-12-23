@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:pizzaeatho/util/common.dart';
 
@@ -20,29 +20,115 @@ class _StoreFinderViewState extends State<StoreFinderView> {
     showDialog<void>(
       context: context,
       builder: (context) {
-        return AlertDialog(
-          title: const Text('피자잇호 매장'),
-          content: const Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text('영업시간: 11:00 - 22:00'),
-              SizedBox(height: 8),
-              Text('라스트오더: 21:30'),
-              SizedBox(height: 8),
-              Text('포장 / 배달'),
-              SizedBox(height: 8),
-              Text('전화: 054-000-0000'),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text('확인'),
+        return Dialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          insetPadding: const EdgeInsets.symmetric(horizontal: 24),
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 14,
+                    vertical: 10,
+                  ),
+                  decoration: BoxDecoration(
+                    color: redBackground,
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                  child: Row(
+                    children: [
+                      const Icon(Icons.store, color: Colors.white),
+                      const SizedBox(width: 8),
+                      const Expanded(
+                        child: Text(
+                          '피짜잇호 매장',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 16),
+                _buildInfoRow(
+                  icon: Icons.schedule,
+                  label: '영업시간',
+                  value: '11:00 - 22:00',
+                ),
+                const SizedBox(height: 10),
+                _buildInfoRow(
+                  icon: Icons.room_service_outlined,
+                  label: '라스트오더',
+                  value: '21:30',
+                ),
+                const SizedBox(height: 10),
+                _buildInfoRow(
+                  icon: Icons.delivery_dining,
+                  label: '이용',
+                  value: '매장 / 배달',
+                ),
+                const SizedBox(height: 10),
+                _buildInfoRow(
+                  icon: Icons.call,
+                  label: '전화',
+                  value: '054-000-0000',
+                ),
+                const SizedBox(height: 20),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: redBackground,
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                    ),
+                    child: const Text('확인'),
+                  ),
+                ),
+              ],
             ),
-          ],
+          ),
         );
       },
+    );
+  }
+
+  Widget _buildInfoRow({
+    required IconData icon,
+    required String label,
+    required String value,
+  }) {
+    return Row(
+      children: [
+        Container(
+          width: 32,
+          height: 32,
+          decoration: BoxDecoration(
+            color: redBackground.withOpacity(0.1),
+            shape: BoxShape.circle,
+          ),
+          child: Icon(icon, color: redBackground, size: 18),
+        ),
+        const SizedBox(width: 10),
+        Expanded(
+          child: Text(
+            label,
+            style: const TextStyle(fontWeight: FontWeight.w600),
+          ),
+        ),
+        Text(
+          value,
+          style: const TextStyle(color: Colors.black87),
+        ),
+      ],
     );
   }
 
@@ -53,7 +139,7 @@ class _StoreFinderViewState extends State<StoreFinderView> {
         markerId: const MarkerId('pizzaeatho'),
         position: _storeLatLng,
         infoWindow: const InfoWindow(
-          title: '피자잇호 매장',
+          title: '피짜잇호 매장',
           snippet: '매장 정보 보기',
         ),
         onTap: _showStoreDialog,
@@ -84,7 +170,7 @@ class _StoreFinderViewState extends State<StoreFinderView> {
           Positioned(
             left: 16,
             right: 16,
-            bottom: 24,
+            bottom: 24 + MediaQuery.of(context).padding.bottom,
             child: Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
@@ -113,7 +199,7 @@ class _StoreFinderViewState extends State<StoreFinderView> {
                   const SizedBox(width: 12),
                   const Expanded(
                     child: Text(
-                      "피자잇호 매장\n크리스마스 영업 안내",
+                      '피짜잇호 매장 운영 안내',
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
                   ),
