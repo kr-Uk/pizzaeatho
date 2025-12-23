@@ -4,11 +4,12 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:pizzaeatho/data/model/user.dart';
-import 'package:pizzaeatho/data/repository/user_repository.dart';
+import 'package:pizzaeatho/ui/auth/auth_viewmodel.dart';
+import 'package:pizzaeatho/ui/home/home_viewmodel.dart';
 import 'package:pizzaeatho/util/beacon_service.dart';
 import 'package:pizzaeatho/util/common.dart';
 import 'package:pizzaeatho/util/openai_chat_service.dart';
+import 'package:provider/provider.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 const Color _christmasGreen = Color(0xFF0F6B3E);
@@ -253,6 +254,12 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
 
   @override
   Widget build(BuildContext context) {
+    final homeViewModel = context.watch<HomeViewModel>();
+    final authViewModel = context.watch<AuthViewModel>();
+
+    final user = authViewModel.user;
+    bool isLoggedIn = authViewModel.isLoggedIn;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Pizza잇호!', style: TextStyle(color: Colors.white)),
@@ -336,14 +343,12 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
                       ],
                     ),
                     SizedBox(height: 40.h),
-                    ValueListenableBuilder<UserLoginResponseDto?>(
-                      valueListenable: UserRepository.currentUser,
-                      builder: (context, user, _) {
-                        final isLoggedIn = user != null;
-                        return InkWell(
-                          onTap: () {
+
+                    // 로그인 페이지
+                    InkWell(
+                          onTap: () async {
                             if (isLoggedIn) {
-                              UserRepository().logout();
+                              await authViewModel.logout();
                             } else {
                               Navigator.pushNamed(context, "/login");
                             }
@@ -378,7 +383,7 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
                                     SizedBox(width: 20.w),
                                     Flexible(
                                       child: Text(
-                                        "${user.name}님",
+                                        "${user?.name}님",
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
                                         style: TextStyle(
@@ -393,8 +398,7 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
                               ),
                             ),
                           ),
-                        );
-                      },
+
                     ),
                     SizedBox(height: 30.h),
                     _buildChatSection(),

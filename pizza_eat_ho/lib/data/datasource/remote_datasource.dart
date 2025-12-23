@@ -173,6 +173,10 @@ class RemoteDataSource {
     return crusts;
   }
 
+  Future<bool> signup(UserSignupRequestDto request) async {
+    return true;
+  }
+
   Future<UserLoginResponseDto> login(UserLoginRequestDto request) async {
     final server = """
       {

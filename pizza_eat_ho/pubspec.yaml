@@ -1,4 +1,4 @@
-﻿name: pizzaeatho
+name: pizzaeatho
 description: "A new Flutter project."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
@@ -45,6 +45,7 @@ dependencies:
   google_maps_flutter: ^2.6.1
   firebase_core: ^2.32.0
   firebase_messaging: ^14.9.4
+  flutter_secure_storage: ^10.0.0
 
 dev_dependencies:
   flutter_test:

@@ -1,52 +1,54 @@
 ﻿import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:pizzaeatho/data/repository/auth_repository.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../util/fcm_service.dart';
 import '../../data/model/order.dart';
 import '../../data/model/shoppingcart.dart';
 import '../../data/repository/order_repository.dart';
-import '../../data/repository/user_repository.dart';
+import '../auth/auth_viewmodel.dart';
 
 class ShoppingcartViewModel with ChangeNotifier {
   final OrderRepository _orderRepository = OrderRepository();
+  final AuthRepository _authRepository = AuthRepository();
+  final AuthViewModel _authViewModel;
 
   final List<ShoppingcartDto> _items = [];
   List<ShoppingcartDto> get items => _items;
 
-  // Shared에 장바구니 유저별로 넣게 !!!
-  String? get _storageKey {
-    final user = UserRepository.currentUser.value;
-    if (user == null) return null;
-    return 'shopping_cart_${user.userId}';
-  }
-
   // 생성자 유저 갖고오기, 카트 로드하기
-  ShoppingcartViewModel() {
-    _init();
-
+  ShoppingcartViewModel(this._authViewModel) {
+    _authViewModel.addListener(_onAuthChanged);
+    _onAuthChanged();
   }
 
-  Future<void> _init() async {
-    final user = UserRepository.currentUser.value;
+
+  void _onAuthChanged() async {
+    final user = _authViewModel.user;
+
+    _items.clear();
+
     if (user != null) {
-      await loadCart();
+      _items.addAll(
+        await _orderRepository.loadCart(user.userId),
+      );
     }
 
-    UserRepository.currentUser.addListener(() async {
-      final user = UserRepository.currentUser.value;
-      if (user == null) {
-        await clearCart();
-      } else {
-        await loadCart();
-      }
-    });
+    notifyListeners();
+  }
+
+
+  @override
+  void dispose() {
+    _authViewModel.removeListener(_onAuthChanged);
+    super.dispose();
   }
 
   // 주문하기
   Future<bool> placeOrder(BuildContext context) async {
-    final user = UserRepository.currentUser.value;
+    final user = await _authRepository.getCurrentUser();
 
     if (user == null || _items.isEmpty) return false;
 
@@ -83,81 +85,41 @@ class ShoppingcartViewModel with ChangeNotifier {
       debugPrint("Order failed: $e");
       return false;
     }
-
-
   }
-
-
-
 
   // 카트 기능들!!
   Future<bool> addItem(ShoppingcartDto item) async {
-    if (_storageKey == null) {
-      // 로그인 안 됨
-      return false;
-    }
+    final user = await _authRepository.getCurrentUser();
+    if (user == null) return false;
 
     _items.add(item);
     notifyListeners();
-    await saveCart();
+
+    await _orderRepository.saveCart(user.userId, _items);
+
     return true;
   }
 
   Future<void> removeItem(int index) async {
+    final user = await _authRepository.getCurrentUser();
+    if (user == null) return;
     _items.removeAt(index);
     notifyListeners();
-    await saveCart();
-  }
-
-  Future<void> saveCart() async {
-    final key = _storageKey;
-    if (key == null) return;
-
-    final prefs = await SharedPreferences.getInstance();
-    final jsonList = _items.map((e) => jsonEncode(e.toJson())).toList();
-    await prefs.setStringList(key, jsonList);
-  }
-
-  Future<void> loadCart() async {
-    final key = _storageKey;
-
-    _items.clear();
-
-    if (key == null) {
-      notifyListeners();
-      return;
-    }
-
-    final prefs = await SharedPreferences.getInstance();
-    final jsonList = prefs.getStringList(key);
-
-    if (jsonList != null) {
-      _items.addAll(
-        jsonList.map((e) => ShoppingcartDto.fromJson(jsonDecode(e))),
-      );
-    }
-
-    notifyListeners();
+    await _orderRepository.saveCart(user.userId, _items);
   }
 
   Future<void> clearCart() async {
-    final key = _storageKey;
+    final user = await _authRepository.getCurrentUser();
+    if (user == null) return;
 
     _items.clear();
     notifyListeners();
 
-    if (key == null) return;
-
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.remove(key);
+    await _orderRepository.clearCart(user.userId);
   }
+
 
   int get totalPrice =>
       _items.fold(0, (sum, item) => sum + item.totalPrice);
-
-  @override
-  void dispose() {
-    super.dispose();
-  }
 }
 
