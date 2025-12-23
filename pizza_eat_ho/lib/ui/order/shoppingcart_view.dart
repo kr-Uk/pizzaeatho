@@ -22,17 +22,9 @@ class _ShoppingcartViewState extends State<ShoppingcartView> {
       appBar: AppBar(
         title: const Text('장바구니', style: TextStyle(color: Colors.white)),
         centerTitle: true,
-        backgroundColor: Colors.transparent,
+        backgroundColor: const Color(0xFFB91D2A),
         elevation: 0,
-        flexibleSpace: Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              colors: [Color(0xFFA10505), Color(0xFFB91D2A)],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-          ),
-        ),
+        surfaceTintColor: Colors.transparent,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
           onPressed: () => Navigator.pop(context),
@@ -59,11 +51,11 @@ class _ShoppingcartViewState extends State<ShoppingcartView> {
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xFFCE1933),
+              foregroundColor: Colors.white,
               padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 14.h),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12.r),
               ),
-              side: const BorderSide(color: _christmasGreen, width: 2),
             ),
             child: const Text("지금 주문하기"),
           ),

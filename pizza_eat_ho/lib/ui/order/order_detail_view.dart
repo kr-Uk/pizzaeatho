@@ -97,6 +97,7 @@ class _OrderDetailViewState extends State<OrderDetailView> {
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: redBackground,
+                  foregroundColor: Colors.white,
                   padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 14.h),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12.r),
@@ -162,6 +163,7 @@ class _OrderDetailViewState extends State<OrderDetailView> {
                 const SizedBox(height: 16),
                 _sectionCard(
                   title: "도우",
+                  showTitleBorder: false,
                   child: Column(
                     children: doughs.map((dough) {
                       return RadioListTile<DoughDto>(
@@ -180,6 +182,7 @@ class _OrderDetailViewState extends State<OrderDetailView> {
                 const SizedBox(height: 12),
                 _sectionCard(
                   title: "크러스트",
+                  showTitleBorder: false,
                   child: Column(
                     children: crusts.map((crust) {
                       return RadioListTile<CrustDto>(
@@ -198,6 +201,7 @@ class _OrderDetailViewState extends State<OrderDetailView> {
                 const SizedBox(height: 12),
                 _sectionCard(
                   title: "토핑",
+                  showTitleBorder: false,
                   child: Column(
                     children: toppings.map((topping) {
                       final isChecked = viewModel.selectedToppingIds
@@ -224,7 +228,11 @@ class _OrderDetailViewState extends State<OrderDetailView> {
     );
   }
 
-  Widget _sectionCard({required String title, required Widget child}) {
+  Widget _sectionCard({
+    required String title,
+    required Widget child,
+    bool showTitleBorder = true,
+  }) {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(12),
@@ -247,7 +255,9 @@ class _OrderDetailViewState extends State<OrderDetailView> {
             decoration: BoxDecoration(
               color: redBackground,
               borderRadius: BorderRadius.circular(10),
-              border: Border.all(color: _christmasGreen, width: 2),
+              border: showTitleBorder
+                  ? Border.all(color: _christmasGreen, width: 2)
+                  : null,
             ),
             child: Text(
               title,
