@@ -5,6 +5,9 @@ import 'package:provider/provider.dart';
 
 import 'order_viewmodel.dart';
 
+const Color _christmasGreen = Color(0xFF0F6B3E);
+const Color _snowBackground = Color(0xFFF9F6F1);
+
 class OrderView extends StatefulWidget {
   const OrderView({super.key});
 
@@ -13,35 +16,38 @@ class OrderView extends StatefulWidget {
 }
 
 class _OrderViewState extends State<OrderView> {
-
   @override
   Widget build(BuildContext context) {
     final viewModel = context.watch<OrderViewModel>();
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('주문하기', style: TextStyle(color: Colors.black)),
+        title: const Text('주문', style: TextStyle(color: Colors.white)),
         centerTitle: true,
-        backgroundColor: Colors.white,
-
-        // 앱 바 색이 스크롤 올라가도 안변하게 !
+        backgroundColor: Colors.transparent,
         elevation: 0,
         scrolledUnderElevation: 0,
         surfaceTintColor: Colors.transparent,
-
+        flexibleSpace: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [redBackground, Color(0xFFB91D2A)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+          ),
+        ),
         actions: [
           IconButton(
-            icon: Icon(Icons.shopping_cart_outlined, color: Colors.black),
+            icon: const Icon(Icons.shopping_cart_outlined, color: Colors.white),
             onPressed: () {
-              // 장바구니 페이지 이동
               Navigator.pushNamed(context, "/shoppingcart");
-
             },
           ),
         ],
       ),
-      backgroundColor: greyBackground,
-      body: _buildOrder(viewModel)
+      backgroundColor: _snowBackground,
+      body: _buildOrder(viewModel),
     );
   }
 
@@ -49,51 +55,91 @@ class _OrderViewState extends State<OrderView> {
     final items = viewModel.products;
     final itemCount = items.length;
     return ListView.builder(
-      physics: BouncingScrollPhysics(),
-        scrollDirection: Axis.vertical,
-        itemCount: itemCount,
-        itemBuilder: (_, index) {
-          final item = items[index];
-          return GestureDetector(
-            onTap: () {
-              Navigator.pushNamed(
-                context,
-                '/order_detail',
-                arguments: item,
-              );
-            },
-            child: Container(
-              height: 1000.h,
+      physics: const BouncingScrollPhysics(),
+      padding: const EdgeInsets.all(16),
+      scrollDirection: Axis.vertical,
+      itemCount: itemCount,
+      itemBuilder: (_, index) {
+        final item = items[index];
+        return GestureDetector(
+          onTap: () {
+            Navigator.pushNamed(
+              context,
+              '/order_detail',
+              arguments: item,
+            );
+          },
+          child: Container(
+            margin: const EdgeInsets.only(bottom: 16),
+            decoration: BoxDecoration(
               color: Colors.white,
-              margin: index == itemCount - 1
-                  ? EdgeInsets.symmetric(vertical: 8.0)
-                  : EdgeInsets.only(bottom: 8.0),
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+              borderRadius: BorderRadius.circular(24.r),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.08),
+                  blurRadius: 12,
+                  offset: const Offset(0, 6),
+                ),
+              ],
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Stack(
                   children: [
                     Container(
-                      height: 500.h,
+                      height: 520.h,
                       width: double.infinity,
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(30.r),
+                        borderRadius: BorderRadius.circular(24.r),
                         image: DecorationImage(
                           image: AssetImage(item.image),
                           fit: BoxFit.cover,
                         ),
                       ),
                     ),
-                    SizedBox(height: 40.h),
-                    Text(item.name, style: textProductName),
-                    Text(item.description, style: textProductDescription),
-                    Text("${item.price}원", style: textProductPrice),
+                    Positioned(
+                      left: 12,
+                      top: 12,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 4,
+                        ),
+                        decoration: BoxDecoration(
+                          color: _christmasGreen,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: const Text(
+                          "크리스마스",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
                   ],
                 ),
-              ),
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(item.name, style: textProductName),
+                      const SizedBox(height: 8),
+                      Text(item.description, style: textProductDescription),
+                      const SizedBox(height: 6),
+                      Text("${item.price}", style: textProductPrice),
+                    ],
+                  ),
+                ),
+              ],
             ),
-          );
-        },
+          ),
+        );
+      },
     );
   }
 }

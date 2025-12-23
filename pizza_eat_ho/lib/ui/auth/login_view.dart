@@ -5,6 +5,9 @@ import 'package:provider/provider.dart';
 import 'join_page.dart';
 import 'login_viewmodel.dart';
 
+const Color _christmasGreen = Color(0xFF0F6B3E);
+const Color _snowBackground = Color(0xFFF9F6F1);
+
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
 
@@ -29,94 +32,152 @@ class _LoginViewState extends State<LoginView> {
 
     return Scaffold(
       resizeToAvoidBottomInset: true,
+      backgroundColor: _snowBackground,
       body: SafeArea(
-        child: SingleChildScrollView(
-          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              SizedBox(
-                height: 300,
-                child: Image.asset("assets/ganadi1.png"),
-              ),
-              const SizedBox(height: 16),
-              const SizedBox(height: 24),
-              TextField(
-                controller: _idController,
-                decoration: InputDecoration(
-                  labelText: '아이디',
-                  border: OutlineInputBorder(),
+        child: Stack(
+          children: [
+            Container(
+              height: 220,
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [Color(0xFFA10505), Color(0xFFB91D2A)],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
                 ),
               ),
-              const SizedBox(height: 16),
-              TextField(
-                controller: _pwController,
-                obscureText: true,
-                decoration: InputDecoration(
-                  labelText: '비밀번호',
-                  border: OutlineInputBorder(),
-                ),
-              ),
-              if (viewModel.errorMessage != null) ...[
-                const SizedBox(height: 12),
-                Text(
-                  viewModel.errorMessage!,
-                  style: const TextStyle(color: Colors.red),
-                ),
-              ],
-              const SizedBox(height: 24),
-              SizedBox(
-                height: 48,
-                child: ElevatedButton(
-                  onPressed: viewModel.isLoading
-                      ? null
-                      : () async {
-                          final success = await viewModel.login(
-                            id: _idController.text.trim(),
-                            pw: _pwController.text.trim(),
-                          );
-                          if (success && context.mounted) {
-                            Navigator.of(context)
-                                .popUntil((route) => route.isFirst);
-                          }
-                        },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFFCE1933),
-                    foregroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30.r),
+            ),
+            SingleChildScrollView(
+              keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+              padding: const EdgeInsets.all(24),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  SizedBox(
+                    height: 180,
+                    child: Center(
+                      child: Container(
+                        width: 140,
+                        height: 140,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(color: Colors.white, width: 4),
+                          image: const DecorationImage(
+                            image: AssetImage("assets/ganadi1.png"),
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ),
                     ),
                   ),
-                  child: viewModel.isLoading
-                      ? const SizedBox(
-                          width: 20,
-                          height: 20,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            color: Colors.white,
-                          ),
-                        )
-                      : const Text('로그인 하기'),
-                ),
-              ),
-              const SizedBox(height: 12),
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => const JoinPage(),
+                  const SizedBox(height: 16),
+                  Container(
+                    padding: const EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(24.r),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.08),
+                          blurRadius: 12,
+                          offset: const Offset(0, 6),
+                        ),
+                      ],
                     ),
-                  );
-                },
-                style: TextButton.styleFrom(
-                  foregroundColor: Colors.grey.shade700,
-                ),
-                child: const Text('회원가입'),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        TextField(
+                          controller: _idController,
+                          decoration: InputDecoration(
+                            labelText: '아이디',
+                            border: const OutlineInputBorder(),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide:
+                                  BorderSide(color: _christmasGreen, width: 2),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        TextField(
+                          controller: _pwController,
+                          obscureText: true,
+                          decoration: InputDecoration(
+                            labelText: '비밀번호',
+                            border: const OutlineInputBorder(),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide:
+                                  BorderSide(color: _christmasGreen, width: 2),
+                            ),
+                          ),
+                        ),
+                        if (viewModel.errorMessage != null) ...[
+                          const SizedBox(height: 12),
+                          Text(
+                            viewModel.errorMessage!,
+                            style: const TextStyle(color: Colors.red),
+                          ),
+                        ],
+                        const SizedBox(height: 24),
+                        SizedBox(
+                          height: 52,
+                          child: ElevatedButton(
+                            onPressed: viewModel.isLoading
+                                ? null
+                                : () async {
+                                    final success = await viewModel.login(
+                                      id: _idController.text.trim(),
+                                      pw: _pwController.text.trim(),
+                                    );
+                                    if (success && context.mounted) {
+                                      Navigator.of(context)
+                                          .popUntil((route) => route.isFirst);
+                                    }
+                                  },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xFFCE1933),
+                              foregroundColor: Colors.white,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(30.r),
+                              ),
+                              side: const BorderSide(
+                                color: _christmasGreen,
+                                width: 2,
+                              ),
+                            ),
+                            child: viewModel.isLoading
+                                ? const SizedBox(
+                                    width: 20,
+                                    height: 20,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                      color: Colors.white,
+                                    ),
+                                  )
+                                : const Text('로그인 하기'),
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        TextButton(
+                          onPressed: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => const JoinPage(),
+                              ),
+                            );
+                          },
+                          style: TextButton.styleFrom(
+                            foregroundColor: _christmasGreen,
+                          ),
+                          child: const Text('회원가입'),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                ],
               ),
-              const SizedBox(height: 24),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

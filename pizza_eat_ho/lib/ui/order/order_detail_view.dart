@@ -8,6 +8,9 @@ import '../../data/model/product.dart';
 import '../../data/model/shoppingcart.dart';
 import 'order_detail_viewmodel.dart';
 
+const Color _christmasGreen = Color(0xFF0F6B3E);
+const Color _snowBackground = Color(0xFFF9F6F1);
+
 class OrderDetailView extends StatefulWidget {
   const OrderDetailView({super.key});
 
@@ -16,7 +19,6 @@ class OrderDetailView extends StatefulWidget {
 }
 
 class _OrderDetailViewState extends State<OrderDetailView> {
-
   @override
   Widget build(BuildContext context) {
     final product = ModalRoute.of(context)!.settings.arguments as ProductDto;
@@ -24,28 +26,21 @@ class _OrderDetailViewState extends State<OrderDetailView> {
     final shoppingcartViewModel = context.read<ShoppingcartViewModel>();
 
     return Scaffold(
-      backgroundColor: greyBackground,
+      backgroundColor: _snowBackground,
       extendBodyBehindAppBar: true,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
-
-        // 앱 바 색이 스크롤 올라가도 안변하게 !
         elevation: 0,
         scrolledUnderElevation: 0,
         surfaceTintColor: Colors.transparent,
-
-        // 뒤로가기 아이콘
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios, color: Colors.white),
+          icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
           onPressed: () => Navigator.pop(context),
         ),
-
-        // 장바구니 아이콘
         actions: [
           IconButton(
-            icon: Icon(Icons.shopping_cart_outlined, color: Colors.white),
+            icon: const Icon(Icons.shopping_cart_outlined, color: Colors.white),
             onPressed: () {
-              // 장바구니 페이지 이동
               Navigator.pushNamed(context, "/shoppingcart");
             },
           ),
@@ -59,9 +54,9 @@ class _OrderDetailViewState extends State<OrderDetailView> {
             color: Colors.white,
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(alpha: 0.08),
+                color: Colors.black.withOpacity(0.08),
                 blurRadius: 10,
-                offset: Offset(0, -2),
+                offset: const Offset(0, -2),
               )
             ],
           ),
@@ -72,13 +67,17 @@ class _OrderDetailViewState extends State<OrderDetailView> {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text("총 가격: ${orderDetailViewModel.totalPrice(product.price)}")
+                    Text(
+                      "합계 ${orderDetailViewModel.totalPrice(product.price)}",
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    )
                   ],
                 ),
               ),
               ElevatedButton(
                 onPressed: () async {
-
                   final cartItem = ShoppingcartDto(
                     product: product,
                     dough: orderDetailViewModel.selectedDough!,
@@ -88,8 +87,7 @@ class _OrderDetailViewState extends State<OrderDetailView> {
                     totalPrice: orderDetailViewModel.totalPrice(product.price),
                   );
 
-                  final success =
-                      await shoppingcartViewModel.addItem(cartItem);
+                  final success = await shoppingcartViewModel.addItem(cartItem);
 
                   if (!success) {
                     Navigator.pushNamed(context, "/login");
@@ -98,15 +96,14 @@ class _OrderDetailViewState extends State<OrderDetailView> {
                   }
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.black,
+                  backgroundColor: redBackground,
                   padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 14.h),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12.r),
                   ),
                 ),
-                child: Text("장바구니 담기"),
+                child: const Text("장바구니 담기"),
               )
-
             ],
           ),
         ),
@@ -120,81 +117,148 @@ class _OrderDetailViewState extends State<OrderDetailView> {
     final crusts = viewModel.crusts;
 
     return SingleChildScrollView(
-      physics: BouncingScrollPhysics(),
+      physics: const BouncingScrollPhysics(),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Image.asset(product.image),
-          Text(product.name),
-          Text(product.description),
-          Text("${product.price}원"),
-
-          RadioGroup(
-            groupValue: viewModel.selectedDough,
-            onChanged: (value) {
-              viewModel.selectDough(value!);
-            },
+          Stack(
+            children: [
+              Image.asset(product.image),
+              Container(
+                height: 260.h,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      Colors.black.withOpacity(0.45),
+                      Colors.transparent,
+                    ],
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                  ),
+                ),
+              ),
+              Positioned(
+                left: 16,
+                bottom: 16,
+                child: Text(
+                  product.name,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(height: 20.h),
-                Text("도우"),
-                ...doughs.map((dough) {
-                  return RadioListTile<DoughDto>(
-                    value: dough,
-                    title: Text(dough.name),
-                    secondary: Text("+${dough.price}원"),
-                  );
-                }).toList(),
+                Text(product.description),
+                const SizedBox(height: 8),
+                Text("${product.price}", style: textProductPrice),
+                const SizedBox(height: 16),
+                _sectionCard(
+                  title: "도우",
+                  child: Column(
+                    children: doughs.map((dough) {
+                      return RadioListTile<DoughDto>(
+                        value: dough,
+                        groupValue: viewModel.selectedDough,
+                        title: Text(dough.name),
+                        secondary: Text("+${dough.price}"),
+                        activeColor: _christmasGreen,
+                        onChanged: (value) {
+                          viewModel.selectDough(value!);
+                        },
+                      );
+                    }).toList(),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                _sectionCard(
+                  title: "크러스트",
+                  child: Column(
+                    children: crusts.map((crust) {
+                      return RadioListTile<CrustDto>(
+                        value: crust,
+                        groupValue: viewModel.selectedCrust,
+                        title: Text(crust.name),
+                        secondary: Text("+${crust.price}"),
+                        activeColor: _christmasGreen,
+                        onChanged: (value) {
+                          viewModel.selectCrust(value!);
+                        },
+                      );
+                    }).toList(),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                _sectionCard(
+                  title: "토핑",
+                  child: Column(
+                    children: toppings.map((topping) {
+                      final isChecked = viewModel.selectedToppingIds
+                          .contains(topping.toppingId);
 
+                      return CheckboxListTile(
+                        value: isChecked,
+                        onChanged: (checked) {
+                          viewModel.toggleTopping(topping.toppingId);
+                        },
+                        title: Text(topping.name),
+                        secondary: Text("+${topping.price}"),
+                        controlAffinity: ListTileControlAffinity.leading,
+                        activeColor: _christmasGreen,
+                      );
+                    }).toList(),
+                  ),
+                ),
               ],
             ),
           ),
+        ],
+      ),
+    );
+  }
 
-            RadioGroup(
-              groupValue: viewModel.selectedCrust,
-              onChanged: (value) {
-                viewModel.selectCrust(value!);
-              },
-              child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(height: 20.h),
-                Text("크러스트"),
-                ...crusts.map((crust) {
-                  return RadioListTile<CrustDto>(
-                    value: crust,
-                    title: Text(crust.name),
-                    secondary: Text("+${crust.price}원"),
-                  );
-                }).toList(),
-
-              ],
-                        ),
-            ),
-
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(height: 20.h),
-              Text("토핑"),
-              ...toppings.map((topping) {
-                final isChecked =
-                viewModel.selectedToppingIds.contains(topping.toppingId);
-
-                return CheckboxListTile(
-                  value: isChecked,
-                  onChanged: (checked) {
-                    viewModel.toggleTopping(topping.toppingId);
-                  },
-                  title: Text(topping.name),
-                  secondary: Text("+${topping.price}원"),
-                  controlAffinity: ListTileControlAffinity.leading,
-                );
-              }).toList(),
-            ],
+  Widget _sectionCard({required String title, required Widget child}) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.06),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
           ),
-
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+            decoration: BoxDecoration(
+              color: redBackground,
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(color: _christmasGreen, width: 2),
+            ),
+            child: Text(
+              title,
+              style: const TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+          const SizedBox(height: 8),
+          child,
         ],
       ),
     );

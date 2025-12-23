@@ -1,8 +1,9 @@
-import 'dart:convert';
+﻿import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../util/fcm_service.dart';
 import '../../data/model/order.dart';
 import '../../data/model/shoppingcart.dart';
 import '../../data/repository/order_repository.dart';
@@ -67,6 +68,12 @@ class ShoppingcartViewModel with ChangeNotifier {
     try {
       await _orderRepository.placeOrder(orderRequest);
       await clearCart();
+
+      try {
+        await FcmService.instance.sendOrderReadyPush();
+      } catch (e) {
+        debugPrint('FCM send failed: $e');
+      }
 
       // 주문 성공 메시지 출력
       debugPrint("주문이 성공적으로 완료되었습니다!");

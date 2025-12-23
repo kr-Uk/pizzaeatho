@@ -1,4 +1,5 @@
-﻿import 'package:flutter/material.dart';
+﻿import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pizzaeatho/data/repository/user_repository.dart';
 import 'package:pizzaeatho/splash.dart';
@@ -14,10 +15,17 @@ import 'package:pizzaeatho/ui/order/shoppingcart_view.dart';
 import 'package:pizzaeatho/ui/order/shoppingcart_viewmodel.dart';
 import 'package:pizzaeatho/ui/store/store_finder_view.dart';
 import 'package:pizzaeatho/util/common.dart';
+import 'package:pizzaeatho/util/fcm_service.dart';
 import 'package:provider/provider.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  try {
+    await Firebase.initializeApp();
+    await FcmService.instance.initialize();
+  } catch (e) {
+    debugPrint('FCM init skipped: $e');
+  }
   await UserRepository.restoreSession();
   runApp(
     MultiProvider(

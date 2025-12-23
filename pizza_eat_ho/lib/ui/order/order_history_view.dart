@@ -4,6 +4,9 @@ import 'package:provider/provider.dart';
 
 import 'order_history_viewmodel.dart';
 
+const Color _christmasGreen = Color(0xFF0F6B3E);
+const Color _snowBackground = Color(0xFFF9F6F1);
+
 class OrderHistoryView extends StatelessWidget {
   const OrderHistoryView({super.key});
 
@@ -14,68 +17,98 @@ class OrderHistoryView extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('주문내역', style: TextStyle(color: Colors.black)),
+        title: const Text('주문 내역', style: TextStyle(color: Colors.white)),
         centerTitle: true,
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        flexibleSpace: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Color(0xFFA10505), Color(0xFFB91D2A)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+          ),
+        ),
         actions: [
           IconButton(
-            icon: Icon(Icons.shopping_cart_outlined, color: Colors.black),
+            icon: const Icon(Icons.shopping_cart_outlined, color: Colors.white),
             onPressed: () {
               Navigator.pushNamed(context, "/shoppingcart");
             },
           ),
         ],
       ),
-      backgroundColor: Colors.white,
+      backgroundColor: _snowBackground,
       body: orderHistory.isEmpty
           ? Center(
-        child: Text(
-          "주문 내역이 없습니다.",
-          style: TextStyle(fontSize: 20.sp, color: Colors.grey),
-        ),
-      )
-          : ListView.builder(
-        padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 16.w),
-        itemCount: orderHistory.length,
-        itemBuilder: (_, index) {
-          final order = orderHistory[index];
-          return Container(
-            margin: EdgeInsets.only(bottom: 16.h),
-            padding: EdgeInsets.all(16.w),
-            decoration: BoxDecoration(
-              color: Colors.grey.shade200,
-              borderRadius: BorderRadius.circular(20.r),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "주문 번호: ${order.orderId}",
-                  style: TextStyle(
-                    fontSize: 18.sp,
-                    fontWeight: FontWeight.bold,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  SizedBox(
+                    width: 140.w,
+                    height: 140.w,
+                    child: Image.asset("assets/ganadi1.png"),
                   ),
-                ),
-                SizedBox(height: 8.h),
-                Text(
-                  "주문 시간: ${order.orderTime.toLocal()}",
-                  style: TextStyle(fontSize: 16.sp),
-                ),
-                SizedBox(height: 8.h),
-                Text(
-                  "총 금액: ${order.totalPrice}원",
-                  style: TextStyle(fontSize: 16.sp),
-                ),
-                SizedBox(height: 4.h),
-                Text(
-                  "상태: ${order.status.name}",
-                  style: TextStyle(fontSize: 16.sp),
-                ),
-              ],
+                  const SizedBox(height: 12),
+                  const Text(
+                    "아직 주문 내역이 없어",
+                    style: TextStyle(color: Colors.grey),
+                  ),
+                ],
+              ),
+            )
+          : ListView.builder(
+              padding: EdgeInsets.symmetric(vertical: 16.h, horizontal: 16.w),
+              itemCount: orderHistory.length,
+              itemBuilder: (_, index) {
+                final order = orderHistory[index];
+                return Container(
+                  margin: EdgeInsets.only(bottom: 16.h),
+                  padding: EdgeInsets.all(16.w),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(20.r),
+                    border: Border(
+                      left: BorderSide(color: _christmasGreen, width: 4),
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.08),
+                        blurRadius: 10,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "주문번호 #${order.orderId}",
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      SizedBox(height: 8.h),
+                      Text(
+                        "주문시간: ${order.orderTime.toLocal()}",
+                        style: const TextStyle(fontSize: 12),
+                      ),
+                      SizedBox(height: 8.h),
+                      Text(
+                        "합계: ${order.totalPrice}",
+                        style: const TextStyle(fontSize: 12),
+                      ),
+                      SizedBox(height: 4.h),
+                      Text(
+                        "상태: ${order.status.name}",
+                        style: const TextStyle(fontSize: 12),
+                      ),
+                    ],
+                  ),
+                );
+              },
             ),
-          );
-        },
-      ),
     );
   }
 }

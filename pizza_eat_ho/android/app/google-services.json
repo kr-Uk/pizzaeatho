@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1058341953542",
+    "project_id": "pizzaeatho",
+    "storage_bucket": "pizzaeatho.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1058341953542:android:482b2c5ab72ddde8c82387",
+        "android_client_info": {
+          "package_name": "com.example.pizzaeatho"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD6_ro3otSyCItxLjMAFQr_zdIrH6_JuDc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

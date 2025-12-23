@@ -1,5 +1,7 @@
 ﻿import 'dart:async';
 
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pizzaeatho/data/model/user.dart';
@@ -9,6 +11,9 @@ import 'package:pizzaeatho/util/common.dart';
 import 'package:pizzaeatho/util/openai_chat_service.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
+const Color _christmasGreen = Color(0xFF0F6B3E);
+const Color _snowBackground = Color(0xFFF9F6F1);
+
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
 
@@ -16,10 +21,12 @@ class HomeView extends StatefulWidget {
   State<HomeView> createState() => _HomeViewState();
 }
 
-class _HomeViewState extends State<HomeView> {
+class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin {
   final PageController _controller = PageController();
   final TextEditingController _chatController = TextEditingController();
   final ScrollController _chatScrollController = ScrollController();
+  late final AnimationController _snowController;
+  late final List<_Snowflake> _flakes;
 
   int _currentPage = 0;
   Timer? _timer;
@@ -36,20 +43,60 @@ class _HomeViewState extends State<HomeView> {
 
   final banners = List.generate(
     6,
-    (index) => Container(
-      decoration: BoxDecoration(color: Colors.grey.shade300),
-      child: SizedBox(
-        height: 500.h,
-        child: Center(
-          child: Text("Page $index", style: TextStyle(color: Colors.indigo)),
+    (index) => Stack(
+      children: [
+        Container(
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: const AssetImage("assets/ganadi1.png"),
+              fit: BoxFit.cover,
+              colorFilter: ColorFilter.mode(
+                Colors.black.withOpacity(0.1),
+                BlendMode.darken,
+              ),
+            ),
+          ),
         ),
-      ),
+        Positioned(
+          right: 16,
+          top: 16,
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+            decoration: BoxDecoration(
+              color: Colors.white.withOpacity(0.85),
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: const Text(
+              "연말 추천",
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 12,
+                color: _christmasGreen,
+              ),
+            ),
+          ),
+        ),
+      ],
     ),
   );
 
   @override
   void initState() {
     super.initState();
+
+    _snowController =
+        AnimationController(vsync: this, duration: const Duration(seconds: 12))
+          ..repeat();
+    final random = Random();
+    _flakes = List.generate(80, (_) {
+      return _Snowflake(
+        baseX: random.nextDouble(),
+        baseY: random.nextDouble(),
+        radius: 1.5 + random.nextDouble() * 2.5,
+        speed: 1.0 + random.nextDouble() * 2.0,
+        drift: (random.nextDouble() - 0.5) * 0.4,
+      );
+    });
 
     _timer = Timer.periodic(const Duration(seconds: 5), (timer) {
       _currentPage = (_currentPage + 1) % banners.length;
@@ -83,6 +130,7 @@ class _HomeViewState extends State<HomeView> {
     _beaconService?.dispose();
     _chatController.dispose();
     _chatScrollController.dispose();
+    _snowController.dispose();
     super.dispose();
   }
 
@@ -207,31 +255,47 @@ class _HomeViewState extends State<HomeView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Pizza잇호!', style: TextStyle(color: Colors.white)),
-        backgroundColor: redBackground,
+        title: const Text('Pizza잇호!', style: TextStyle(color: Colors.white)),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        flexibleSpace: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [redBackground, Color(0xFFB91D2A)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+          ),
+        ),
         actions: [
           IconButton(
-            icon: Icon(Icons.shopping_cart_outlined, color: Colors.white),
+            icon: const Icon(Icons.shopping_cart_outlined, color: Colors.white),
             onPressed: () {
               Navigator.pushNamed(context, "/shoppingcart");
             },
           ),
         ],
       ),
-      backgroundColor: Colors.white,
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
+      backgroundColor: _snowBackground,
+      body: Stack(
+        children: [
+          SingleChildScrollView(
+            child: Column(
+              children: [
             Container(
               decoration: BoxDecoration(
-                color: redBackground,
+                gradient: const LinearGradient(
+                  colors: [redBackground, Color(0xFFB91D2A)],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
                 borderRadius: BorderRadius.only(
                   bottomLeft: Radius.circular(30.r),
                   bottomRight: Radius.circular(30.r),
                 ),
               ),
               child: Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: const EdgeInsets.all(16.0),
                 child: Column(
                   children: [
                     Stack(
@@ -240,7 +304,7 @@ class _HomeViewState extends State<HomeView> {
                         SizedBox(
                           height: 500.h,
                           child: ClipRRect(
-                            borderRadius: .circular(30.r),
+                            borderRadius: BorderRadius.circular(30.r),
                             child: PageView.builder(
                               controller: _controller,
                               onPageChanged: (index) {
@@ -258,7 +322,7 @@ class _HomeViewState extends State<HomeView> {
                             controller: _controller,
                             count: banners.length,
                             effect: ScrollingDotsEffect(
-                              activeDotColor: redBackground,
+                              activeDotColor: Colors.white,
                               activeStrokeWidth: 2.6,
                               activeDotScale: 1.3,
                               maxVisibleDots: 5,
@@ -271,7 +335,7 @@ class _HomeViewState extends State<HomeView> {
                         ),
                       ],
                     ),
-                    SizedBox(height: 60.h),
+                    SizedBox(height: 40.h),
                     ValueListenableBuilder<UserLoginResponseDto?>(
                       valueListenable: UserRepository.currentUser,
                       builder: (context, user, _) {
@@ -286,9 +350,8 @@ class _HomeViewState extends State<HomeView> {
                           },
                           child: Container(
                             decoration: BoxDecoration(
-                              color: redBackground,
-                              border:
-                                  Border.all(color: Colors.white, width: 4.w),
+                              color: Colors.white.withOpacity(0.12),
+                              border: Border.all(color: Colors.white, width: 2.w),
                               borderRadius: BorderRadius.circular(30.r),
                             ),
                             width: double.infinity,
@@ -304,7 +367,7 @@ class _HomeViewState extends State<HomeView> {
                                   ),
                                   SizedBox(width: 10.w),
                                   Text(
-                                    isLoggedIn ? "LOG OUT" : "LOG IN",
+                                    isLoggedIn ? "로그아웃" : "로그인",
                                     style: TextStyle(
                                       color: Colors.white,
                                       fontSize: 80.sp,
@@ -340,44 +403,46 @@ class _HomeViewState extends State<HomeView> {
                 ),
               ),
             ),
-            SizedBox(height: 20.h),
-            Container(
-              height: 70.h,
-              width: 300.w,
-              decoration: BoxDecoration(
-                color: redBackground,
-                borderRadius: .circular(100.r),
-              ),
-              child: Center(
-                child:
-                    Text("최근 주문 내역", style: TextStyle(color: Colors.white)),
-              ),
-            ),
+            SizedBox(height: 24.h),
+            _buildSectionTitle("최근 주문 내역"),
             SizedBox(height: 20.h),
             SizedBox(
-              height: 600.h,
+              height: 620.h,
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
                 itemCount: 10,
                 itemBuilder: (_, index) {
                   return Container(
-                    width: 300.w,
+                    width: 340.w,
                     margin: index == 9
-                        ? EdgeInsets.symmetric(horizontal: 8.0)
-                        : EdgeInsets.only(left: 8.0),
+                        ? const EdgeInsets.symmetric(horizontal: 12.0)
+                        : const EdgeInsets.only(left: 12.0),
                     child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Container(
-                          height: 300.w,
-                          decoration: BoxDecoration(
-                            color: Colors.blue,
-                            borderRadius: .circular(30.r),
+                        Expanded(
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(24.r),
+                              image: const DecorationImage(
+                                image: AssetImage("assets/ganadi1.png"),
+                                fit: BoxFit.cover,
+                              ),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.08),
+                                  blurRadius: 12,
+                                  offset: const Offset(0, 6),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
-                        SizedBox(height: 20.h),
-                        Text("피자 $index"),
-                        SizedBox(height: 20.h),
-                        Text("가격: 3000원"),
+                        SizedBox(height: 16.h),
+                        const Text("시그니처 피자"),
+                        SizedBox(height: 6.h),
+                        const Text("가격: 3000"),
                       ],
                     ),
                   );
@@ -385,50 +450,68 @@ class _HomeViewState extends State<HomeView> {
               ),
             ),
             SizedBox(height: 20.h),
-            Container(
-              height: 70.h,
-              width: 300.w,
-              decoration: BoxDecoration(
-                color: redBackground,
-                borderRadius: .circular(100.r),
-              ),
-              child: Center(
-                child: Text("인기 메뉴", style: TextStyle(color: Colors.white)),
-              ),
-            ),
+            _buildSectionTitle("인기 메뉴"),
             SizedBox(height: 20.h),
             SizedBox(
-              height: 600.h,
+              height: 620.h,
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
                 itemCount: 10,
                 itemBuilder: (_, index) {
                   return Container(
-                    width: 300.w,
+                    width: 340.w,
                     margin: index == 9
-                        ? EdgeInsets.symmetric(horizontal: 8.0)
-                        : EdgeInsets.only(left: 8.0),
+                        ? const EdgeInsets.symmetric(horizontal: 12.0)
+                        : const EdgeInsets.only(left: 12.0),
                     child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Container(
-                          height: 300.w,
-                          decoration: BoxDecoration(
-                            color: Colors.green,
-                            borderRadius: .circular(30.r),
+                        Expanded(
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(24.r),
+                              image: const DecorationImage(
+                                image: AssetImage("assets/ganadi1.png"),
+                                fit: BoxFit.cover,
+                              ),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.08),
+                                  blurRadius: 12,
+                                  offset: const Offset(0, 6),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
-                        SizedBox(height: 20.h),
-                        Text("피자 $index"),
-                        SizedBox(height: 20.h),
-                        Text("가격: 3000원"),
+                        SizedBox(height: 16.h),
+                        const Text("베스트 피자"),
+                        SizedBox(height: 6.h),
+                        const Text("가격: 3000"),
                       ],
                     ),
                   );
                 },
               ),
             ),
-          ],
+              SizedBox(height: 24.h),
+            ],
+          ),
         ),
+          Positioned.fill(
+            child: IgnorePointer(
+              child: AnimatedBuilder(
+                animation: _snowController,
+                builder: (context, _) {
+                  return CustomPaint(
+                    painter: _SnowPainter(_flakes, _snowController.value),
+                  );
+                },
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -451,13 +534,26 @@ class _HomeViewState extends State<HomeView> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'AI 토핑 추천',
-            style: TextStyle(
-              fontSize: 40.sp,
-              fontWeight: FontWeight.bold,
-              color: redBackground,
-            ),
+          Row(
+            children: [
+              Container(
+                width: 8,
+                height: 24,
+                decoration: BoxDecoration(
+                  color: _christmasGreen,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+              const SizedBox(width: 8),
+              Text(
+                'AI 토핑 추천',
+                style: TextStyle(
+                  fontSize: 40.sp,
+                  fontWeight: FontWeight.bold,
+                  color: redBackground,
+                ),
+              ),
+            ],
           ),
           SizedBox(height: 16.h),
           SizedBox(
@@ -476,7 +572,7 @@ class _HomeViewState extends State<HomeView> {
                     padding: const EdgeInsets.all(12),
                     constraints: BoxConstraints(maxWidth: 700.w),
                     decoration: BoxDecoration(
-                      color: isUser ? redBackground : Colors.grey.shade200,
+                      color: isUser ? redBackground : _snowBackground,
                       borderRadius: BorderRadius.circular(12.r),
                     ),
                     child: Text(
@@ -498,7 +594,7 @@ class _HomeViewState extends State<HomeView> {
                 child: TextField(
                   controller: _chatController,
                   decoration: const InputDecoration(
-                    hintText: '원하는 토핑 취향을 말해주세요.',
+                    hintText: '메시지를 입력하세요.',
                     border: OutlineInputBorder(),
                   ),
                   onSubmitted: (_) => _sendChatMessage(),
@@ -531,6 +627,38 @@ class _HomeViewState extends State<HomeView> {
       ),
     );
   }
+
+  Widget _buildSectionTitle(String title) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+            decoration: BoxDecoration(
+              color: redBackground,
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(color: _christmasGreen, width: 2),
+            ),
+            child: Text(
+              title,
+              style: const TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Container(
+              height: 2,
+              color: _christmasGreen.withOpacity(0.3),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }
 
 class _ChatMessage {
@@ -541,4 +669,43 @@ class _ChatMessage {
 
   final String role;
   final String content;
+}
+
+class _Snowflake {
+  const _Snowflake({
+    required this.baseX,
+    required this.baseY,
+    required this.radius,
+    required this.speed,
+    required this.drift,
+  });
+
+  final double baseX;
+  final double baseY;
+  final double radius;
+  final double speed;
+  final double drift;
+}
+
+class _SnowPainter extends CustomPainter {
+  _SnowPainter(this.flakes, this.progress);
+
+  final List<_Snowflake> flakes;
+  final double progress;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    if (size.width == 0 || size.height == 0) return;
+    final paint = Paint()..color = Colors.white.withOpacity(0.75);
+    for (final flake in flakes) {
+      final x = (flake.baseX + progress * flake.drift) * size.width % size.width;
+      final y = (flake.baseY + progress * flake.speed) * size.height % size.height;
+      canvas.drawCircle(Offset(x, y), flake.radius, paint);
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant _SnowPainter oldDelegate) {
+    return oldDelegate.progress != progress || oldDelegate.flakes != flakes;
+  }
 }
