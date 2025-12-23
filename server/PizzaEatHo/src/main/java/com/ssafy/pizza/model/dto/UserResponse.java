@@ -4,15 +4,15 @@ public class UserResponse {
     private Integer userId;
     private String id;
     private String name;
-    private Integer stamp;
+    private Integer payment;
 
     public UserResponse() {}
 
-    public UserResponse(Integer userId, String id, String name, Integer stamp) {
+    public UserResponse(Integer userId, String id, String name, Integer payment) {
         this.userId = userId;
         this.id = id;
         this.name = name;
-        this.stamp = stamp;
+        this.payment = payment;
     }
 
     public Integer getUserId() {
@@ -39,12 +39,12 @@ public class UserResponse {
         this.name = name;
     }
 
-    public Integer getStamp() {
-        return stamp;
+    public Integer getPayment() {
+        return payment;
     }
 
-    public void setStamp(Integer stamp) {
-        this.stamp = stamp;
+    public void setPayment(Integer payment) {
+        this.payment = payment;
     }
 }
 

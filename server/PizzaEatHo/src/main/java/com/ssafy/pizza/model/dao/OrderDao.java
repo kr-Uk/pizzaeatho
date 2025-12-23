@@ -16,10 +16,12 @@ public interface OrderDao {
 
     List<OrderListItem> selectByUser(@Param("userId") Integer userId);
 
-    OrderDetailView selectOrderDetailView(@Param("orderId") Integer orderId);
+    List<OrderDetailView> selectOrderDetailView(@Param("orderId") Integer orderId);
 
     List<OrderToppingInfo> selectToppingsByOrderDetail(@Param("orderDetailId") Integer orderDetailId);
 
-    List<OrderListItem> selectRecent6Months();
+    List<OrderListItem> selectRecent6MonthsByUser(@Param("userId") Integer userId);
+
+    List<OrderListItem> selectByUserNotDone(@Param("userId") Integer userId);
 }
 

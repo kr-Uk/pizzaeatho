@@ -10,5 +10,7 @@ public interface UserDao {
     User selectByCredentials(@Param("id") String id, @Param("pw") String pw);
 
     User selectByUserId(@Param("userId") Integer userId);
+
+    int countById(@Param("id") String id);
 }
 
