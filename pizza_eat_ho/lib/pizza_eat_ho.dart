@@ -47,7 +47,7 @@ class MyApp extends StatelessWidget {
               '/order_detail': (context) => OrderDetailPage(),
               '/login' : (context) => LoginView(),
               '/join' : (context) => JoinView(),
-              '/store' : (context) => StoreFinderView()
+              '/store' : (context) => StoreFinderView(),
             },
           );
         },

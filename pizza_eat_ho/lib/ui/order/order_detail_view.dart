@@ -19,6 +19,8 @@ class OrderDetailView extends StatefulWidget {
 }
 
 class _OrderDetailViewState extends State<OrderDetailView> {
+  final BASE_URL = "http://${IP_PORT}/imgs/pizza/";
+
   @override
   Widget build(BuildContext context) {
     final product = ModalRoute.of(context)!.settings.arguments as ProductDto;
@@ -124,7 +126,17 @@ class _OrderDetailViewState extends State<OrderDetailView> {
         children: [
           Stack(
             children: [
-              Image.asset(product.image),
+              Container(
+                height: 800.h,
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(24.r),
+                  image: DecorationImage(
+                    image: NetworkImage("${BASE_URL}${product.image}"),
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
               Container(
                 height: 260.h,
                 decoration: BoxDecoration(

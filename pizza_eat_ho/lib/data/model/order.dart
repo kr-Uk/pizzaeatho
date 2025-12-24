@@ -1,3 +1,5 @@
+import 'package:pizzaeatho/data/model/product.dart';
+
 import 'enums.dart';
 
 class OrderCreateToppingReqDto {
@@ -143,6 +145,27 @@ class OrderDetailResponseDto {
   }
 }
 
+// 주문 내역 상세 조회
+class OrderHistoryDetailDto {
+  final int orderId;
+  final ProductDto product;
+  final String dough;
+  final String crust;
+  final List<OrderDetailToppingDto> toppings;
+  final int unitPrice;
+  final OrderStatus status;
+
+  OrderHistoryDetailDto({
+    required this.orderId,
+    required this.product,
+    required this.dough,
+    required this.crust,
+    required this.toppings,
+    required this.unitPrice,
+    required this.status,
+  });
+}
+
 // 주문 상태 변경 요청 (관리자)
 class OrderStatusPatchRequestDto {
   final OrderStatus status;
@@ -171,3 +194,21 @@ class OrderStatusPatchResponseDto {
     );
   }
 }
+
+class OrderHistoryDto {
+  final int orderId;
+  final List<ProductDto> products;
+  final DateTime orderTime;
+  final OrderStatus status;
+  final int totalPrice;
+
+  OrderHistoryDto({
+    required this.orderId,
+    required this.products,
+    required this.orderTime,
+    required this.status,
+    required this.totalPrice,
+  });
+}
+
+

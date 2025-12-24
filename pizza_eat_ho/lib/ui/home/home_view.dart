@@ -227,6 +227,9 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
 
     final user = authViewModel.user;
     bool isLoggedIn = authViewModel.isLoggedIn;
+    final BASE_URL = "http://${IP_PORT}/imgs/pizza/";
+    final orderList = homeViewModel.orderHistory;
+    final orderListCount = orderList.length;
 
     return Scaffold(
       appBar: AppBar(
@@ -421,10 +424,11 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
               height: 620.h,
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
-                itemCount: 10,
+                itemCount: orderListCount,
                 itemBuilder: (_, index) {
+                  final item = orderList[index];
                   return Container(
-                    width: 340.w,
+                    width: 400.w,
                     margin: index == 9
                         ? const EdgeInsets.symmetric(horizontal: 12.0)
                         : const EdgeInsets.only(left: 12.0),
@@ -436,8 +440,8 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
                             decoration: BoxDecoration(
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(30.r),
-                              image: const DecorationImage(
-                                image: AssetImage("assets/ganadi1.png"),
+                              image: DecorationImage(
+                                image: NetworkImage("${BASE_URL}${item.products[0].image}"),
                                 fit: BoxFit.cover,
                               ),
                               boxShadow: [
@@ -451,9 +455,9 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
                           ),
                         ),
                         SizedBox(height: 16.h),
-                        const Text("시그니처 피자"),
+                        Text(item.products.length == 1 ? "${item.products[0].name}" : "${item.products[0].name} 외${item.products.length-1}건"),
                         SizedBox(height: 6.h),
-                        const Text("가격: 3000"),
+                        Text("${item.totalPrice}원"),
                       ],
                     ),
                   );
@@ -652,6 +656,7 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
     bool showAccentLine = false,
   }) {
     final accentColor = showAccent ? _christmasGreen : Colors.transparent;
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Row(

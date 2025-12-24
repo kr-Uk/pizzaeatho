@@ -4,6 +4,8 @@ import 'package:pizzaeatho/ui/auth/auth_viewmodel.dart';
 import 'package:pizzaeatho/ui/order/shoppingcart_viewmodel.dart';
 import 'package:provider/provider.dart';
 
+import '../../util/common.dart';
+
 const Color _snowBackground = Color(0xFFF9F6F1);
 
 class ShoppingcartView extends StatefulWidget {
@@ -108,6 +110,7 @@ class _ShoppingcartViewState extends State<ShoppingcartView> {
 
     final items = shoppingcartViewModel.items;
     final itemCount = items.length;
+    final BASE_URL = "http://${IP_PORT}/imgs/pizza/";
     if (itemCount == 0) {
       return Center(
         child: Column(
@@ -169,12 +172,13 @@ class _ShoppingcartViewState extends State<ShoppingcartView> {
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(20.r),
                     image: DecorationImage(
-                      image: AssetImage(item.product.image),
+                      image: NetworkImage("${BASE_URL}${item.product.image}"),
                       fit: BoxFit.cover,
                     ),
                   ),
                 ),
                 SizedBox(height: 12.h),
+                Text('${item.product.name}'),
                 Text('도우 : ${item.dough.name}'),
                 Text('크러스트 : ${item.crust.name}'),
                 Row(
