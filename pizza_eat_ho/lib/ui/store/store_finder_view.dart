@@ -1,6 +1,8 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:pizzaeatho/util/common.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 const Color _christmasGreen = Color(0xFF0F6B3E);
 const Color _snowBackground = Color(0xFFF9F6F1);
@@ -15,6 +17,53 @@ class StoreFinderView extends StatefulWidget {
 class _StoreFinderViewState extends State<StoreFinderView> {
   static const LatLng _storeLatLng =
       LatLng(36.10746037637633, 128.41975271701813);
+  static const String _storeName = '피짜잇호 매장';
+  static const String _storePhone = '054-000-0000';
+
+  Future<void> _openDirections() async {
+    try {
+      final appUri = Uri.parse(
+        'nmap://route/public?dlat=${_storeLatLng.latitude}&dlng=${_storeLatLng.longitude}&dname=${Uri.encodeComponent(_storeName)}&appname=pizzaeatho',
+      );
+      final launched =
+          await launchUrl(appUri, mode: LaunchMode.externalApplication);
+      if (!launched) {
+        final webUri = Uri.parse(
+          'https://map.naver.com/v5/search/${Uri.encodeComponent(_storeName)}',
+        );
+        final webLaunched =
+            await launchUrl(webUri, mode: LaunchMode.externalApplication);
+        if (!webLaunched && mounted) {
+          _showSnack('길찾기를 열 수 없습니다.');
+        }
+      }
+    } on PlatformException {
+      if (mounted) {
+        _showSnack('앱을 재시작한 뒤 다시 시도해주세요.');
+      }
+    }
+  }
+
+  Future<void> _callStore() async {
+    try {
+      final uri = Uri(scheme: 'tel', path: _storePhone);
+      final launched =
+          await launchUrl(uri, mode: LaunchMode.externalApplication);
+      if (!launched && mounted) {
+        _showSnack('전화 앱을 열 수 없습니다.');
+      }
+    } on PlatformException {
+      if (mounted) {
+        _showSnack('앱을 재시작한 뒤 다시 시도해주세요.');
+      }
+    }
+  }
+
+  void _showSnack(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message)),
+    );
+  }
 
   void _showStoreDialog() {
     showDialog<void>(
@@ -76,21 +125,52 @@ class _StoreFinderViewState extends State<StoreFinderView> {
                 _buildInfoRow(
                   icon: Icons.call,
                   label: '전화',
-                  value: '054-000-0000',
+                  value: _storePhone,
                 ),
                 const SizedBox(height: 20),
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: () => Navigator.of(context).pop(),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: redBackground,
-                      foregroundColor: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(14),
+                Row(
+                  children: [
+                    Expanded(
+                      child: OutlinedButton(
+                        onPressed: _openDirections,
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: redBackground,
+                          side: const BorderSide(
+                            color: redBackground,
+                            width: 1.4,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(14),
+                          ),
+                        ),
+                        child: const Text('길찾기'),
                       ),
                     ),
-                    child: const Text('확인'),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: _callStore,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: redBackground,
+                          foregroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(14),
+                          ),
+                        ),
+                        child: const Text('전화하기'),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                SizedBox(
+                  width: double.infinity,
+                  child: TextButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    style: TextButton.styleFrom(
+                      foregroundColor: Colors.black54,
+                    ),
+                    child: const Text('닫기'),
                   ),
                 ),
               ],
