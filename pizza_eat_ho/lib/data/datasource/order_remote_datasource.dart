@@ -1,91 +1,106 @@
 import 'dart:convert';
 
+import 'package:http/http.dart' as http;
 import 'package:pizzaeatho/data/model/order.dart';
 import 'package:pizzaeatho/data/model/product.dart';
 import 'package:pizzaeatho/data/model/user.dart';
 
+import '../../util/common.dart';
+
 class OrderRemoteDataSource {
+  final String END_POINT = "pizza/order";
 
+  /* 주문하기 */
   // POST /pizza/order (List<OrderCreateRequestDto> -> OrderCreateResponseDto)
-  Future<OrderCreateResponseDto> placeOrder(List<OrderCreateRequestDto> orderRequest) async {
-    final server = """
-        {
-          "orderId": 10,
-          "status": "RECEIVED"
-        }
-    """;
+  Future<OrderCreateResponseDto> placeOrder(List<OrderCreateRequestDto> request) async {
+    final url = Uri.http(IP_PORT, "${END_POINT}");
 
-    final Map<String, dynamic> jsonMap = jsonDecode(server);
-    final order = OrderCreateResponseDto.fromJson(jsonMap);
-    return order;
+    final response = await http.post(
+      url,
+      // json 형식이라고 알려줘야 함
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      // DTO -> map -> json string
+      body: jsonEncode(
+        request.map((e) => e.toJson()).toList(),
+      ),
+    );
+
+    // 실패시
+    if (response.statusCode != 200) {
+      print(response.statusCode);
+      throw Exception('주문생성 실패');
+    }
+
+    // json은 request.body에 json String -> map
+    final Map<String, dynamic> json =
+    jsonDecode(response.body) as Map<String, dynamic>;
+
+    // map -> DTO
+    return OrderCreateResponseDto.fromJson(json);
   }
 
+  /* 주문현황 */
   // GET /pizza/order/user/{userId} (-> List<UserOrderListItemDto>)
   Future<List<UserOrderListItemDto>> getOrderHistory(int userId) async {
-    final server = """
-    [
-      {
-        "orderId": 10,
-        "orderTime": "2025-09-19T12:30:00",
-        "status": "COOKING",
-        "totalPrice": 12700
-      }
-    ]
-  """;
+    final url = Uri.http(IP_PORT, "${END_POINT}/user/${userId}");
 
-    final List<dynamic> jsonList = jsonDecode(server);
+    final response = await http.get(url);
 
+    // 실패시
+    if (response.statusCode != 200) {
+      print(response.statusCode);
+      throw Exception('주문현황 실패');
+    }
+
+    // json String -> Map의 List로
+    final List<dynamic> jsonList = jsonDecode(response.body);
+    // 각각 Map을 Dto로 변환 후 List로 묶기
     final orderHistory = jsonList
-        .map((e) => UserOrderListItemDto.fromJson(e as Map<String, dynamic>))
-        .toList();
+      .map((e) => UserOrderListItemDto.fromJson(e as Map<String, dynamic>))
+      .toList();
 
     return orderHistory;
-
   }
 
+  /* 주문 상세 */
   // GET /pizza/order/{orderId} (-> List<UserOrderListItemDto>)
   Future<List<OrderDetailResponseDto>> getOrderDetail(int orderId) async {
-    final server = """
-    [
-{
-  "orderId": 10,
-  "product": "불고기 피자",
-  "dough": "오리지널",
-  "crust": "치즈 크러스트",
-  "toppings": [
-    { "name": "불고기", "quantity": 1 },
-    { "name": "올리브", "quantity": 1 }
-  ],
-  "unitPrice": 12700,
-  "status": "DONE"
-}
-]
-  """;
+    final url = Uri.http(IP_PORT, "${END_POINT}/${orderId}");
 
-    final List<dynamic> jsonList = jsonDecode(server);
+    final response = await http.get(url);
 
+    // 실패시
+    if (response.statusCode != 200) {
+      throw Exception('주문생성 실패');
+    }
+
+    // json String -> Map의 List로
+    final List<dynamic> jsonList = jsonDecode(response.body);
+    // 각각 Map을 Dto로 변환 후 List로 묶기
     final orderDetail = jsonList
-        .map((e) => OrderDetailResponseDto.fromJson(e as Map<String, dynamic>))
-        .toList();
+      .map((e) => OrderDetailResponseDto.fromJson(e as Map<String, dynamic>))
+      .toList();
 
     return orderDetail;
   }
+  /* 주문 상세 */
 
   // GET /pizza/order/user/{userId}/recent6months (-> List<UserOrderListItemDto>)
   Future<List<UserOrderListItemDto>> getOrderHistoryRecent(int userId) async {
-    final server = """
-    [
-      {
-        "orderId": 10,
-        "orderTime": "2025-09-19T12:30:00",
-        "status": "COOKING",
-        "totalPrice": 12700
-      }
-    ]
-  """;
+    final url = Uri.http(IP_PORT, "${END_POINT}/user/${userId}/recent6months");
 
-    final List<dynamic> jsonList = jsonDecode(server);
+    final response = await http.get(url);
 
+    // 실패시
+    if (response.statusCode != 200) {
+      throw Exception('최근 주문현황 실패');
+    }
+
+    // json String -> Map의 List로
+    final List<dynamic> jsonList = jsonDecode(response.body);
+    // 각각 Map을 Dto로 변환 후 List로 묶기
     final orderHistory = jsonList
         .map((e) => UserOrderListItemDto.fromJson(e as Map<String, dynamic>))
         .toList();
@@ -93,26 +108,25 @@ class OrderRemoteDataSource {
     return orderHistory;
   }
 
+  /* DONE이 아닌 Status */
   // GET /pizza/order/user/{userId}/status (-> List<UserOrderListItemDto>)
   Future<List<UserOrderListItemDto>> getUserOrderStatus(int userId) async {
-    final server = """
-    [
-      {
-        "orderId": 10,
-        "orderTime": "2025-09-19T12:30:00",
-        "status": "COOKING",
-        "totalPrice": 12700
-      }
-    ]
-  """;
+    final url = Uri.http(IP_PORT, "${END_POINT}/user/${userId}/status");
 
-    final List<dynamic> jsonList = jsonDecode(server);
+    final response = await http.get(url);
 
+    // 실패시
+    if (response.statusCode != 200) {
+      throw Exception('DONE이 아닌 주문현황 실패');
+    }
+
+    // json String -> Map의 List로
+    final List<dynamic> jsonList = jsonDecode(response.body);
+    // 각각 Map을 Dto로 변환 후 List로 묶기
     final orderHistory = jsonList
         .map((e) => UserOrderListItemDto.fromJson(e as Map<String, dynamic>))
         .toList();
 
     return orderHistory;
   }
-
 }
