@@ -1,6 +1,8 @@
 package com.ssafy.pizza.model.dto;
 
 public class CommentInfo {
+    private Integer commentId;
+    private Integer userId;
     private String userName;
     private Integer rating;
     private String comment;
@@ -41,5 +43,20 @@ public class CommentInfo {
     public void setCreatedAt(String createdAt) {
         this.createdAt = createdAt;
     }
-}
 
+    public Integer getCommentId() {
+        return commentId;
+    }
+
+    public void setCommentId(Integer commentId) {
+        this.commentId = commentId;
+    }
+
+    public Integer getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Integer userId) {
+        this.userId = userId;
+    }
+}

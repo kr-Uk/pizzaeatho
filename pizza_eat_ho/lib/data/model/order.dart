@@ -24,6 +24,7 @@ class OrderCreateRequestDto {
   final int crustId;
   final List<OrderCreateToppingReqDto> toppings;
   final int unitPrice;
+  final String? fcmToken;
 
   OrderCreateRequestDto({
     required this.userId,
@@ -33,17 +34,24 @@ class OrderCreateRequestDto {
     required this.crustId,
     required this.toppings,
     required this.unitPrice,
+    this.fcmToken,
   });
 
-  Map<String, dynamic> toJson() => {
-    'userId': userId,
-    'userName': userName,
-    'productId': productId,
-    'doughId': doughId,
-    'crustId': crustId,
-    'toppings': toppings.map((e) => e.toJson()).toList(),
-    'unitPrice': unitPrice,
-  };
+  Map<String, dynamic> toJson() {
+    final json = <String, dynamic>{
+      'userId': userId,
+      'userName': userName,
+      'productId': productId,
+      'doughId': doughId,
+      'crustId': crustId,
+      'toppings': toppings.map((e) => e.toJson()).toList(),
+      'unitPrice': unitPrice,
+    };
+    if (fcmToken != null && fcmToken!.isNotEmpty) {
+      json['fcmToken'] = fcmToken;
+    }
+    return json;
+  }
 }
 
 // 주문 넣기 응답

@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:http/http.dart' as http;
 
 import 'fcm_config.dart';
@@ -12,6 +13,9 @@ class FcmService {
   static final FcmService instance = FcmService._();
 
   String? _token;
+  final FlutterLocalNotificationsPlugin _localNotifications =
+      FlutterLocalNotificationsPlugin();
+  bool _localNotificationsInitialized = false;
 
   String? get token => _token;
 
@@ -27,7 +31,54 @@ class FcmService {
 
     FirebaseMessaging.onMessage.listen((message) {
       debugPrint('FCM message: ${message.messageId}');
+      _showForegroundNotification(message);
     });
+  }
+
+  Future<String?> ensureToken() async {
+    if (_token != null && _token!.isNotEmpty) {
+      return _token;
+    }
+    _token = await FirebaseMessaging.instance.getToken();
+    debugPrint('FCM token: $_token');
+    return _token;
+  }
+
+  Future<void> _showForegroundNotification(RemoteMessage message) async {
+    await _ensureLocalNotificationsInitialized();
+
+    final notification = message.notification;
+    if (notification == null) {
+      return;
+    }
+
+    const androidDetails = AndroidNotificationDetails(
+      'order_updates',
+      'Order Updates',
+      channelDescription: 'Notifications for order updates',
+      importance: Importance.max,
+      priority: Priority.high,
+    );
+
+    const notificationDetails = NotificationDetails(android: androidDetails);
+
+    await _localNotifications.show(
+      notification.hashCode,
+      notification.title,
+      notification.body,
+      notificationDetails,
+    );
+  }
+
+  Future<void> _ensureLocalNotificationsInitialized() async {
+    if (_localNotificationsInitialized) {
+      return;
+    }
+
+    const androidSettings = AndroidInitializationSettings('@mipmap/ic_launcher');
+    const initSettings = InitializationSettings(android: androidSettings);
+    await _localNotifications.initialize(initSettings);
+    _localNotificationsInitialized = true;
   }
 
   Future<void> sendOrderReadyPush({String? orderId}) async {

@@ -12,8 +12,8 @@ class ProductRepository {
   }
 
   // 피자 기본 토핑 갖고오기
-  Future<DefaultTopping> getDefaultToppings() {
-    return _remoteDataSource.getDefaultToppings();
+  Future<DefaultTopping> getDefaultToppings(int productId) {
+    return _remoteDataSource.getDefaultToppings(productId);
   }
 
   // 토핑 목록 갖고오기

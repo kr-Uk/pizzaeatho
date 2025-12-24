@@ -6,6 +6,7 @@ public class Order {
     private String orderTable;
     private java.util.Date orderTime;
     private String status;
+    private String fcmToken;
     
 
     public Order(Integer orderId, Integer userId, String orderTable, java.util.Date orderTime, String status) {
@@ -58,18 +59,26 @@ public class Order {
 		this.orderTime = orderTime;
 	}
 
-	public String getStatus() {
-		return status;
-	}
+    public String getStatus() {
+        return status;
+    }
 
-	public void setStatus(String status) {
-		this.status = status;
-	}
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getFcmToken() {
+        return fcmToken;
+    }
+
+    public void setFcmToken(String fcmToken) {
+        this.fcmToken = fcmToken;
+    }
 
 	@Override
 	public String toString() {
 		return "Order [orderId=" + orderId + ", userId=" + userId + ", orderTable=" + orderTable + ", orderTime="
-				+ orderTime + ", status=" + status + "]";
+				+ orderTime + ", status=" + status + ", fcmToken=" + fcmToken + "]";
 	}
     
     

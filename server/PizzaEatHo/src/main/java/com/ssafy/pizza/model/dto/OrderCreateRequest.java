@@ -10,6 +10,7 @@ public class OrderCreateRequest {
     private Integer crustId;
     private List<OrderToppingRequest> toppings;
     private Integer unitPrice;
+    private String fcmToken;
 
     public OrderCreateRequest() {}
 
@@ -67,6 +68,14 @@ public class OrderCreateRequest {
 
     public void setUnitPrice(Integer unitPrice) {
         this.unitPrice = unitPrice;
+    }
+
+    public String getFcmToken() {
+        return fcmToken;
+    }
+
+    public void setFcmToken(String fcmToken) {
+        this.fcmToken = fcmToken;
     }
 }
 

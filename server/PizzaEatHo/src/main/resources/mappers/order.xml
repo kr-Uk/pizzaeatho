@@ -5,8 +5,8 @@
 <mapper namespace="com.ssafy.pizza.model.dao.OrderDao">
 
     <insert id="insertOrder" parameterType="Order" useGeneratedKeys="true" keyProperty="orderId">
-        INSERT INTO ORDERS (user_id, order_table, status)
-        VALUES (#{userId}, #{orderTable}, #{status})
+        INSERT INTO ORDERS (user_id, order_table, status, fcm_token)
+        VALUES (#{userId}, #{orderTable}, #{status}, #{fcmToken})
     </insert>
 
     <update id="updateStatus">
@@ -79,9 +79,16 @@
         FROM ORDERS o
         JOIN ORDER_DETAIL od ON o.order_id = od.order_id
         WHERE o.user_id = #{userId}
-          AND o.status <> 'DONE'
+          AND o.status != 'DONE'
         GROUP BY o.order_id, o.order_time, o.status
         ORDER BY o.order_time DESC
+    </select>
+
+    <select id="selectFcmTokenByOrderId" resultType="string">
+        SELECT
+            o.fcm_token
+        FROM ORDERS o
+        WHERE o.order_id = #{orderId}
     </select>
 </mapper>
 

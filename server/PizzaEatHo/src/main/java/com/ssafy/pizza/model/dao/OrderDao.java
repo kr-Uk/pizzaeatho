@@ -23,5 +23,7 @@ public interface OrderDao {
     List<OrderListItem> selectRecent6MonthsByUser(@Param("userId") Integer userId);
 
     List<OrderListItem> selectByUserNotDone(@Param("userId") Integer userId);
+
+    String selectFcmTokenByOrderId(@Param("orderId") Integer orderId);
 }
 

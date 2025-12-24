@@ -78,6 +78,10 @@ CREATE TABLE ORDERS (
     order_table VARCHAR(50),
     order_time DATETIME DEFAULT NOW(),
     status ENUM('RECEIVED', 'COOKING', 'DONE') DEFAULT 'RECEIVED',
+<<<<<<<< HEAD:server/temp_db.sql
+========
+    fcm_token VARCHAR(255),
+>>>>>>>> c81eaf5aabd29940190e1ed7980119223f3eda68:pizza.sql
     FOREIGN KEY (user_id) REFERENCES `USER`(user_id)
 );
 

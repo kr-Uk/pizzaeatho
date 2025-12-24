@@ -3,6 +3,8 @@ package com.ssafy.pizza.model.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,11 +25,16 @@ import com.ssafy.pizza.model.dto.OrderToppingRequest;
 @Service
 public class OrderServiceImpl implements OrderService {
 
+    private static final Logger log = LoggerFactory.getLogger(OrderServiceImpl.class);
+
     @Autowired
     private OrderDao oDao;
 
     @Autowired
     private OrderDetailDao dDao;
+
+    @Autowired
+    private FcmPushService fcmPushService;
 
     @Override
     @Transactional
@@ -41,6 +48,7 @@ public class OrderServiceImpl implements OrderService {
         order.setUserId(first.getUserId());
         order.setOrderTable(first.getUserName());
         order.setStatus("RECEIVED");
+        order.setFcmToken(first.getFcmToken());
         oDao.insertOrder(order);
 
         for (OrderCreateRequest request : requests) {
@@ -100,8 +108,19 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public OrderCreateResponse updateOrderStatus(Integer orderId, String status) {
-        oDao.updateStatus(orderId, status);
-        return new OrderCreateResponse(orderId, status);
+        String normalizedStatus = status == null ? null : status.trim().toUpperCase();
+        oDao.updateStatus(orderId, normalizedStatus);
+        if ("DONE".equalsIgnoreCase(normalizedStatus)) {
+            String fcmToken = oDao.selectFcmTokenByOrderId(orderId);
+            if (fcmToken != null && !fcmToken.isBlank()) {
+                try {
+                    fcmPushService.sendOrderReadyPush(fcmToken, orderId);
+                } catch (Exception e) {
+                    log.warn("FCM send failed for order {}", orderId, e);
+                }
+            }
+        }
+        return new OrderCreateResponse(orderId, normalizedStatus);
     }
 
     @Override

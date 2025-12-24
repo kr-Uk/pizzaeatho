@@ -53,6 +53,13 @@ class ShoppingcartViewModel with ChangeNotifier {
 
     if (user == null || _items.isEmpty) return false;
 
+    String? fcmToken;
+    try {
+      fcmToken = await FcmService.instance.ensureToken();
+    } catch (e) {
+      debugPrint('FCM token fetch failed: $e');
+    }
+
     final orderRequest = _items.map((item) => OrderCreateRequestDto(
       userId: user.userId,
       userName: user.name,
@@ -66,17 +73,12 @@ class ShoppingcartViewModel with ChangeNotifier {
       ))
           .toList(),
       unitPrice: item.totalPrice,
+      fcmToken: fcmToken,
     )).toList();
 
     try {
       await _orderRepository.placeOrder(orderRequest);
       await clearCart();
-
-      try {
-        await FcmService.instance.sendOrderReadyPush();
-      } catch (e) {
-        debugPrint('FCM send failed: $e');
-      }
 
       // 주문 성공 메시지 출력
       debugPrint("주문이 성공적으로 완료되었습니다!");

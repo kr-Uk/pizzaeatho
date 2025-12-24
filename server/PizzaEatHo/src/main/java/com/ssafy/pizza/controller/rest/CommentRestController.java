@@ -4,9 +4,11 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -31,6 +33,21 @@ public class CommentRestController {
     @GetMapping("/product/{productId}")
     public List<CommentInfo> getCommentsByProduct(@PathVariable Integer productId) {
         return cService.getCommentsByProduct(productId);
+    }
+
+    @PutMapping("/{commentId}/user/{userId}")
+    public boolean updateComment(
+            @PathVariable Integer commentId,
+            @PathVariable Integer userId,
+            @RequestBody Comment comment) {
+        comment.setCommentId(commentId);
+        comment.setUserId(userId);
+        return cService.updateComment(comment) > 0;
+    }
+
+    @DeleteMapping("/{commentId}/user/{userId}")
+    public boolean deleteComment(@PathVariable Integer commentId, @PathVariable Integer userId) {
+        return cService.deleteComment(commentId, userId) > 0;
     }
 }
 

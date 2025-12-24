@@ -24,5 +24,15 @@ public class CommentServiceImpl implements CommentService {
     public List<CommentInfo> getCommentsByProduct(Integer productId) {
         return cDao.selectByProduct(productId);
     }
+
+    @Override
+    public int updateComment(Comment comment) {
+        return cDao.update(comment);
+    }
+
+    @Override
+    public int deleteComment(Integer commentId, Integer userId) {
+        return cDao.deleteByIdAndUser(commentId, userId);
+    }
 }
 
