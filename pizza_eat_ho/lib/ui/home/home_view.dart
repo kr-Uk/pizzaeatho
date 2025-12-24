@@ -11,6 +11,8 @@ import 'package:pizzaeatho/util/openai_chat_service.dart';
 import 'package:provider/provider.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
+import '../order/order_history_detail_page.dart';
+
 const Color _christmasGreen = Color(0xFF0F6B3E);
 const Color _snowBackground = Color(0xFFF9F6F1);
 
@@ -209,6 +211,9 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
 
     final user = authViewModel.user;
     bool isLoggedIn = authViewModel.isLoggedIn;
+    final BASE_URL = "http://${IP_PORT}/imgs/pizza/";
+    final orderList = homeViewModel.orderHistory;
+    final orderListCount = orderList.length;
 
     return Scaffold(
       appBar: AppBar(
@@ -409,40 +414,51 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
               height: 620.h,
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
-                itemCount: 10,
+                itemCount: orderListCount,
                 itemBuilder: (_, index) {
-                  return Container(
-                    width: 340.w,
-                    margin: index == 9
-                        ? const EdgeInsets.symmetric(horizontal: 12.0)
-                        : const EdgeInsets.only(left: 12.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(30.r),
-                              image: const DecorationImage(
-                                image: AssetImage("assets/ganadi1.png"),
-                                fit: BoxFit.cover,
-                              ),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withOpacity(0.08),
-                                  blurRadius: 12,
-                                  offset: const Offset(0, 6),
+                  final item = orderList[index];
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => OrderHistoryDetailPage(orderId: item.orderId),
+                        ),
+                      );
+                    },
+                    child: Container(
+                      width: 400.w,
+                      margin: index == orderListCount-1
+                          ? const EdgeInsets.symmetric(horizontal: 12.0)
+                          : const EdgeInsets.only(left: 12.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(30.r),
+                                image: DecorationImage(
+                                  image: NetworkImage("${BASE_URL}${item.products[0].image}"),
+                                  fit: BoxFit.cover,
                                 ),
-                              ],
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.08),
+                                    blurRadius: 12,
+                                    offset: const Offset(0, 6),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
-                        ),
-                        SizedBox(height: 16.h),
-                        const Text("시그니처 피자"),
-                        SizedBox(height: 6.h),
-                        const Text("가격: 3000"),
-                      ],
+                          SizedBox(height: 16.h),
+                          Text(item.products.length == 1 ? "${item.products[0].name}" : "${item.products[0].name} 외${item.products.length-1}건"),
+                          SizedBox(height: 6.h),
+                          Text("${item.totalPrice}원"),
+                        ],
+                      ),
                     ),
                   );
                 },
@@ -451,49 +467,39 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
             SizedBox(height: 20.h),
             _buildSectionTitle("인기 메뉴", showAccent: false, showAccentLine: true),
             SizedBox(height: 20.h),
-            SizedBox(
-              height: 620.h,
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: 10,
-                itemBuilder: (_, index) {
-                  return Container(
-                    width: 340.w,
-                    margin: index == 9
-                        ? const EdgeInsets.symmetric(horizontal: 12.0)
-                        : const EdgeInsets.only(left: 12.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(30.r),
-                              image: const DecorationImage(
-                                image: AssetImage("assets/ganadi1.png"),
-                                fit: BoxFit.cover,
-                              ),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withOpacity(0.08),
-                                  blurRadius: 12,
-                                  offset: const Offset(0, 6),
-                                ),
-                              ],
-                            ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                  child: Column(
+                    crossAxisAlignment: .start,
+                    children: [
+                      Container(
+                        width: double.infinity,
+                        height: 600.w,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(30.r),
+                          image: DecorationImage(
+                            image: AssetImage("assets/best_pizza.png"),
+                            fit: BoxFit.cover,
                           ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.08),
+                              blurRadius: 12,
+                              offset: const Offset(0, 6),
+                            ),
+                          ],
                         ),
-                        SizedBox(height: 16.h),
-                        const Text("베스트 피자"),
-                        SizedBox(height: 6.h),
-                        const Text("가격: 3000"),
-                      ],
-                    ),
-                  );
-                },
-              ),
-            ),
+                      ),
+                      Text("치즈덕후를 위한 도우부터 크러스트까지, 한 입마다 치즈가 터지는 궁극의 피자!! 🧀🍕"),
+                      Text("도우: 치즈"),
+                      Text("크러스트: 스윗 포테이토 크러스트"),
+                      Text("토핑: 포테이토, 양파, 버섯, 페퍼로니, 올리브"),
+                    ],
+                  ),
+                ),
+
+
               SizedBox(height: 24.h),
             ],
           ),
@@ -641,6 +647,7 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
     bool showAccentLine = false,
   }) {
     final accentColor = showAccent ? _christmasGreen : Colors.transparent;
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Row(

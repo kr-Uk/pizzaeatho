@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pizzaeatho/data/model/product.dart';
 import 'package:provider/provider.dart';
 
 import 'order_detail_view.dart';
@@ -9,8 +10,10 @@ class OrderDetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final product = ModalRoute.of(context)!.settings.arguments as ProductDto;
+
     return ChangeNotifierProvider<OrderDetailViewModel>(
-        create: (_) => OrderDetailViewModel(),
+        create: (_) => OrderDetailViewModel(product.productId),
         child: OrderDetailView());
   }
 }

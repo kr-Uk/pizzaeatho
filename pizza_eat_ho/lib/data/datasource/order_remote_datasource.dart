@@ -73,7 +73,7 @@ class OrderRemoteDataSource {
 
     // 실패시
     if (response.statusCode != 200) {
-      throw Exception('주문생성 실패');
+      throw Exception('주문상세 실패');
     }
 
     // json String -> Map의 List로
@@ -85,8 +85,8 @@ class OrderRemoteDataSource {
 
     return orderDetail;
   }
-  /* 주문 상세 */
 
+  /* 주문 히스토리 */
   // GET /pizza/order/user/{userId}/recent6months (-> List<UserOrderListItemDto>)
   Future<List<UserOrderListItemDto>> getOrderHistoryRecent(int userId) async {
     final url = Uri.http(IP_PORT, "${END_POINT}/user/${userId}/recent6months");

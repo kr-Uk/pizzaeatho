@@ -7,8 +7,8 @@ class OrderHistoryViewModel with ChangeNotifier {
   final OrderRepository _orderRepository = OrderRepository();
   final AuthRepository _authRepository = AuthRepository();
 
-  List<UserOrderListItemDto> _orderHistory = [];
-  List<UserOrderListItemDto> get orderHistory => _orderHistory;
+  List<OrderHistoryDto> _orderHistory = [];
+  List<OrderHistoryDto> get orderHistory => _orderHistory;
 
   String? get errorMessage => _errorMessage;
   String? _errorMessage;
@@ -40,7 +40,7 @@ class OrderHistoryViewModel with ChangeNotifier {
     notifyListeners();
 
     try {
-      _orderHistory = await _orderRepository.getOrderHistory(userId);
+      _orderHistory = await _orderRepository.getOrderHistoryWithDetail(userId);
       if (_orderHistory.isEmpty){
         _errorMessage = "주문 내역이 없습니다";
       }

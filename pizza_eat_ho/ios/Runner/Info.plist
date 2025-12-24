@@ -29,8 +29,6 @@
 		<string>nmap</string>
 		<string>tel</string>
 	</array>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>매장 길찾기를 위해 위치 권한이 필요합니다.</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>

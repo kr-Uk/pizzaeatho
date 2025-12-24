@@ -16,6 +16,7 @@ class OrderView extends StatefulWidget {
 }
 
 class _OrderViewState extends State<OrderView> {
+  final BASE_URL = "http://${IP_PORT}/imgs/pizza/";
   @override
   Widget build(BuildContext context) {
     final viewModel = context.watch<OrderViewModel>();
@@ -90,7 +91,7 @@ class _OrderViewState extends State<OrderView> {
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(24.r),
                         image: DecorationImage(
-                          image: AssetImage(item.image),
+                          image: NetworkImage("${BASE_URL}${item.image}"),
                           fit: BoxFit.cover,
                         ),
                       ),

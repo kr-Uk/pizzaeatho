@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
+import '../../util/common.dart';
 import '../auth/auth_viewmodel.dart';
+import 'order_history_detail_page.dart';
+import 'order_history_detail_view.dart';
 import 'order_history_viewmodel.dart';
 
 const Color _christmasGreen = Color(0xFF0F6B3E);
@@ -17,6 +20,7 @@ class OrderHistoryView extends StatelessWidget {
     final authViewModel = context.watch<AuthViewModel>();
     final orderHistory = orderHistoryViewModel.orderHistory;
     final isLoading = orderHistoryViewModel.isLoading;
+    final BASE_URL = "http://${IP_PORT}/imgs/pizza/";
 
     return Scaffold(
       appBar: AppBar(
@@ -91,26 +95,53 @@ class OrderHistoryView extends StatelessWidget {
                   itemCount: orderHistory.length,
                   itemBuilder: (_, index) {
                     final order = orderHistory[index];
-                    return Container(
-                      margin: EdgeInsets.only(bottom: 16.h),
-                      padding: EdgeInsets.all(16.w),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(20.r),
-                        border: Border(
-                          left: BorderSide(color: _christmasGreen, width: 4),
-                        ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.08),
-                            blurRadius: 10,
-                            offset: const Offset(0, 4),
+                    return GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => OrderHistoryDetailPage(orderId: order.orderId),
+                            ),
+                          );
+                        },
+                        child: Container(
+                          margin: EdgeInsets.only(bottom: 16.h),
+                          padding: EdgeInsets.all(16.w),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(20.r),
+                            border: Border(
+                              left: BorderSide(color: _christmasGreen, width: 4),
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.08),
+                                blurRadius: 10,
+                                offset: const Offset(0, 4),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          Container(
+                              height: 600.h,
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(30.r),
+                                image: DecorationImage(
+                                  image: NetworkImage("${BASE_URL}${order.products[0].image}"),
+                                  fit: BoxFit.cover,
+                                ),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.08),
+                                    blurRadius: 12,
+                                    offset: const Offset(0, 6),
+                                  ),
+                                ],
+                              ),
+                            ),
                           Text(
                             '주문번호 #${order.orderId}',
                             style: const TextStyle(
@@ -134,6 +165,7 @@ class OrderHistoryView extends StatelessWidget {
                           ),
                         ],
                       ),
+                    ),
                     );
                   },
                 ),
