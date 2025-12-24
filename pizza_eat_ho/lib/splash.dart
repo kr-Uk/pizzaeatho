@@ -7,16 +7,19 @@ class Splash extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    
-    Timer(Duration(seconds: 3), () {
+    Timer(const Duration(seconds: 3), () {
       Navigator.pushReplacementNamed(context, '/main');
     });
 
     return Scaffold(
       body: Center(
-        child: Image.asset("../assets/splash.png")
+        child: SizedBox(
+          child: Image.asset(
+            "assets/pizza.png",
+            fit: BoxFit.contain,
+          ),
+        ),
       ),
     );
   }
-  
 }

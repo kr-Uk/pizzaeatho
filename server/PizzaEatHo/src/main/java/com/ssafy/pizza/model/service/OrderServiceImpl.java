@@ -3,6 +3,8 @@ package com.ssafy.pizza.model.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,38 +25,51 @@ import com.ssafy.pizza.model.dto.OrderToppingRequest;
 @Service
 public class OrderServiceImpl implements OrderService {
 
+    private static final Logger log = LoggerFactory.getLogger(OrderServiceImpl.class);
+
     @Autowired
     private OrderDao oDao;
 
     @Autowired
     private OrderDetailDao dDao;
 
+    @Autowired
+//    private FcmPushService fcmPushService;
+
     @Override
     @Transactional
-    public OrderCreateResponse createOrder(OrderCreateRequest request) {
+    public OrderCreateResponse createOrder(List<OrderCreateRequest> requests) {
+        if (requests == null || requests.isEmpty()) {
+            return null;
+        }
+
+        OrderCreateRequest first = requests.get(0);
         Order order = new Order();
-        order.setUserId(request.getUserId());
-        order.setOrderTable(request.getOrderTable());
+        order.setUserId(first.getUserId());
+        order.setOrderTable(first.getUserName());
         order.setStatus("RECEIVED");
+        order.setFcmToken(first.getFcmToken());
         oDao.insertOrder(order);
 
-        OrderDetail detail = new OrderDetail();
-        detail.setOrderId(order.getOrderId());
-        detail.setProductId(request.getProductId());
-        detail.setDoughId(request.getDoughId());
-        detail.setCrustId(request.getCrustId());
-        detail.setQuantity(1);
-        detail.setUnitPrice(request.getUnitPrice());
-        dDao.insertOrderDetail(detail);
+        for (OrderCreateRequest request : requests) {
+            OrderDetail detail = new OrderDetail();
+            detail.setOrderId(order.getOrderId());
+            detail.setProductId(request.getProductId());
+            detail.setDoughId(request.getDoughId());
+            detail.setCrustId(request.getCrustId());
+            detail.setQuantity(1);
+            detail.setUnitPrice(request.getUnitPrice());
+            dDao.insertOrderDetail(detail);
 
-        List<OrderToppingRequest> toppings = request.getToppings();
-        if (toppings != null) {
-            for (OrderToppingRequest topping : toppings) {
-                OrderDetailTopping detailTopping = new OrderDetailTopping();
-                detailTopping.setOrderDetailId(detail.getOrderDetailId());
-                detailTopping.setToppingId(topping.getToppingId());
-                detailTopping.setQuantity(topping.getQuantity());
-                dDao.insertOrderDetailTopping(detailTopping);
+            List<OrderToppingRequest> toppings = request.getToppings();
+            if (toppings != null) {
+                for (OrderToppingRequest topping : toppings) {
+                    OrderDetailTopping detailTopping = new OrderDetailTopping();
+                    detailTopping.setOrderDetailId(detail.getOrderDetailId());
+                    detailTopping.setToppingId(topping.getToppingId());
+                    detailTopping.setQuantity(topping.getQuantity());
+                    dDao.insertOrderDetailTopping(detailTopping);
+                }
             }
         }
 
@@ -67,36 +82,55 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public OrderDetailResponse getOrderDetail(Integer orderId) {
-        OrderDetailView view = oDao.selectOrderDetailView(orderId);
-        if (view == null) {
-            return null;
+    public List<OrderDetailResponse> getOrderDetail(Integer orderId) {
+        List<OrderDetailView> views = oDao.selectOrderDetailView(orderId);
+        List<OrderDetailResponse> responses = new ArrayList<>();
+        if (views == null || views.isEmpty()) {
+            return responses;
         }
-        List<OrderToppingInfo> toppings = new ArrayList<>();
-        if (view.getOrderDetailId() != null) {
-            toppings = oDao.selectToppingsByOrderDetail(view.getOrderDetailId());
+        for (OrderDetailView view : views) {
+            List<OrderToppingInfo> toppings = new ArrayList<>();
+            if (view.getOrderDetailId() != null) {
+                toppings = oDao.selectToppingsByOrderDetail(view.getOrderDetailId());
+            }
+            responses.add(new OrderDetailResponse(
+                    view.getOrderId(),
+                    view.getProduct(),
+                    view.getDough(),
+                    view.getCrust(),
+                    toppings,
+                    view.getUnitPrice(),
+                    view.getStatus()
+            ));
         }
-
-        return new OrderDetailResponse(
-                view.getOrderId(),
-                view.getProduct(),
-                view.getDough(),
-                view.getCrust(),
-                toppings,
-                view.getUnitPrice(),
-                view.getStatus()
-        );
+        return responses;
     }
 
     @Override
     public OrderCreateResponse updateOrderStatus(Integer orderId, String status) {
-        oDao.updateStatus(orderId, status);
-        return new OrderCreateResponse(orderId, status);
+        String normalizedStatus = status == null ? null : status.trim().toUpperCase();
+        oDao.updateStatus(orderId, normalizedStatus);
+        if ("DONE".equalsIgnoreCase(normalizedStatus)) {
+            String fcmToken = oDao.selectFcmTokenByOrderId(orderId);
+            if (fcmToken != null && !fcmToken.isBlank()) {
+                try {
+//                    fcmPushService.sendOrderReadyPush(fcmToken, orderId);
+                } catch (Exception e) {
+                    log.warn("FCM send failed for order {}", orderId, e);
+                }
+            }
+        }
+        return new OrderCreateResponse(orderId, normalizedStatus);
     }
 
     @Override
-    public List<OrderListItem> getRecent6MonthsOrders() {
-        return oDao.selectRecent6Months();
+    public List<OrderListItem> getRecent6MonthsOrders(Integer userId) {
+        return oDao.selectRecent6MonthsByUser(userId);
+    }
+
+    @Override
+    public List<OrderListItem> getActiveOrdersByUser(Integer userId) {
+        return oDao.selectByUserNotDone(userId);
     }
 }
 

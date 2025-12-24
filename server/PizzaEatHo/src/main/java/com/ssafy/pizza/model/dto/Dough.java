@@ -3,14 +3,16 @@ package com.ssafy.pizza.model.dto;
 public class Dough {
     private Integer doughId;
     private String name;
-    private Integer extraPrice;
+    private Integer price;
+    private String image;
 
     public Dough() {}
 
-    public Dough(Integer doughId, String name, Integer extraPrice) {
+    public Dough(Integer doughId, String name, Integer price, String image) {
         this.doughId = doughId;
         this.name = name;
-        this.extraPrice = extraPrice;
+        this.price = price;
+        this.image = image;
     }
 
     public Integer getDoughId() {
@@ -29,12 +31,20 @@ public class Dough {
         this.name = name;
     }
 
-    public Integer getExtraPrice() {
-        return extraPrice;
+    public Integer getPrice() {
+        return price;
     }
 
-    public void setExtraPrice(Integer extraPrice) {
-        this.extraPrice = extraPrice;
+    public void setPrice(Integer price) {
+        this.price = price;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 }
 

@@ -16,6 +16,12 @@
         WHERE user_id = #{userId}
     </select>
 
+    <select id="countById" resultType="int">
+        SELECT COUNT(*)
+        FROM `USER`
+        WHERE id = #{id}
+    </select>
+
     <insert id="insert" parameterType="User" useGeneratedKeys="true" keyProperty="userId">
         INSERT INTO `USER` (id, pw, name, stamp)
         VALUES (#{id}, #{pw}, #{name}, #{stamp})

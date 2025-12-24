@@ -4,12 +4,13 @@ import java.util.List;
 
 public class OrderCreateRequest {
     private Integer userId;
-    private String orderTable;
+    private String userName;
     private Integer productId;
     private Integer doughId;
     private Integer crustId;
     private List<OrderToppingRequest> toppings;
     private Integer unitPrice;
+    private String fcmToken;
 
     public OrderCreateRequest() {}
 
@@ -21,12 +22,12 @@ public class OrderCreateRequest {
         this.userId = userId;
     }
 
-    public String getOrderTable() {
-        return orderTable;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setOrderTable(String orderTable) {
-        this.orderTable = orderTable;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     public Integer getProductId() {
@@ -67,6 +68,14 @@ public class OrderCreateRequest {
 
     public void setUnitPrice(Integer unitPrice) {
         this.unitPrice = unitPrice;
+    }
+
+    public String getFcmToken() {
+        return fcmToken;
+    }
+
+    public void setFcmToken(String fcmToken) {
+        this.fcmToken = fcmToken;
     }
 }
 

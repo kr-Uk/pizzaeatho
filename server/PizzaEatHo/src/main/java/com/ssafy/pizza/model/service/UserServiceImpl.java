@@ -26,5 +26,10 @@ public class UserServiceImpl implements UserService {
     public User getByUserId(Integer userId) {
         return userDao.selectByUserId(userId);
     }
+
+    @Override
+    public boolean isUserIdAvailable(String id) {
+        return userDao.countById(id) == 0;
+    }
 }
 

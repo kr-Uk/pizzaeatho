@@ -77,10 +77,11 @@
 		<item key="SmartImportRootWizardPage.STORE_NESTED_PROJECTS" value="true"/>
 		<item key="SmartImportRootWizardPage.STORE_CONFIGURE_NATURES" value="true"/>
 		<list key="org.eclipse.ui.internal.wizards.datatransfer.SmartImportRootWizardPage.knownSources">
+			<item value="C:\Users\SSAFY\Desktop\PizzaEat\pizzaeatho"/>
 			<item value="C:\Users\SSAFY\Desktop\springtong\pennant_race5_3"/>
 		</list>
 		<section name="SmartImportWizard.dialogBounds">
-			<item key="DIALOG_X_ORIGIN" value="250"/>
+			<item key="DIALOG_X_ORIGIN" value="189"/>
 			<item key="DIALOG_Y_ORIGIN" value="47"/>
 			<item key="DIALOG_WIDTH" value="888"/>
 			<item key="DIALOG_HEIGHT" value="629"/>

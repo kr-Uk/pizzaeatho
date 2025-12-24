@@ -15,36 +15,46 @@ class OrderCreateToppingReqDto {
   };
 }
 
+// 주문 넣기
 class OrderCreateRequestDto {
   final int userId;
-  final String orderTable;
+  final String userName;
   final int productId;
   final int doughId;
   final int crustId;
   final List<OrderCreateToppingReqDto> toppings;
   final int unitPrice;
+  final String? fcmToken;
 
   OrderCreateRequestDto({
     required this.userId,
-    required this.orderTable,
+    required this.userName,
     required this.productId,
     required this.doughId,
     required this.crustId,
     required this.toppings,
     required this.unitPrice,
+    this.fcmToken,
   });
 
-  Map<String, dynamic> toJson() => {
-    'userId': userId,
-    'orderTable': orderTable,
-    'productId': productId,
-    'doughId': doughId,
-    'crustId': crustId,
-    'toppings': toppings.map((e) => e.toJson()).toList(),
-    'unitPrice': unitPrice,
-  };
+  Map<String, dynamic> toJson() {
+    final json = <String, dynamic>{
+      'userId': userId,
+      'userName': userName,
+      'productId': productId,
+      'doughId': doughId,
+      'crustId': crustId,
+      'toppings': toppings.map((e) => e.toJson()).toList(),
+      'unitPrice': unitPrice,
+    };
+    if (fcmToken != null && fcmToken!.isNotEmpty) {
+      json['fcmToken'] = fcmToken;
+    }
+    return json;
+  }
 }
 
+// 주문 넣기 응답
 class OrderCreateResponseDto {
   final int orderId;
   final OrderStatus status;
@@ -62,6 +72,8 @@ class OrderCreateResponseDto {
   }
 }
 
+
+// 사용자 주문 목록 조회 응답
 class UserOrderListItemDto {
   final int orderId;
   final DateTime orderTime;
@@ -85,6 +97,7 @@ class UserOrderListItemDto {
   }
 }
 
+// 디테일 토핑 DTO
 class OrderDetailToppingDto {
   final String name;
   final int quantity;
@@ -102,6 +115,7 @@ class OrderDetailToppingDto {
   }
 }
 
+// 주문 상세 조회 응답
 class OrderDetailResponseDto {
   final int orderId;
   final String product;
@@ -137,6 +151,7 @@ class OrderDetailResponseDto {
   }
 }
 
+// 주문 상태 변경 요청 (관리자)
 class OrderStatusPatchRequestDto {
   final OrderStatus status;
 
@@ -147,6 +162,7 @@ class OrderStatusPatchRequestDto {
   };
 }
 
+// 주문 상태 변경 응답 (관리자)
 class OrderStatusPatchResponseDto {
   final int orderId;
   final OrderStatus status;
