@@ -11,7 +11,6 @@ import java.util.Properties
 android {
     namespace = "com.example.pizzaeatho"
     compileSdk = flutter.compileSdkVersion
-    ndkVersion = flutter.ndkVersion
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
@@ -57,6 +56,4 @@ flutter {
 
 dependencies {
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
-    implementation("com.google.mediapipe:tasks-genai:0.10.29")
-    implementation("com.google.mediapipe:tasks-vision:0.10.29")
 }

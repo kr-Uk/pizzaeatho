@@ -11,6 +11,8 @@
 
     <select id="selectByProduct" resultType="CommentInfo">
         SELECT
+            c.comment_id AS commentId,
+            c.user_id AS userId,
             u.name AS user_name,
             c.rating,
             c.comment,
@@ -20,5 +22,16 @@
         WHERE c.product_id = #{productId}
         ORDER BY c.created_at DESC
     </select>
+
+    <update id="update" parameterType="Comment">
+        UPDATE `COMMENT`
+        SET rating = #{rating}, comment = #{comment}
+        WHERE comment_id = #{commentId} AND user_id = #{userId}
+    </update>
+
+    <delete id="deleteByIdAndUser">
+        DELETE FROM `COMMENT`
+        WHERE comment_id = #{commentId} AND user_id = #{userId}
+    </delete>
 </mapper>
 

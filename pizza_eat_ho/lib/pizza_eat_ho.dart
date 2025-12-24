@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -5,7 +7,7 @@ import 'package:pizzaeatho/splash.dart';
 import 'package:pizzaeatho/ui/auth/auth_viewmodel.dart';
 import 'package:pizzaeatho/ui/auth/join_view.dart';
 import 'package:pizzaeatho/ui/auth/login_view.dart';
-import 'package:pizzaeatho/ui/ai/ai_chat_page.dart';
+import 'package:pizzaeatho/ui/ai/on_device_ai_page.dart';
 import 'package:pizzaeatho/ui/order/order_detail_page.dart';
 import 'package:pizzaeatho/ui/order/order_page.dart';
 import 'package:pizzaeatho/ui/order/shoppingcart_view.dart';
@@ -14,13 +16,12 @@ import 'package:pizzaeatho/ui/store/store_finder_view.dart';
 import 'package:pizzaeatho/util/fcm_service.dart';
 import 'package:provider/provider.dart';
 
-import 'main.dart';
+import 'package:pizzaeatho/ui/main_shell.dart';
 
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
-  await FcmService.instance.initialize();
+  _initServices();
   runApp(
     MultiProvider(
       providers: [
@@ -53,10 +54,19 @@ class MyApp extends StatelessWidget {
               '/login' : (context) => LoginView(),
               '/join' : (context) => JoinView(),
               '/store' : (context) => StoreFinderView(),
-              '/ai_chat' : (context) => AiChatPage(),
+              '/on_device_ai' : (context) => OnDeviceAiPage(),
             },
           );
         },
     );
+  }
+}
+
+Future<void> _initServices() async {
+  try {
+    await Firebase.initializeApp().timeout(const Duration(seconds: 5));
+    await FcmService.instance.initialize().timeout(const Duration(seconds: 5));
+  } catch (e) {
+    debugPrint('Service init failed: $e');
   }
 }

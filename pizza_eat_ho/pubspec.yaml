@@ -49,6 +49,7 @@ dependencies:
   flutter_secure_storage: ^10.0.0
   url_launcher: ^6.3.0
   geolocator: ^10.1.0
+  onnxruntime: ^1.4.1
 
 dev_dependencies:
   flutter_test:
@@ -76,6 +77,9 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/
+    - assets/models/minilm_ir9.onnx
+    - assets/models/minilm_ir9.onnx.data
+    - assets/models/tokenizer.json
   # assets:
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg

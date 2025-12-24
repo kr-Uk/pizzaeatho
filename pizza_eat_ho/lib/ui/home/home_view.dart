@@ -37,7 +37,7 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
   final List<_ChatMessage> _messages = [
     const _ChatMessage(
       role: 'assistant',
-      content: '안녕하세요! 피자 토핑 추천이 필요하신가요?\n알레르기나 선호하는 맛을 알려주세요.',
+      content: '안녕하세요! 피짜잇호에서 일하고 있는 AI호잇짜입니다!',
     ),
   ];
 
@@ -170,7 +170,7 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
 
   List<Map<String, String>> _buildPromptMessages() {
     const systemPrompt =
-        '너는 “피짜잇호”의 피자 토핑 추천 AI다. 반드시 한국어로 답한다.\n'
+        '너는 “피짜잇호”의 직원인 AI다. 반드시 한국어로 답한다.\n'
         '아래는 매장에서 제공 가능한 옵션 목록이다.\n\n'
         '[토핑]\n'
         '- 페퍼로니(1200), 베이컨(1300), 버섯(800), 양파(600), 올리브(700), 파인애플(900), 할라피뇨(700), 치즈 추가(1500)\n\n'
@@ -178,24 +178,7 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
         '- 오리지널(0), 씬 크러스트(0), 치즈 크러스트(2000), 고구마 크러스트(2000), 치즈 바이트(2500)\n\n'
         '[크러스트]\n'
         '- 기본 크러스트(0), 치즈 크러스트(3000), 고구마 크러스트(3000), 갈릭 크러스트(2500), 치즈 바이트(3500)\n\n'
-        '사용자에게 먼저 다음을 간단히 확인하라:\n'
-        '1) 알레르기/제외할 재료\n'
-        '2) 매운맛 선호(없음/약간/강함)\n'
-        '3) 고기 vs 채식 선호\n'
-        '4) 치즈 선호(기본/많이)\n'
-        '5) 소스나 식감 선호(촉촉/바삭/달콤/짭짤 등)\n\n'
-        '추천 규칙:\n'
-        '- 추천은 2~3가지 조합을 제안한다.\n'
-        '- 각 조합은 토핑 2~4개로 구성한다.\n'
-        '- 각 조합에는 간단한 도우 1개와 크러스트 1개를 포함한다.\n'
-        '- 각 조합마다 한 줄로 추천 이유를 설명한다.\n'
-        '- 위 목록에 없는 재료는 절대 추천하지 않는다.\n'
-        '- 마지막에 한 줄로 추가 선호를 질문한다.\n\n'
-        '응답 포맷:\n'
-        '1) 조합명: 토핑/도우/크러스트 ? 이유 한 줄\n'
-        '2) 조합명: ...\n'
-        '3) 조합명: ...\n'
-        '마지막 줄: “더 원하는 맛(매운맛/달콤함/고기/채식 등)이 있나요?”';
+        '사용자와 그냥 잘 의사소통 하면 된다.';
 
     final messages = <Map<String, String>>[
       {'role': 'system', 'content': systemPrompt},
@@ -243,7 +226,7 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
           IconButton(
             icon: const Icon(Icons.smart_toy_outlined, color: Colors.white),
             onPressed: () {
-              Navigator.pushNamed(context, "/ai_chat");
+              Navigator.pushNamed(context, "/on_device_ai");
             },
           ),
           IconButton(
@@ -562,7 +545,7 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
               ),
               const SizedBox(width: 8),
               Text(
-                'AI 토핑 추천',
+                'AI 호잇짜',
                 style: TextStyle(
                   fontSize: 40.sp,
                   fontWeight: FontWeight.bold,

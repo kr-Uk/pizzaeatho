@@ -34,7 +34,7 @@ public class OrderServiceImpl implements OrderService {
     private OrderDetailDao dDao;
 
     @Autowired
-//    private FcmPushService fcmPushService;
+    private FcmPushService fcmPushService;
 
     @Override
     @Transactional
@@ -114,7 +114,7 @@ public class OrderServiceImpl implements OrderService {
             String fcmToken = oDao.selectFcmTokenByOrderId(orderId);
             if (fcmToken != null && !fcmToken.isBlank()) {
                 try {
-//                    fcmPushService.sendOrderReadyPush(fcmToken, orderId);
+                    fcmPushService.sendOrderReadyPush(fcmToken, orderId);
                 } catch (Exception e) {
                     log.warn("FCM send failed for order {}", orderId, e);
                 }
