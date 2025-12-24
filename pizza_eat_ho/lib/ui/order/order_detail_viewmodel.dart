@@ -1,10 +1,16 @@
 import 'package:flutter/cupertino.dart';
+import 'package:pizzaeatho/data/model/comment.dart';
 import 'package:pizzaeatho/data/model/product.dart';
+import 'package:pizzaeatho/data/repository/comment_repository.dart';
 import '../../data/repository/product_repository.dart';
 
 class OrderDetailViewModel with ChangeNotifier {
   late final ProductRepository _productRepository;
-
+  late final CommentRepository _commentRepository;
+  
+  List<ProductCommentDto> _comments = [];
+  List<ProductCommentDto> get comments => _comments;
+  
   // 목록들
   List<ToppingDto> _toppings = [];
   List<DoughDto> _doughs = [];
@@ -20,11 +26,18 @@ class OrderDetailViewModel with ChangeNotifier {
   CrustDto? selectedCrust;
   Set<int> selectedToppingIds = {};
 
-  OrderDetailViewModel() {
+  OrderDetailViewModel(int productId) {
     _productRepository = ProductRepository();
+    _commentRepository = CommentRepository();
+    _loadComments(productId);
     _loadToppings();
     _loadDoughs();
     _loadCrusts();
+  }
+
+  Future<void> _loadComments(int productId) async {
+    _comments = (await _commentRepository.getProductComment(productId));
+    notifyListeners();
   }
 
   // 데이터 갖고오기
