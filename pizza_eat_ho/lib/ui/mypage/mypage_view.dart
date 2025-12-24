@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pizzaeatho/ui/auth/auth_viewmodel.dart';
 import 'package:pizzaeatho/ui/order/order_history_page.dart';
@@ -60,13 +60,29 @@ class _NotUserLogin extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          SizedBox(
-            width: 160.w,
-            height: 160.w,
-            child: Image.asset('assets/ganadi1.png', fit: BoxFit.cover),
+          Text(
+            '로그인이 필요한 서비스입니다.',
+            style: TextStyle(
+              fontSize: 40.sp,
+              fontWeight: FontWeight.w600,
+              color: Colors.grey.shade700,
+            ),
           ),
-          const SizedBox(height: 12),
-          const Text('로그인해줘'),
+          SizedBox(height: 16.h),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pushNamed(context, '/login');
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFFCE1933),
+              foregroundColor: Colors.white,
+              padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 12.h),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(24.r),
+              ),
+            ),
+            child: const Text('로그인 하기'),
+          ),
         ],
       ),
     );

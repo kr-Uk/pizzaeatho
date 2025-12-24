@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:pizzaeatho/ui/auth/auth_viewmodel.dart';
 import 'package:pizzaeatho/ui/order/shoppingcart_viewmodel.dart';
 import 'package:provider/provider.dart';
 
-const Color _christmasGreen = Color(0xFF0F6B3E);
 const Color _snowBackground = Color(0xFFF9F6F1);
 
 class ShoppingcartView extends StatefulWidget {
@@ -17,6 +17,8 @@ class _ShoppingcartViewState extends State<ShoppingcartView> {
   @override
   Widget build(BuildContext context) {
     final shoppingcartViewModel = context.watch<ShoppingcartViewModel>();
+    final authViewModel = context.watch<AuthViewModel>();
+    final isLoggedIn = authViewModel.isLoggedIn;
 
     return Scaffold(
       appBar: AppBar(
@@ -31,40 +33,79 @@ class _ShoppingcartViewState extends State<ShoppingcartView> {
         ),
       ),
       backgroundColor: _snowBackground,
-      body: _buildShoppingcart(shoppingcartViewModel),
-      bottomNavigationBar: SafeArea(
-        child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.08),
-                blurRadius: 10,
-                offset: const Offset(0, -2),
-              )
-            ],
-          ),
-          child: ElevatedButton(
-            onPressed: () async {
-              shoppingcartViewModel.placeOrder(context);
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFFCE1933),
-              foregroundColor: Colors.white,
-              padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 14.h),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12.r),
+      body: _buildShoppingcart(shoppingcartViewModel, isLoggedIn),
+      bottomNavigationBar: isLoggedIn
+          ? SafeArea(
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.08),
+                      blurRadius: 10,
+                      offset: const Offset(0, -2),
+                    )
+                  ],
+                ),
+                child: ElevatedButton(
+                  onPressed: () async {
+                    shoppingcartViewModel.placeOrder(context);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFFCE1933),
+                    foregroundColor: Colors.white,
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 24.w, vertical: 14.h),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12.r),
+                    ),
+                  ),
+                  child: const Text('주문하기'),
+                ),
               ),
-            ),
-            child: const Text("지금 주문하기"),
-          ),
-        ),
-      ),
+            )
+          : null,
     );
   }
 
-  Widget _buildShoppingcart(ShoppingcartViewModel shoppingcartViewModel) {
+  Widget _buildShoppingcart(
+    ShoppingcartViewModel shoppingcartViewModel,
+    bool isLoggedIn,
+  ) {
+    if (!isLoggedIn) {
+      return Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              '로그인이 필요한 서비스입니다.',
+              style: TextStyle(
+                fontSize: 40.sp,
+                fontWeight: FontWeight.w600,
+                color: Colors.grey.shade700,
+              ),
+            ),
+            SizedBox(height: 16.h),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pushNamed(context, '/login');
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFFCE1933),
+                foregroundColor: Colors.white,
+                padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 12.h),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(24.r),
+                ),
+              ),
+              child: const Text('로그인 하기'),
+            ),
+          ],
+        ),
+      );
+    }
+
     final items = shoppingcartViewModel.items;
     final itemCount = items.length;
     if (itemCount == 0) {
@@ -72,13 +113,29 @@ class _ShoppingcartViewState extends State<ShoppingcartView> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            SizedBox(
-              width: 140.w,
-              height: 140.w,
-              child: Image.asset("assets/ganadi1.png"),
+            Text(
+              '장바구니가 비었습니다.',
+              style: TextStyle(
+                fontSize: 44.sp,
+                fontWeight: FontWeight.w600,
+                color: Colors.grey.shade700,
+              ),
             ),
-            const SizedBox(height: 12),
-            const Text("장바구니가 비었어"),
+            SizedBox(height: 16.h),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pushNamed(context, '/order');
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFFCE1933),
+                foregroundColor: Colors.white,
+                padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 12.h),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(24.r),
+                ),
+              ),
+              child: const Text('맛있는 피자 보러 가기'),
+            ),
           ],
         ),
       );
@@ -118,11 +175,11 @@ class _ShoppingcartViewState extends State<ShoppingcartView> {
                   ),
                 ),
                 SizedBox(height: 12.h),
-                Text("도우 : ${item.dough.name}"),
-                Text("크러스트 : ${item.crust.name}"),
+                Text('도우 : ${item.dough.name}'),
+                Text('크러스트 : ${item.crust.name}'),
                 Row(
                   children: [
-                    const Text("토핑 : "),
+                    const Text('토핑 : '),
                     Expanded(
                       child: Text(
                         item.toppings.map((t) => "${t.name} ").join(),
