@@ -10,6 +10,9 @@ class OrderHistoryViewModel with ChangeNotifier {
   List<UserOrderListItemDto> _orderHistory = [];
   List<UserOrderListItemDto> get orderHistory => _orderHistory;
 
+  String? get errorMessage => _errorMessage;
+  String? _errorMessage;
+
   bool _isLoading = true;
   bool get isLoading => _isLoading;
 
@@ -32,9 +35,22 @@ class OrderHistoryViewModel with ChangeNotifier {
   }
 
   Future<void> _loadOrderHistory(int userId) async {
-    _orderHistory = await _orderRepository.getOrderHistory(userId);
-    _isLoading = false;
+    _isLoading = true;
+    _errorMessage = null;
     notifyListeners();
+
+    try {
+      _orderHistory = await _orderRepository.getOrderHistory(userId);
+      if (_orderHistory.isEmpty){
+        _errorMessage = "주문 내역이 없습니다";
+      }
+      notifyListeners();
+    } catch (e){
+      _errorMessage = '주문현황 못갖고옴';
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
   }
 
   void clearOrders() {
