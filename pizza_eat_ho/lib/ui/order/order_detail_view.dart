@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pizzaeatho/ui/order/shoppingcart_viewmodel.dart';
-import 'package:pizzaeatho/util/commgon.dart';
+import 'package:pizzaeatho/util/common.dart';
 import 'package:provider/provider.dart';
 
 import '../../data/model/product.dart';
-import '../../data/model/shoppingcart.dartg';
+import '../../data/model/shoppingcart.dart';
 import 'order_detail_viewmodel.dart';
 
 const Color _christmasGreen = Color(0xFF0F6B3E);
