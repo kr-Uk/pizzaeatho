@@ -42,25 +42,12 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
     ),
   ];
 
-  final banners = List.generate(
-    6,
-    (index) => Stack(
-      children: [
-        Container(
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              image: const AssetImage("assets/banner.png"),
-              fit: BoxFit.cover,
-              colorFilter: ColorFilter.mode(
-                Colors.black.withOpacity(0.1),
-                BlendMode.darken,
-              ),
-            ),
-          ),
-        ),
-      ],
-    ),
-  );
+  final List<String> bannerImages = [
+    "assets/banner.png",
+    "assets/event1.png",
+    "assets/event3.png",
+    "assets/event2.png",
+  ];
 
   @override
   void initState() {
@@ -81,7 +68,7 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
     });
 
     _timer = Timer.periodic(const Duration(seconds: 5), (timer) {
-      _currentPage = (_currentPage + 1) % banners.length;
+      _currentPage = (_currentPage + 1) % bannerImages.length;
 
       _controller.animateToPage(
         _currentPage,
@@ -299,7 +286,48 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
                                 _currentPage = index;
                               },
                               itemBuilder: (_, index) {
-                                return banners[index % banners.length];
+                                final pageIndex = index % bannerImages.length;
+                                return Stack(
+                                  children: [
+                                    Container(
+                                      decoration: BoxDecoration(
+                                        image: DecorationImage(
+                                          image: AssetImage(
+                                            bannerImages[pageIndex],
+                                          ),
+                                          fit: BoxFit.cover,
+                                          colorFilter: ColorFilter.mode(
+                                            Colors.black.withOpacity(0.1),
+                                            BlendMode.darken,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    Positioned(
+                                      right: 16.w,
+                                      bottom: 16.h,
+                                      child: Container(
+                                        padding: EdgeInsets.symmetric(
+                                          horizontal: 10.w,
+                                          vertical: 4.h,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          color: Colors.black.withOpacity(0.55),
+                                          borderRadius:
+                                              BorderRadius.circular(12.r),
+                                        ),
+                                        child: Text(
+                                          '${pageIndex + 1}/${bannerImages.length}',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 20.sp,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                );
                               },
                             ),
                           ),
@@ -308,9 +336,10 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
                           bottom: 10,
                           child: SmoothPageIndicator(
                             controller: _controller,
-                            count: banners.length,
+                            count: bannerImages.length,
                             effect: ScrollingDotsEffect(
-                              activeDotColor: Colors.white,
+                              activeDotColor: Colors.white.withOpacity(0.7),
+                              dotColor: Colors.white.withOpacity(0.35),
                               activeStrokeWidth: 2.6,
                               activeDotScale: 1.3,
                               maxVisibleDots: 5,
@@ -326,14 +355,11 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
 
                     SizedBox(height: 64.h),
                     InkWell(
-                          onTap: () async {
-                            if (isLoggedIn) {
-                              await authViewModel.logout();
-                            } else {
-
-                              Navigator.pushNamed(context, "/login");
-                            }
-                          },
+                          onTap: isLoggedIn
+                              ? null
+                              : () {
+                                  Navigator.pushNamed(context, "/login");
+                                },
                           child: Container(
                             decoration: BoxDecoration(
                               color: const Color(0xFFC31E2E),

@@ -5,6 +5,7 @@ import 'package:pizzaeatho/ui/auth/auth_viewmodel.dart';
 import 'package:pizzaeatho/ui/auth/join_view.dart';
 import 'package:pizzaeatho/ui/auth/login_view.dart';
 import 'package:pizzaeatho/ui/order/order_detail_page.dart';
+import 'package:pizzaeatho/ui/order/order_page.dart';
 import 'package:pizzaeatho/ui/order/shoppingcart_view.dart';
 import 'package:pizzaeatho/ui/order/shoppingcart_viewmodel.dart';
 import 'package:pizzaeatho/ui/store/store_finder_view.dart';
@@ -41,6 +42,7 @@ class MyApp extends StatelessWidget {
             routes: {
               '/': (context) => Splash(),
               '/main': (context) => Main(),
+              '/order': (context) => OrderPage(),
               '/shoppingcart': (context) => ShoppingcartView(),
               '/order_detail': (context) => OrderDetailPage(),
               '/login' : (context) => LoginView(),

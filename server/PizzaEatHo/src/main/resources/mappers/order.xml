@@ -79,7 +79,7 @@
         FROM ORDERS o
         JOIN ORDER_DETAIL od ON o.order_id = od.order_id
         WHERE o.user_id = #{userId}
-          AND o.status &lt;&gt; 'DONE'
+          AND o.status != 'DONE'
         GROUP BY o.order_id, o.order_time, o.status
         ORDER BY o.order_time DESC
     </select>
