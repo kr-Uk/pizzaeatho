@@ -7,6 +7,8 @@ import 'package:pizzaeatho/splash.dart';
 import 'package:pizzaeatho/ui/auth/auth_viewmodel.dart';
 import 'package:pizzaeatho/ui/auth/join_view.dart';
 import 'package:pizzaeatho/ui/auth/login_view.dart';
+import 'package:pizzaeatho/ui/admin/admin_login_view.dart';
+import 'package:pizzaeatho/ui/admin/admin_orders_page.dart';
 import 'package:pizzaeatho/ui/ai/on_device_ai_page.dart';
 import 'package:pizzaeatho/ui/order/order_detail_page.dart';
 import 'package:pizzaeatho/ui/order/order_page.dart';
@@ -55,6 +57,8 @@ class MyApp extends StatelessWidget {
               '/join' : (context) => JoinView(),
               '/store' : (context) => StoreFinderView(),
               '/on_device_ai' : (context) => OnDeviceAiPage(),
+              '/admin/login' : (context) => AdminLoginView(),
+              '/admin/orders' : (context) => AdminOrdersPage(),
             },
           );
         },

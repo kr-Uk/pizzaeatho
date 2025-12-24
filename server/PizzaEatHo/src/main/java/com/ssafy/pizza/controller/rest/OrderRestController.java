@@ -32,6 +32,11 @@ public class OrderRestController {
         return oService.createOrder(requests);
     }
 
+    @GetMapping("")
+    public List<OrderListItem> getAllOrders() {
+        return oService.getAllOrders();
+    }
+
     @GetMapping("/user/{userId}")
     public List<OrderListItem> getOrdersByUser(@PathVariable Integer userId) {
         return oService.getOrdersByUser(userId);

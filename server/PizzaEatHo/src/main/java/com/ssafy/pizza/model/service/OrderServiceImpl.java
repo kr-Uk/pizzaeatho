@@ -33,8 +33,8 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     private OrderDetailDao dDao;
 
-    @Autowired
-    private FcmPushService fcmPushService;
+//    @Autowired
+//    private FcmPushService fcmPushService;
 
     @Override
     @Transactional
@@ -82,6 +82,11 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    public List<OrderListItem> getAllOrders() {
+        return oDao.selectAll();
+    }
+
+    @Override
     public List<OrderDetailResponse> getOrderDetail(Integer orderId) {
         List<OrderDetailView> views = oDao.selectOrderDetailView(orderId);
         List<OrderDetailResponse> responses = new ArrayList<>();
@@ -95,6 +100,8 @@ public class OrderServiceImpl implements OrderService {
             }
             responses.add(new OrderDetailResponse(
                     view.getOrderId(),
+                    view.getOrderDetailId(),
+                    view.getProductId(),
                     view.getProduct(),
                     view.getDough(),
                     view.getCrust(),
@@ -114,7 +121,7 @@ public class OrderServiceImpl implements OrderService {
             String fcmToken = oDao.selectFcmTokenByOrderId(orderId);
             if (fcmToken != null && !fcmToken.isBlank()) {
                 try {
-                    fcmPushService.sendOrderReadyPush(fcmToken, orderId);
+//                    fcmPushService.sendOrderReadyPush(fcmToken, orderId);
                 } catch (Exception e) {
                     log.warn("FCM send failed for order {}", orderId, e);
                 }

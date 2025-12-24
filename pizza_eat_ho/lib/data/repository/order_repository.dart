@@ -1,6 +1,7 @@
 import '../datasource/local_datasource.dart';
 import '../datasource/order_remote_datasource.dart';
 import '../datasource/product_remote_datasource.dart';
+import '../model/enums.dart';
 import '../model/order.dart';
 import '../model/product.dart';
 import '../model/shoppingcart.dart';
@@ -19,12 +20,26 @@ class OrderRepository {
     return _remoteDataSource.getOrderHistory(userId);
   }
 
+  Future<List<UserOrderListItemDto>> getAllOrders() async {
+    return _remoteDataSource.getAllOrders();
+  }
+
   Future<List<UserOrderListItemDto>> getOrderHistoryRecent(int userId) async {
     return _remoteDataSource.getOrderHistoryRecent(userId);
   }
 
   Future<List<OrderDetailResponseDto>> getOrderDetail(int orderId) async {
     return _remoteDataSource.getOrderDetail(orderId);
+  }
+
+  Future<OrderStatusPatchResponseDto> updateOrderStatus(
+    int orderId,
+    OrderStatus status,
+  ) async {
+    return _remoteDataSource.updateOrderStatus(
+      orderId,
+      OrderStatusPatchRequestDto(status: status),
+    );
   }
 
   Future<void> saveCart(int userId, List<ShoppingcartDto> items) async {
@@ -102,6 +117,8 @@ class OrderRepository {
       result.add(
         OrderHistoryDetailDto(
           orderId: order.orderId,
+          orderDetailId: order.orderDetailId,
+          productId: order.productId,
           product: productMap[order.product] as ProductDto,
           dough: order.dough,
           crust: order.crust,

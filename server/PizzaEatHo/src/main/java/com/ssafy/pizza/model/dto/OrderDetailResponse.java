@@ -4,6 +4,8 @@ import java.util.List;
 
 public class OrderDetailResponse {
     private Integer orderId;
+    private Integer orderDetailId;
+    private Integer productId;
     private String product;
     private String dough;
     private String crust;
@@ -13,9 +15,11 @@ public class OrderDetailResponse {
 
     public OrderDetailResponse() {}
 
-    public OrderDetailResponse(Integer orderId, String product, String dough, String crust,
+    public OrderDetailResponse(Integer orderId, Integer orderDetailId, Integer productId, String product, String dough, String crust,
             List<OrderToppingInfo> toppings, Integer unitPrice, String status) {
         this.orderId = orderId;
+        this.orderDetailId = orderDetailId;
+        this.productId = productId;
         this.product = product;
         this.dough = dough;
         this.crust = crust;
@@ -30,6 +34,22 @@ public class OrderDetailResponse {
 
     public void setOrderId(Integer orderId) {
         this.orderId = orderId;
+    }
+
+    public Integer getOrderDetailId() {
+        return orderDetailId;
+    }
+
+    public void setOrderDetailId(Integer orderDetailId) {
+        this.orderDetailId = orderDetailId;
+    }
+
+    public Integer getProductId() {
+        return productId;
+    }
+
+    public void setProductId(Integer productId) {
+        this.productId = productId;
     }
 
     public String getProduct() {

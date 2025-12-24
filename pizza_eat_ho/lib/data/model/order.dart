@@ -120,6 +120,8 @@ class OrderDetailToppingDto {
 // 주문 상세 조회 응답
 class OrderDetailResponseDto {
   final int orderId;
+  final int orderDetailId;
+  final int productId;
   final String product;
   final String dough;
   final String crust;
@@ -129,6 +131,8 @@ class OrderDetailResponseDto {
 
   OrderDetailResponseDto({
     required this.orderId,
+    required this.orderDetailId,
+    required this.productId,
     required this.product,
     required this.dough,
     required this.crust,
@@ -141,6 +145,8 @@ class OrderDetailResponseDto {
     final toppingsJson = (json['toppings'] as List<dynamic>? ?? const []);
     return OrderDetailResponseDto(
       orderId: (json['orderId'] as num).toInt(),
+      orderDetailId: (json['orderDetailId'] as num).toInt(),
+      productId: (json['productId'] as num).toInt(),
       product: json['product'] as String,
       dough: json['dough'] as String,
       crust: json['crust'] as String,
@@ -156,6 +162,8 @@ class OrderDetailResponseDto {
 // 주문 내역 상세 조회
 class OrderHistoryDetailDto {
   final int orderId;
+  final int orderDetailId;
+  final int productId;
   final ProductDto product;
   final String dough;
   final String crust;
@@ -165,6 +173,8 @@ class OrderHistoryDetailDto {
 
   OrderHistoryDetailDto({
     required this.orderId,
+    required this.orderDetailId,
+    required this.productId,
     required this.product,
     required this.dough,
     required this.crust,

@@ -1,37 +1,84 @@
-import 'dart:convert';
+﻿import 'dart:convert';
 
 import 'package:http/http.dart' as http;
-import 'package:pizzaeatho/data/model/comment.dart';
 
 import '../../util/common.dart';
+import '../model/comment.dart';
 
-class CoomentRemoteDataSource {
-  final String END_POINT = "pizza/comment";
+class CommentRemoteDataSource {
+  final String endPoint = "pizza/comment";
 
-  /* 갖고오기 */
-  // GET /pizza/comment/product/productId
-  Future<List<ProductCommentDto>> getProductComment(int productId) async{
-    final url = Uri.http(IP_PORT, "${END_POINT}/product/${productId}");
+  Future<List<ProductCommentDto>> getProductComment(int productId) async {
+    final url = Uri.http(IP_PORT, "$endPoint/product/$productId");
 
-    final response = await http.get(
-      url,
-    );
+    final response = await http.get(url);
 
-    // 실패시
     if (response.statusCode != 200) {
-      print(response.statusCode);
-      throw Exception('갖고오기 실패');
+      throw Exception('Failed to load comments');
     }
 
-    // json String -> list<map<~>>
-    final List<dynamic> jsonList =
-    jsonDecode(response.body);
+    final List<dynamic> jsonList = jsonDecode(response.body);
 
-    final comments = jsonList
+    return jsonList
         .map((e) => ProductCommentDto.fromJson(e as Map<String, dynamic>))
         .toList();
-
-    return comments;
   }
 
+  Future<bool> createComment(CommentCreateRequestDto request) async {
+    final url = Uri.http(IP_PORT, endPoint);
+
+    final response = await http.post(
+      url,
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode(request.toJson()),
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception('Failed to create comment');
+    }
+
+    final decoded = jsonDecode(response.body);
+    return CommentCreateResponseDto.fromJson(decoded).success;
+  }
+
+  Future<bool> updateComment(
+    int commentId,
+    int userId,
+    CommentUpdateRequestDto request,
+  ) async {
+    final url = Uri.http(IP_PORT, "$endPoint/$commentId/user/$userId");
+
+    final response = await http.put(
+      url,
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode(request.toJson()),
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception('Failed to update comment');
+    }
+
+    return _parseBoolean(response.body);
+  }
+
+  Future<bool> deleteComment(int commentId, int userId) async {
+    final url = Uri.http(IP_PORT, "$endPoint/$commentId/user/$userId");
+
+    final response = await http.delete(url);
+
+    if (response.statusCode != 200) {
+      throw Exception('Failed to delete comment');
+    }
+
+    return _parseBoolean(response.body);
+  }
+
+  bool _parseBoolean(String body) {
+    final decoded = jsonDecode(body);
+    if (decoded is bool) return decoded;
+    if (decoded is Map<String, dynamic> && decoded['success'] is bool) {
+      return decoded['success'] as bool;
+    }
+    throw ArgumentError('Unexpected boolean response: $decoded');
+  }
 }

@@ -64,6 +64,24 @@ class OrderRemoteDataSource {
     return orderHistory;
   }
 
+  /* ???: ?? ?? */
+  // GET /pizza/order (-> List<UserOrderListItemDto>)
+  Future<List<UserOrderListItemDto>> getAllOrders() async {
+    final url = Uri.http(IP_PORT, END_POINT);
+
+    final response = await http.get(url);
+
+    if (response.statusCode != 200) {
+      throw Exception('Failed to load orders');
+    }
+
+    final List<dynamic> jsonList = jsonDecode(response.body);
+    return jsonList
+        .map((e) => UserOrderListItemDto.fromJson(e as Map<String, dynamic>))
+        .toList();
+  }
+
+
   /* 주문 상세 */
   // GET /pizza/order/{orderId} (-> List<UserOrderListItemDto>)
   Future<List<OrderDetailResponseDto>> getOrderDetail(int orderId) async {
@@ -129,4 +147,30 @@ class OrderRemoteDataSource {
 
     return orderHistory;
   }
+
+  /* ???: ?? ?? ?? */
+  // PATCH /pizza/order/{orderId}/status (OrderStatusPatchRequestDto -> OrderStatusPatchResponseDto)
+  Future<OrderStatusPatchResponseDto> updateOrderStatus(
+      int orderId,
+      OrderStatusPatchRequestDto request,
+  ) async {
+    final url = Uri.http(IP_PORT, "${END_POINT}/${orderId}/status");
+
+    final response = await http.patch(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode(request.toJson()),
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception('Failed to update order status');
+    }
+
+    final Map<String, dynamic> json =
+        jsonDecode(response.body) as Map<String, dynamic>;
+    return OrderStatusPatchResponseDto.fromJson(json);
+  }
+
 }

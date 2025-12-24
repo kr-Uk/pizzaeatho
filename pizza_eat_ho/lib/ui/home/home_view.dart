@@ -5,6 +5,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pizzaeatho/ui/auth/auth_viewmodel.dart';
+import 'package:pizzaeatho/ui/home/home_viewmodel.dart';
 import 'package:pizzaeatho/util/beacon_service.dart';
 import 'package:pizzaeatho/util/common.dart';
 import 'package:pizzaeatho/util/openai_chat_service.dart';
@@ -208,6 +209,7 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
   @override
   Widget build(BuildContext context) {
     final authViewModel = context.watch<AuthViewModel>();
+    final homeViewModel = context.watch<HomeViewModel>();
 
     final user = authViewModel.user;
     bool isLoggedIn = authViewModel.isLoggedIn;

@@ -28,11 +28,24 @@
         ORDER BY o.order_time DESC
     </select>
 
+    <select id="selectAll" resultType="OrderListItem">
+        SELECT
+            o.order_id,
+            o.order_time,
+            o.status,
+            SUM(od.unit_price * od.quantity) AS total_price
+        FROM ORDERS o
+        JOIN ORDER_DETAIL od ON o.order_id = od.order_id
+        GROUP BY o.order_id, o.order_time, o.status
+        ORDER BY o.order_time DESC
+    </select>
+
     <select id="selectOrderDetailView" resultType="OrderDetailView">
         SELECT
             o.order_id,
             o.status,
             od.order_detail_id,
+            od.product_id AS productId,
             p.name AS product,
             d.name AS dough,
             c.name AS crust,

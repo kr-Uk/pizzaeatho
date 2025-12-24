@@ -1,11 +1,13 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pizzaeatho/ui/order/shoppingcart_viewmodel.dart';
 import 'package:pizzaeatho/util/common.dart';
 import 'package:provider/provider.dart';
 
+import '../../data/model/comment.dart';
 import '../../data/model/product.dart';
 import '../../data/model/shoppingcart.dart';
+import '../auth/auth_viewmodel.dart';
 import 'order_detail_viewmodel.dart';
 
 const Color _christmasGreen = Color(0xFF0F6B3E);
@@ -19,14 +21,13 @@ class OrderDetailView extends StatefulWidget {
 }
 
 class _OrderDetailViewState extends State<OrderDetailView> {
-  final BASE_URL = "http://${IP_PORT}/imgs/pizza/";
+  final baseUrl = "http://${IP_PORT}/imgs/pizza/";
 
   @override
   Widget build(BuildContext context) {
     final product = ModalRoute.of(context)!.settings.arguments as ProductDto;
     final orderDetailViewModel = context.watch<OrderDetailViewModel>();
     final shoppingcartViewModel = context.read<ShoppingcartViewModel>();
-    final comments = orderDetailViewModel.comments;
 
     return Scaffold(
       backgroundColor: _snowBackground,
@@ -135,7 +136,7 @@ class _OrderDetailViewState extends State<OrderDetailView> {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(24.r),
                   image: DecorationImage(
-                    image: NetworkImage("${BASE_URL}${product.image}"),
+                    image: NetworkImage("${baseUrl}${product.image}"),
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -175,91 +176,24 @@ class _OrderDetailViewState extends State<OrderDetailView> {
                 Text(product.description),
                 const SizedBox(height: 8),
                 Text("${product.price}", style: textProductPrice),
-                Divider(),
+                const Divider(),
                 Text("리뷰", style: textProductName),
                 SizedBox(height: 16),
-                GestureDetector(
-                  onTap: (){},
-                  child: SizedBox(
-                    height: 400.h,
-                    child: viewModel.comments.isEmpty
-                    ? Center(child: Text("아직 리뷰가 없어용 ㅠㅠ"))
-                    : ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: comments.length,
-                      itemBuilder: (_, index) {
-                        final comment = comments[index];
-                        return Container(
-                          width: 420.w,
-                          margin: EdgeInsets.only(
-                            left: 12.w,
-                            right: index == 4 ? 12.w : 0,
-                          ),
-                          padding: EdgeInsets.all(14.w),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(14.r),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.08),
-                                blurRadius: 8,
-                                offset: const Offset(0, 4),
-                              ),
-                            ],
-                            border: Border.all(
-                              color: const Color(0xFFC31E2E),
-                              width: 1.5.w,
-                            ),
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                comment.userName,
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              SizedBox(height: 20.h),
-                              Row(
-                                children: List.generate(5, (i) {
-                                  return Icon(
-                                    i < comment.rating
-                                        ? Icons.star
-                                        : Icons.star_border,
-                                    color: Colors.amber,
-                                    size: 18,
-                                  );
-                                }),
-                              ),
-
-                              SizedBox(height: 20.h),
-
-                              Text(
-                                comment.comment,
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                                style: const TextStyle(fontSize: 14),
-                              ),
-
-                              const Spacer(),
-
-                              Text(
-                                comment.createdAt,
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color: Colors.grey,
-                                ),
-                              ),
-                            ],
-                          ),
-                        );
-                      },
-                    ),
-                  ),
+                SizedBox(
+                  height: 420.h,
+                  child: comments.isEmpty
+                      ? const Center(child: Text("아직 리뷰가 없습니다."))
+                      : ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: comments.length,
+                          itemBuilder: (_, index) {
+                            final comment = comments[index];
+                            return _buildReviewCard(context, viewModel, comment);
+                          },
+                        ),
                 ),
                 const SizedBox(height: 16),
-                Divider(),
+                const Divider(),
                 const SizedBox(height: 16),
                 _sectionCard(
                   title: "도우",
@@ -326,6 +260,236 @@ class _OrderDetailViewState extends State<OrderDetailView> {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildReviewCard(
+    BuildContext context,
+    OrderDetailViewModel viewModel,
+    ProductCommentDto comment,
+  ) {
+    final authViewModel = context.watch<AuthViewModel>();
+    final currentUserId = authViewModel.user?.userId;
+
+    return Container(
+      width: 420.w,
+      margin: EdgeInsets.only(left: 12.w),
+      padding: EdgeInsets.all(14.w),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(14.r),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.08),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
+          ),
+        ],
+        border: Border.all(
+          color: const Color(0xFFC31E2E),
+          width: 1.5.w,
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Text(
+                comment.userName,
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              ),
+              const Spacer(),
+              if (currentUserId != null && comment.userId == currentUserId)
+                Row(
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.edit, size: 18),
+                      onPressed: () {
+                        _showEditReviewDialog(
+                          context,
+                          viewModel,
+                          comment,
+                          currentUserId,
+                        );
+                      },
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.delete, size: 18),
+                      onPressed: () {
+                        _confirmDeleteReview(
+                          context,
+                          viewModel,
+                          comment.commentId,
+                          currentUserId,
+                        );
+                      },
+                    ),
+                  ],
+                ),
+            ],
+          ),
+          SizedBox(height: 12.h),
+          Row(
+            children: List.generate(5, (i) {
+              return Icon(
+                i < comment.rating ? Icons.star : Icons.star_border,
+                color: Colors.amber,
+                size: 18,
+              );
+            }),
+          ),
+          SizedBox(height: 16.h),
+          Text(
+            comment.comment,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            style: const TextStyle(fontSize: 14),
+          ),
+          const Spacer(),
+          Text(
+            comment.createdAt,
+            style: const TextStyle(fontSize: 12, color: Colors.grey),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showEditReviewDialog(
+    BuildContext context,
+    OrderDetailViewModel viewModel,
+    ProductCommentDto comment,
+    int userId,
+  ) {
+    final controller = TextEditingController(text: comment.comment);
+    int rating = comment.rating;
+
+    showDialog<void>(
+      context: context,
+      builder: (dialogContext) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              title: const Text('리뷰 수정'),
+              content: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Row(
+                      children: [
+                        const Text('평점'),
+                        const SizedBox(width: 12),
+                        DropdownButton<int>(
+                          value: rating,
+                          items: List.generate(
+                            5,
+                            (index) => DropdownMenuItem(
+                              value: index + 1,
+                              child: Text('${index + 1}점'),
+                            ),
+                          ),
+                          onChanged: (value) {
+                            if (value == null) return;
+                            setState(() => rating = value);
+                          },
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+                    TextField(
+                      controller: controller,
+                      maxLines: 3,
+                      decoration: const InputDecoration(
+                        hintText: '한줄평을 입력해주세요.',
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(dialogContext),
+                  child: const Text('취소'),
+                ),
+                ElevatedButton(
+                  onPressed: () async {
+                    final text = controller.text.trim();
+                    if (text.isEmpty) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('리뷰 내용을 입력해주세요.')),
+                      );
+                      return;
+                    }
+
+                    final success = await viewModel.updateComment(
+                      comment.commentId,
+                      userId,
+                      CommentUpdateRequestDto(rating: rating, comment: text),
+                    );
+
+                    if (!context.mounted) return;
+
+                    Navigator.pop(dialogContext);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          success ? '리뷰가 수정되었습니다.' : '리뷰 수정에 실패했습니다.',
+                        ),
+                      ),
+                    );
+                  },
+                  child: const Text('저장'),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    ).then((_) => controller.dispose());
+  }
+
+  void _confirmDeleteReview(
+    BuildContext context,
+    OrderDetailViewModel viewModel,
+    int commentId,
+    int userId,
+  ) {
+    showDialog<void>(
+      context: context,
+      builder: (dialogContext) {
+        return AlertDialog(
+          title: const Text('리뷰 삭제'),
+          content: const Text('정말 삭제하시겠습니까?'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(dialogContext),
+              child: const Text('취소'),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                final success = await viewModel.deleteComment(
+                  commentId,
+                  userId,
+                );
+
+                if (!context.mounted) return;
+
+                Navigator.pop(dialogContext);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      success ? '리뷰가 삭제되었습니다.' : '리뷰 삭제에 실패했습니다.',
+                    ),
+                  ),
+                );
+              },
+              child: const Text('삭제'),
+            ),
+          ],
+        );
+      },
     );
   }
 

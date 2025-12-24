@@ -16,6 +16,8 @@ public interface OrderDao {
 
     List<OrderListItem> selectByUser(@Param("userId") Integer userId);
 
+    List<OrderListItem> selectAll();
+
     List<OrderDetailView> selectOrderDetailView(@Param("orderId") Integer orderId);
 
     List<OrderToppingInfo> selectToppingsByOrderDetail(@Param("orderDetailId") Integer orderDetailId);

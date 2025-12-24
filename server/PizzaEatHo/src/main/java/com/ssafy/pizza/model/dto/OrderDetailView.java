@@ -3,6 +3,7 @@ package com.ssafy.pizza.model.dto;
 public class OrderDetailView {
     private Integer orderDetailId;
     private Integer orderId;
+    private Integer productId;
     private String product;
     private String dough;
     private String crust;
@@ -25,6 +26,14 @@ public class OrderDetailView {
 
     public void setOrderId(Integer orderId) {
         this.orderId = orderId;
+    }
+
+    public Integer getProductId() {
+        return productId;
+    }
+
+    public void setProductId(Integer productId) {
+        this.productId = productId;
     }
 
     public String getProduct() {

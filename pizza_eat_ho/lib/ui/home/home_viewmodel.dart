@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pizzaeatho/data/model/enums.dart';
 import 'package:pizzaeatho/data/model/order.dart';
 import 'package:pizzaeatho/data/repository/order_repository.dart';
 
@@ -43,7 +44,10 @@ class HomeViewModel with ChangeNotifier {
     notifyListeners();
 
     try {
-      _orderHistory = await _orderRepository.getOrderHistoryWithDetail(userId);
+      final allOrders =
+          await _orderRepository.getOrderHistoryWithDetail(userId);
+      _orderHistory =
+          allOrders.where((o) => o.status == OrderStatus.done).toList();
       if (_orderHistory.isEmpty){
         _errorMessage = "주문 내역이 없습니다";
       }

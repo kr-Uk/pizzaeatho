@@ -1,13 +1,27 @@
-import 'package:pizzaeatho/data/model/comment.dart';
+﻿import 'package:pizzaeatho/data/model/comment.dart';
 
 import '../datasource/comment_remote_datasource.dart';
-import '../datasource/local_datasource.dart';
 
 class CommentRepository {
-  final CoomentRemoteDataSource _remoteDataSource = CoomentRemoteDataSource();
-  final LocalDataSource _localDataSource = LocalDataSource();
+  final CommentRemoteDataSource _remoteDataSource = CommentRemoteDataSource();
 
   Future<List<ProductCommentDto>> getProductComment(int productId) async {
-    return await _remoteDataSource.getProductComment(productId);
+    return _remoteDataSource.getProductComment(productId);
+  }
+
+  Future<bool> createComment(CommentCreateRequestDto request) async {
+    return _remoteDataSource.createComment(request);
+  }
+
+  Future<bool> updateComment(
+    int commentId,
+    int userId,
+    CommentUpdateRequestDto request,
+  ) async {
+    return _remoteDataSource.updateComment(commentId, userId, request);
+  }
+
+  Future<bool> deleteComment(int commentId, int userId) async {
+    return _remoteDataSource.deleteComment(commentId, userId);
   }
 }
