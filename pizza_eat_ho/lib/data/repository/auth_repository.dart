@@ -31,8 +31,8 @@ class AuthRepository {
   }
 
   // 사용자 정보 조회
-  Future<UserInfoResponseDto?> getUserInfo() async{
-    return await _remoteDataSource.getUserInfo();
+  Future<UserInfoResponseDto?> getUserInfo(String userId) async{
+    return await _remoteDataSource.getUserInfo(userId);
   }
 
   Future<bool> checkUserId(String userId) async{
