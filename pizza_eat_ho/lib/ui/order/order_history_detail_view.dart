@@ -85,12 +85,22 @@ class OrderHistoryDetailView extends StatelessWidget {
                   ),
                 ),
                 SizedBox(height: 12.h),
-                _buildSectionTitle(
+                Text(
                   item.product.name,
-                  showAccent: false,
-                  showAccentLine: true,
+                  style: TextStyle(
+                    fontSize: 42.sp,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-                SizedBox(height: 8.h),
+                SizedBox(height: 6.h),
+                Text(
+                  '주문 상세 정보',
+                  style: TextStyle(
+                    color: Colors.grey.shade700,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                SizedBox(height: 10.h),
                 Wrap(
                   spacing: 8,
                   runSpacing: 8,
@@ -101,7 +111,7 @@ class OrderHistoryDetailView extends StatelessWidget {
                     _infoChip('도우 ${item.dough}'),
                   ],
                 ),
-                const SizedBox(height: 10),
+                const SizedBox(height: 12),
                 const Text(
                   '토핑',
                   style: TextStyle(fontWeight: FontWeight.bold),

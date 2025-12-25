@@ -21,6 +21,9 @@ class _JoinViewState extends State<JoinView> {
   final TextEditingController _pwController = TextEditingController();
   final TextEditingController _nameController = TextEditingController();
   String? _localError;
+  bool _isCheckingId = false;
+  bool? _isIdAvailable;
+  String? _idCheckMessage;
 
   @override
   void dispose() {
@@ -88,8 +91,7 @@ class _JoinViewState extends State<JoinView> {
                         ),
                         Transform.translate(
                           offset: Offset(0, -12.h),
-                          child: Text(
-                            '회원가입하고 다양한 혜택을 받아보세요',
+                          child: Text('회원가입하고 다양한 혜택을 받아보세요',
                             style: TextStyle(
                               fontSize: 30.sp,
                               color: Colors.grey.shade700,
@@ -100,8 +102,7 @@ class _JoinViewState extends State<JoinView> {
                     ),
                   ),
                   SizedBox(height: 16.h),
-                  Text(
-                    '회원가입',
+                  Text('회원가입',
                     style: TextStyle(
                       fontSize: 36.sp,
                       fontWeight: FontWeight.bold,
@@ -140,36 +141,116 @@ class _JoinViewState extends State<JoinView> {
                     },
                   ),
                   SizedBox(height: 50.h),
-                  TextField(
-                    controller: _idController,
-                    style: TextStyle(fontSize: 28.sp),
-                    decoration: InputDecoration(
-                      labelText: '아이디',
-                      labelStyle: TextStyle(color: Colors.grey.shade700),
-                      prefixIcon: const Icon(Icons.person_outline),
-                      filled: true,
-                      fillColor: const Color(0xFFFCFAF8),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(16.r),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(16.r),
-                        borderSide: BorderSide(
-                          color: Colors.grey.shade300,
+                  Row(
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          controller: _idController,
+                          style: TextStyle(fontSize: 28.sp),
+                          decoration: InputDecoration(
+                            labelText: '아이디',
+                            labelStyle: TextStyle(color: Colors.grey.shade700),
+                            prefixIcon: const Icon(Icons.person_outline),
+                            filled: true,
+                            fillColor: const Color(0xFFFCFAF8),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(16.r),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(16.r),
+                              borderSide: BorderSide(
+                                color: Colors.grey.shade300,
+                              ),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(16.r),
+                              borderSide:
+                                  const BorderSide(color: _accentRed, width: 2),
+                            ),
+                          ),
+                          onChanged: (_) {
+                            if (_localError != null) {
+                              setState(() => _localError = null);
+                            }
+                            if (_idCheckMessage != null || _isIdAvailable != null) {
+                              setState(() {
+                                _idCheckMessage = null;
+                                _isIdAvailable = null;
+                              });
+                            }
+                          },
                         ),
                       ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(16.r),
-                        borderSide:
-                            const BorderSide(color: _accentRed, width: 2),
+                      SizedBox(width: 12.w),
+                      SizedBox(
+                        height: 130.h,
+                        child: ElevatedButton(
+                          onPressed: _isCheckingId
+                              ? null
+                              : () async {
+                                  final id = _idController.text.trim();
+                                  if (id.isEmpty) {
+                                    setState(() {
+                                      _idCheckMessage = '아이디를 입력해주세요.';
+                                      _isIdAvailable = false;
+                                    });
+                                    return;
+                                  }
+                                  setState(() => _isCheckingId = true);
+                                  final available =
+                                      await authViewModel.checkUserId(id);
+                                  if (!mounted) return;
+                                  setState(() {
+                                    _isCheckingId = false;
+                                    _isIdAvailable = available;
+                                    _idCheckMessage = available
+                                        ? '사용 가능한 아이디입니다.'
+                                        : '이미 사용중인 아이디입니다.';
+                                  });
+                                },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: _accentRed,
+                            foregroundColor: Colors.white,
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 16.w,
+                              vertical: 12.h,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(14.r),
+                            ),
+                          ),
+                          child: _isCheckingId
+                              ? const SizedBox(
+                                  width: 16,
+                                  height: 16,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    color: Colors.white,
+                                  ),
+                                )
+                              : Text(
+                                  '중복체크',
+                                  style: TextStyle(
+                                    fontSize: 26.sp,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  if (_idCheckMessage != null) ...[
+                    SizedBox(height: 8.h),
+                    Text(
+                      _idCheckMessage!,
+                      style: TextStyle(
+                        color: _isIdAvailable == true
+                            ? Colors.green.shade700
+                            : Colors.red.shade700,
+                        fontSize: 26.sp,
                       ),
                     ),
-                    onChanged: (_) {
-                      if (_localError != null) {
-                        setState(() => _localError = null);
-                      }
-                    },
-                  ),
+                  ],
                   SizedBox(height: 50.h),
                   TextField(
                     controller: _pwController,
@@ -248,6 +329,12 @@ class _JoinViewState extends State<JoinView> {
                                         _pwController.text.trim().isEmpty) {
                                       setState(() {
                                         _localError = '모든 항목을 입력해주세요';
+                                      });
+                                      return;
+                                    }
+                                    if (_isIdAvailable != true) {
+                                      setState(() {
+                                        _localError = '아이디 중복 확인을 해주세요.';
                                       });
                                       return;
                                     }

@@ -74,4 +74,15 @@ class AuthViewModel with ChangeNotifier {
       notifyListeners();
     }
   }
+
+  Future<bool> checkUserId(String userId) async {
+    try {
+      _errorMessage = null;
+      return await _authRepository.checkUserId(userId);
+    } catch (e) {
+      _errorMessage = '아이디 중복 확인에 실패했습니다.';
+      notifyListeners();
+      return false;
+    }
+  }
 }

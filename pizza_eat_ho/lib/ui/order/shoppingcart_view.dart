@@ -53,7 +53,14 @@ class _ShoppingcartViewState extends State<ShoppingcartView> {
                 ),
                 child: ElevatedButton(
                   onPressed: () async {
-                    shoppingcartViewModel.placeOrder(context);
+                    final success =
+                        await shoppingcartViewModel.placeOrder(context);
+                    if (!context.mounted) return;
+                    if (success) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('주문이 완료되었습니다.')),
+                      );
+                    }
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFFCE1933),

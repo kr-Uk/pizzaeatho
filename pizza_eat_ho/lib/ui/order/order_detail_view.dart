@@ -95,6 +95,9 @@ class _OrderDetailViewState extends State<OrderDetailView> {
                   if (!success) {
                     Navigator.pushNamed(context, "/login");
                   } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('장바구니에 담겼습니다.')),
+                    );
                     Navigator.pop(context);
                   }
                 },

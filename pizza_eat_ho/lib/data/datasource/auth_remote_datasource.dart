@@ -91,7 +91,7 @@ class AuthRemoteDataSource {
 
     final url = Uri.http(IP_PORT, "${END_POINT}/checkid/${userId}");
 
-    final response = await http.post(url);
+    final response = await http.get(url);
 
     // 실패시
     if (response.statusCode != 200) {
