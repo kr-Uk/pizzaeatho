@@ -7,6 +7,7 @@ import '../../data/model/order.dart';
 import '../../util/common.dart';
 import '../auth/auth_viewmodel.dart';
 import 'order_history_detail_viewmodel.dart';
+import 'review_form_page.dart';
 
 class OrderHistoryDetailView extends StatelessWidget {
   const OrderHistoryDetailView({super.key});
@@ -95,7 +96,7 @@ class OrderHistoryDetailView extends StatelessWidget {
                           Navigator.pushNamed(context, '/login');
                           return;
                         }
-                        _showReviewDialog(context, viewModel, item, user.userId);
+                        _openReviewPage(context, item, user.userId);
                       },
                       child: const Text('리뷰 작성하기'),
                     ),
@@ -108,97 +109,24 @@ class OrderHistoryDetailView extends StatelessWidget {
     );
   }
 
-  void _showReviewDialog(
+  void _openReviewPage(
     BuildContext context,
-    OrderHistoryDetailViewModel viewModel,
     OrderHistoryDetailDto item,
     int userId,
   ) {
-    final controller = TextEditingController();
-    int rating = 5;
-
-    showDialog<void>(
-      context: context,
-      builder: (dialogContext) {
-        return StatefulBuilder(
-          builder: (context, setState) {
-            return AlertDialog(
-              title: const Text('리뷰 작성'),
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Row(
-                    children: [
-                      const Text('평점'),
-                      const SizedBox(width: 12),
-                      DropdownButton<int>(
-                        value: rating,
-                        items: List.generate(
-                          5,
-                          (index) => DropdownMenuItem(
-                            value: index + 1,
-                            child: Text('${index + 1}점'),
-                          ),
-                        ),
-                        onChanged: (value) {
-                          if (value == null) return;
-                          setState(() => rating = value);
-                        },
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 12),
-                  TextField(
-                    controller: controller,
-                    maxLines: 3,
-                    decoration: const InputDecoration(
-                      hintText: '한줄평을 입력해주세요.',
-                      border: OutlineInputBorder(),
-                    ),
-                  ),
-                ],
-              ),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.pop(dialogContext),
-                  child: const Text('취소'),
-                ),
-                ElevatedButton(
-                  onPressed: () async {
-                    final text = controller.text.trim();
-                    if (text.isEmpty) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('리뷰 내용을 입력해주세요.')),
-                      );
-                      return;
-                    }
-
-                    final success = await viewModel.addReview(
-                      userId: userId,
-                      productId: item.productId,
-                      orderDetailId: item.orderDetailId,
-                      rating: rating,
-                      comment: text,
-                    );
-
-                    if (!context.mounted) return;
-
-                    Navigator.pop(dialogContext);
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(
-                          success ? '리뷰가 등록되었습니다.' : '리뷰 등록에 실패했습니다.',
-                        ),
-                      ),
-                    );
-                  },
-                  child: const Text('등록'),
-                ),
-              ],
-            );
-          },
-        );
-      },
-    ).then((_) => controller.dispose());
+    Navigator.push<bool>(
+      context,
+      MaterialPageRoute(
+        builder: (_) => ReviewFormPage.create(
+          userId: userId,
+          options: [item],
+        ),
+      ),
+    ).then((result) {
+      if (!context.mounted || result != true) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('리뷰가 등록되었습니다.')),
+      );
+    });
   }
 }

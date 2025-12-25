@@ -32,5 +32,5 @@ final TextStyle textProductPrice = GoogleFonts.nunito(
 );
 
 // final String IP_PORT = "192.168.32.92:9987";
-final String IP_PORT = "192.168.0.10:9987";
+final String IP_PORT = "192.168.0.8:9987";
 

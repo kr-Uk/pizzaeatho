@@ -7,6 +7,7 @@ import '../../util/common.dart';
 import '../auth/auth_viewmodel.dart';
 import 'order_history_detail_page.dart';
 import 'order_history_viewmodel.dart';
+import 'review_form_page.dart';
 
 const Color _christmasGreen = Color(0xFF0F6B3E);
 const Color _snowBackground = Color(0xFFF9F6F1);
@@ -253,19 +254,18 @@ class OrderHistoryView extends StatelessWidget {
                           return;
                         }
 
-                        final result = await _showReviewDialog(
+                        final result = await Navigator.push<bool>(
                           context,
-                          viewModel,
-                          details,
-                          user.userId,
-                        );
-                        if (!context.mounted || result == null) return;
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(
-                              result ? '리뷰가 등록되었습니다.' : '리뷰 등록에 실패했습니다.',
+                          MaterialPageRoute(
+                            builder: (_) => ReviewFormPage.create(
+                              userId: user.userId,
+                              options: details,
                             ),
                           ),
+                        );
+                        if (!context.mounted || result != true) return;
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('리뷰가 등록되었습니다.')),
                         );
                       },
                       child: const Text('리뷰 작성하기'),
@@ -279,129 +279,4 @@ class OrderHistoryView extends StatelessWidget {
     );
   }
 
-  Future<bool?> _showReviewDialog(
-    BuildContext context,
-    OrderHistoryViewModel viewModel,
-    List<OrderHistoryDetailDto> details,
-    int userId,
-  ) async {
-    final controller = TextEditingController();
-    int rating = 5;
-    OrderHistoryDetailDto selected = details.first;
-    String? errorText;
-
-    try {
-      return await showDialog<bool>(
-        context: context,
-        builder: (dialogContext) {
-          return StatefulBuilder(
-            builder: (context, setState) {
-              return AlertDialog(
-                title: const Text('리뷰 작성'),
-                content: SingleChildScrollView(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      DropdownButton<OrderHistoryDetailDto>(
-                        value: selected,
-                        isExpanded: true,
-                        items: details
-                            .map(
-                              (detail) => DropdownMenuItem(
-                                value: detail,
-                                child: Text(detail.product.name),
-                              ),
-                            )
-                            .toList(),
-                        onChanged: (value) {
-                          if (value == null) return;
-                          setState(() => selected = value);
-                        },
-                      ),
-                      const SizedBox(height: 12),
-                      Row(
-                        children: [
-                          const Text('평점'),
-                          const SizedBox(width: 12),
-                          DropdownButton<int>(
-                            value: rating,
-                            items: List.generate(
-                              5,
-                              (index) => DropdownMenuItem(
-                                value: index + 1,
-                                child: Text('${index + 1}점'),
-                              ),
-                            ),
-                            onChanged: (value) {
-                              if (value == null) return;
-                              setState(() => rating = value);
-                            },
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 12),
-                      TextField(
-                        controller: controller,
-                        maxLines: 3,
-                        decoration: const InputDecoration(
-                          hintText: '한줄평을 입력해주세요.',
-                          border: OutlineInputBorder(),
-                        ),
-                      ),
-                      if (errorText != null)
-                        Padding(
-                          padding: const EdgeInsets.only(top: 8),
-                          child: Align(
-                            alignment: Alignment.centerLeft,
-                            child: Text(
-                              errorText!,
-                              style: const TextStyle(color: Colors.red),
-                            ),
-                          ),
-                        ),
-                    ],
-                  ),
-                ),
-                actions: [
-                  TextButton(
-                    onPressed: () => Navigator.pop(dialogContext),
-                    child: const Text('취소'),
-                  ),
-                  ElevatedButton(
-                    onPressed: () async {
-                      final text = controller.text.trim();
-                      if (text.isEmpty) {
-                        setState(() {
-                          errorText = '리뷰 내용을 입력해주세요.';
-                        });
-                        return;
-                      }
-
-                      final navigator = Navigator.of(dialogContext);
-                      final success = await viewModel.addReview(
-                        userId: userId,
-                        productId: selected.productId,
-                        orderDetailId: selected.orderDetailId,
-                        rating: rating,
-                        comment: text,
-                      );
-
-                      if (!context.mounted || !dialogContext.mounted) return;
-
-                      if (navigator.canPop()) {
-                        navigator.pop(success);
-                      }
-                    },
-                    child: const Text('등록'),
-                  ),
-                ],
-              );
-            },
-          );
-        },
-      );
-    } finally {
-      controller.dispose();
-    }
-  }
 }

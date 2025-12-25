@@ -9,6 +9,7 @@ import '../../data/model/product.dart';
 import '../../data/model/shoppingcart.dart';
 import '../auth/auth_viewmodel.dart';
 import 'order_detail_viewmodel.dart';
+import 'review_form_page.dart';
 
 const Color _christmasGreen = Color(0xFF0F6B3E);
 const Color _snowBackground = Color(0xFFF9F6F1);
@@ -188,7 +189,12 @@ class _OrderDetailViewState extends State<OrderDetailView> {
                           itemCount: comments.length,
                           itemBuilder: (_, index) {
                             final comment = comments[index];
-                            return _buildReviewCard(context, viewModel, comment);
+                            return _buildReviewCard(
+                              context,
+                              viewModel,
+                              comment,
+                              product.name,
+                            );
                           },
                         ),
                 ),
@@ -267,6 +273,7 @@ class _OrderDetailViewState extends State<OrderDetailView> {
     BuildContext context,
     OrderDetailViewModel viewModel,
     ProductCommentDto comment,
+    String productName,
   ) {
     final authViewModel = context.watch<AuthViewModel>();
     final currentUserId = authViewModel.user?.userId;
@@ -305,14 +312,13 @@ class _OrderDetailViewState extends State<OrderDetailView> {
                   children: [
                     IconButton(
                       icon: const Icon(Icons.edit, size: 18),
-                      onPressed: () {
-                        _showEditReviewDialog(
-                          context,
-                          viewModel,
-                          comment,
-                          currentUserId,
-                        );
-                      },
+                      onPressed: () => _openEditReviewPage(
+                        context,
+                        viewModel,
+                        comment,
+                        currentUserId,
+                        productName,
+                      ),
                     ),
                     IconButton(
                       icon: const Icon(Icons.delete, size: 18),
@@ -356,98 +362,32 @@ class _OrderDetailViewState extends State<OrderDetailView> {
     );
   }
 
-  void _showEditReviewDialog(
+  void _openEditReviewPage(
     BuildContext context,
     OrderDetailViewModel viewModel,
     ProductCommentDto comment,
     int userId,
+    String productName,
   ) {
-    final controller = TextEditingController(text: comment.comment);
-    int rating = comment.rating;
-
-    showDialog<void>(
-      context: context,
-      builder: (dialogContext) {
-        return StatefulBuilder(
-          builder: (context, setState) {
-            return AlertDialog(
-              title: const Text('리뷰 수정'),
-              content: SingleChildScrollView(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Row(
-                      children: [
-                        const Text('평점'),
-                        const SizedBox(width: 12),
-                        DropdownButton<int>(
-                          value: rating,
-                          items: List.generate(
-                            5,
-                            (index) => DropdownMenuItem(
-                              value: index + 1,
-                              child: Text('${index + 1}점'),
-                            ),
-                          ),
-                          onChanged: (value) {
-                            if (value == null) return;
-                            setState(() => rating = value);
-                          },
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 12),
-                    TextField(
-                      controller: controller,
-                      maxLines: 3,
-                      decoration: const InputDecoration(
-                        hintText: '한줄평을 입력해주세요.',
-                        border: OutlineInputBorder(),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.pop(dialogContext),
-                  child: const Text('취소'),
-                ),
-                ElevatedButton(
-                  onPressed: () async {
-                    final text = controller.text.trim();
-                    if (text.isEmpty) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('리뷰 내용을 입력해주세요.')),
-                      );
-                      return;
-                    }
-
-                    final success = await viewModel.updateComment(
-                      comment.commentId,
-                      userId,
-                      CommentUpdateRequestDto(rating: rating, comment: text),
-                    );
-
-                    if (!context.mounted) return;
-
-                    Navigator.pop(dialogContext);
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(
-                          success ? '리뷰가 수정되었습니다.' : '리뷰 수정에 실패했습니다.',
-                        ),
-                      ),
-                    );
-                  },
-                  child: const Text('저장'),
-                ),
-              ],
-            );
-          },
-        );
-      },
-    ).then((_) => controller.dispose());
+    Navigator.push<bool>(
+      context,
+      MaterialPageRoute(
+        builder: (_) => ReviewFormPage.edit(
+          userId: userId,
+          commentId: comment.commentId,
+          productName: productName,
+          rating: comment.rating,
+          comment: comment.comment,
+        ),
+      ),
+    ).then((result) async {
+      if (!context.mounted || result != true) return;
+      await viewModel.refreshComments();
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('리뷰가 수정되었습니다.')),
+      );
+    });
   }
 
   void _confirmDeleteReview(
