@@ -5,7 +5,7 @@ import 'package:pizzaeatho/ui/order/order_history_page.dart';
 import 'package:pizzaeatho/util/common.dart';
 import 'package:provider/provider.dart';
 
-const Color _christmasGreen = Color(0xFF0F6B3E);
+const Color _christmasGreen = redBackground;
 const Color _snowBackground = Color(0xFFF9F6F1);
 
 class MypageView extends StatefulWidget {
@@ -121,6 +121,83 @@ class _UserLogin extends StatelessWidget {
       child: Column(
         children: [
           const SizedBox(height: 16),
+          Container(
+            padding: const EdgeInsets.all(32),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(40.r),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.08),
+                  blurRadius: 10,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      width: 288.w,
+                      height: 288.w,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(72.r),
+                        image: const DecorationImage(
+                          image: AssetImage('assets/ganadi1.png'),
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: 40.w),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            userName,
+                            style: TextStyle(
+                              fontSize: 70.sp,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black87,
+                            ),
+                          ),
+                          SizedBox(height: 12.h),
+                          Text(
+                            '님 반가워요!',
+                            style: TextStyle(
+                              fontSize: 70.sp,
+                              color: Colors.grey.shade700,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 40.h),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      context.read<AuthViewModel>().logout();
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: redBackground,
+                      foregroundColor: Colors.white,
+                      padding: EdgeInsets.symmetric(vertical: 24.h),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(32.r),
+                      ),
+                    ),
+                    child: const Text('로그아웃'),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 16),
           _buildMenuCard(
             icon: Icons.receipt_long_outlined,
             title: '주문 내역',
@@ -134,47 +211,25 @@ class _UserLogin extends StatelessWidget {
             },
           ),
           _buildMenuCard(
-            icon: Icons.favorite_border,
-            title: '즐겨찾기',
+            icon: Icons.shopping_cart_outlined,
+            title: '장바구니',
+            onTap: () {
+              Navigator.pushNamed(context, '/shoppingcart');
+            },
           ),
           _buildMenuCard(
-            icon: Icons.notifications_none,
-            title: '알림',
-          ),
-          const SizedBox(height: 16),
-          InkWell(
+            icon: Icons.smart_toy_outlined,
+            title: '온디바이스 AI',
             onTap: () {
-              context.read<AuthViewModel>().logout();
+              Navigator.pushNamed(context, '/on_device_ai');
             },
-            child: Container(
-              decoration: BoxDecoration(
-                color: redBackground,
-                borderRadius: BorderRadius.circular(24.r),
-              ),
-              width: double.infinity,
-              height: 140.h,
-              child: Center(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.power_settings_new_outlined,
-                      color: Colors.white,
-                      size: 72.w,
-                    ),
-                    SizedBox(width: 12.w),
-                    Text(
-                      '로그아웃',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 54.sp,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
+          ),
+          _buildMenuCard(
+            icon: Icons.map_outlined,
+            title: '매장 찾기',
+            onTap: () {
+              Navigator.pushNamed(context, '/store');
+            },
           ),
           SizedBox(height: 40.h),
         ],

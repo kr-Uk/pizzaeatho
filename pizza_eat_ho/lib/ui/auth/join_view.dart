@@ -344,6 +344,11 @@ class _JoinViewState extends State<JoinView> {
                                       name: _nameController.text.trim(),
                                     );
                                     if (success && context.mounted) {
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        const SnackBar(
+                                          content: Text('회원가입 성공. 로그인 해주세요.'),
+                                        ),
+                                      );
                                       Navigator.of(context).pop();
                                     }
                                   },
