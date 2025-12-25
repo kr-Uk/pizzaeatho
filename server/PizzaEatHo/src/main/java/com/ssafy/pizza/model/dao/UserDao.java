@@ -12,5 +12,7 @@ public interface UserDao {
     User selectByUserId(@Param("userId") Integer userId);
 
     int countById(@Param("id") String id);
+
+    int addStamp(@Param("userId") Integer userId, @Param("count") Integer count);
 }
 

@@ -10,5 +10,7 @@ public interface UserService {
     User getByUserId(Integer userId);
 
     boolean isUserIdAvailable(String id);
+
+    int addStamp(Integer userId, Integer count);
 }
 

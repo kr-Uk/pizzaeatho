@@ -314,22 +314,27 @@ class _OrderDetailViewState extends State<OrderDetailView> {
                   title: "토핑",
                   showTitleBorder: false,
                   child: Column(
-                    children: toppings.map((topping) {
-                      final isChecked = viewModel.selectedToppingIds.contains(
-                        topping.toppingId,
-                      );
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _buildSelectedToppings(viewModel),
+                      const SizedBox(height: 8),
+                      ...toppings.map((topping) {
+                        final isChecked = viewModel.selectedToppingIds.contains(
+                          topping.toppingId,
+                        );
 
-                      return CheckboxListTile(
-                        value: isChecked,
-                        onChanged: (checked) {
-                          viewModel.toggleTopping(topping.toppingId);
-                        },
-                        title: Text(topping.name),
-                        secondary: Text("+${topping.price}"),
-                        controlAffinity: ListTileControlAffinity.leading,
-                        activeColor: _christmasGreen,
-                      );
-                    }).toList(),
+                        return CheckboxListTile(
+                          value: isChecked,
+                          onChanged: (checked) {
+                            viewModel.toggleTopping(topping.toppingId);
+                          },
+                          title: Text(topping.name),
+                          secondary: Text("+${topping.price}"),
+                          controlAffinity: ListTileControlAffinity.leading,
+                          activeColor: _christmasGreen,
+                        );
+                      }),
+                    ],
                   ),
                 ),
               ],
@@ -547,6 +552,40 @@ class _OrderDetailViewState extends State<OrderDetailView> {
           child,
         ],
       ),
+    );
+  }
+
+  Widget _buildSelectedToppings(OrderDetailViewModel viewModel) {
+    final selected = viewModel.selectedToppings;
+    if (selected.isEmpty) {
+      return Text(
+        '선택한 토핑: 없음',
+        style: TextStyle(
+          color: Colors.grey.shade700,
+          fontWeight: FontWeight.w600,
+        ),
+      );
+    }
+
+    return Wrap(
+      spacing: 8,
+      runSpacing: 8,
+      children: selected.map((topping) {
+        return Container(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+          decoration: BoxDecoration(
+            color: const Color(0xFFFFE6E2),
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: _christmasGreen.withOpacity(0.3),
+            ),
+          ),
+          child: Text(
+            topping.name,
+            style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+          ),
+        );
+      }).toList(),
     );
   }
 

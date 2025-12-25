@@ -85,4 +85,16 @@ class AuthViewModel with ChangeNotifier {
       return false;
     }
   }
+
+  Future<void> incrementStamp(int count) async {
+    if (_user == null || count <= 0) return;
+    final updated = UserLoginResponseDto(
+      userId: _user!.userId,
+      name: _user!.name,
+      stamp: _user!.stamp + count,
+    );
+    await _authRepository.saveUser(updated);
+    _user = updated;
+    notifyListeners();
+  }
 }

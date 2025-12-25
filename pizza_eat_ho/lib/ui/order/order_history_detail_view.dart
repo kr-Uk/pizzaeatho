@@ -6,6 +6,7 @@ import '../../data/model/enums.dart';
 import '../../data/model/order.dart';
 import '../../util/common.dart';
 import '../auth/auth_viewmodel.dart';
+import 'shoppingcart_viewmodel.dart';
 import 'order_history_detail_viewmodel.dart';
 import 'review_form_page.dart';
 
@@ -19,6 +20,7 @@ class OrderHistoryDetailView extends StatelessWidget {
   Widget build(BuildContext context) {
     final viewModel = context.watch<OrderHistoryDetailViewModel>();
     final authViewModel = context.watch<AuthViewModel>();
+    final shoppingcartViewModel = context.read<ShoppingcartViewModel>();
     final baseUrl = "http://${IP_PORT}/imgs/pizza/";
     final orderHistoryDetail = viewModel.orderDetails;
 
@@ -138,18 +140,56 @@ class OrderHistoryDetailView extends StatelessWidget {
                     );
                   }).toList(),
                 ),
-                if (item.status == OrderStatus.done)
-                  Padding(
-                    padding: const EdgeInsets.only(top: 12.0),
-                    child: ElevatedButton(
-                      onPressed: () {
-                        final user = authViewModel.user;
-                        if (user == null) {
-                          Navigator.pushNamed(context, '/login');
-                          return;
-                        }
-                        _openReviewPage(context, item, user.userId);
-                      },
+                SizedBox(height: 12.h),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    if (item.status == OrderStatus.done)
+                      ElevatedButton(
+                        onPressed: () {
+                          final user = authViewModel.user;
+                          if (user == null) {
+                            Navigator.pushNamed(context, '/login');
+                            return;
+                          }
+                          _openReviewPage(context, item, user.userId);
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: redBackground,
+                          foregroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        child: const Text('리뷰 작성하기'),
+                      ),
+                    if (item.status == OrderStatus.done) SizedBox(width: 8.w),
+                    ElevatedButton(
+                      onPressed: viewModel.hasOptions
+                          ? () async {
+                              final cartItem = viewModel.buildCartItem(item);
+                              if (cartItem == null) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text('장바구니 담기에 실패했습니다.'),
+                                  ),
+                                );
+                                return;
+                              }
+                              final success =
+                                  await shoppingcartViewModel.addItem(cartItem);
+                              if (!context.mounted) return;
+                              if (!success) {
+                                Navigator.pushNamed(context, '/login');
+                                return;
+                              }
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('장바구니에 담았습니다.'),
+                                ),
+                              );
+                            }
+                          : null,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: redBackground,
                         foregroundColor: Colors.white,
@@ -157,9 +197,10 @@ class OrderHistoryDetailView extends StatelessWidget {
                           borderRadius: BorderRadius.circular(12),
                         ),
                       ),
-                      child: const Text('리뷰 작성하기'),
+                      child: const Text('장바구니 담기'),
                     ),
-                  ),
+                  ],
+                ),
               ],
             ),
           );

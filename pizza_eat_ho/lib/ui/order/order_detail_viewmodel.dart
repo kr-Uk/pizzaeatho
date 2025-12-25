@@ -24,12 +24,14 @@ class OrderDetailViewModel with ChangeNotifier {
   DoughDto? selectedDough;
   CrustDto? selectedCrust;
   Set<int> selectedToppingIds = {};
+  bool _defaultToppingsApplied = false;
 
   OrderDetailViewModel(this.productId) {
     _productRepository = ProductRepository();
     _commentRepository = CommentRepository();
     _loadComments();
     _loadToppings();
+    _loadDefaultToppings();
     _loadDoughs();
     _loadCrusts();
   }
@@ -90,6 +92,20 @@ class OrderDetailViewModel with ChangeNotifier {
   Future<void> _loadToppings() async {
     _toppings = await _productRepository.getToppings();
     notifyListeners();
+  }
+
+  Future<void> _loadDefaultToppings() async {
+    try {
+      final defaults = await _productRepository.getDefaultToppings(productId);
+      if (_defaultToppingsApplied) return;
+      if (selectedToppingIds.isEmpty) {
+        selectedToppingIds = defaults.defaultTopping.toSet();
+        _defaultToppingsApplied = true;
+        notifyListeners();
+      }
+    } catch (_) {
+      // Ignore if default toppings are unavailable.
+    }
   }
 
   Future<void> _loadDoughs() async {

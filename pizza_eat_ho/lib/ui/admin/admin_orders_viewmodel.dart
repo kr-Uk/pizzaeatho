@@ -8,9 +8,12 @@ class AdminOrdersViewModel with ChangeNotifier {
 
   bool _isLoading = false;
   List<UserOrderListItemDto> _orders = [];
+  final Map<int, List<OrderDetailResponseDto>> _orderDetails = {};
 
   bool get isLoading => _isLoading;
   List<UserOrderListItemDto> get orders => _orders;
+  List<OrderDetailResponseDto>? getOrderDetails(int orderId) =>
+      _orderDetails[orderId];
 
   List<UserOrderListItemDto> get receivedOrders =>
       _orders.where((o) => o.status == OrderStatus.received).toList();
@@ -26,10 +29,18 @@ class AdminOrdersViewModel with ChangeNotifier {
     notifyListeners();
     try {
       _orders = await _orderRepository.getAllOrders();
+      _orderDetails.clear();
     } finally {
       _isLoading = false;
       notifyListeners();
     }
+  }
+
+  Future<void> loadOrderDetails(int orderId) async {
+    if (_orderDetails.containsKey(orderId)) return;
+    final details = await _orderRepository.getOrderDetail(orderId);
+    _orderDetails[orderId] = details;
+    notifyListeners();
   }
 
   Future<void> updateStatus(int orderId, OrderStatus status) async {

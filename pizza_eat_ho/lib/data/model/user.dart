@@ -37,25 +37,27 @@ class UserLoginRequestDto {
 class UserLoginResponseDto {
   final int userId;
   final String name;
-  final int payment;
+  final int stamp;
 
   UserLoginResponseDto({
     required this.userId,
     required this.name,
-    required this.payment,
+    required this.stamp,
   });
 
   Map<String, dynamic> toJson() => {
     'userId': userId,
     'name': name,
-    'payment': payment,
+    'stamp': stamp,
   };
 
   factory UserLoginResponseDto.fromJson(Map<String, dynamic> json) {
     return UserLoginResponseDto(
       userId: (json['userId'] as num).toInt(),
       name: json['name'] as String,
-      payment: (json['payment'] as num).toInt(),
+      stamp: (json['stamp'] as num?)?.toInt() ??
+          (json['payment'] as num?)?.toInt() ??
+          0,
     );
   }
 }
@@ -65,13 +67,13 @@ class UserInfoResponseDto {
   final int userId;
   final String id;
   final String name;
-  final int payment;
+  final int stamp;
 
   UserInfoResponseDto({
     required this.userId,
     required this.id,
     required this.name,
-    required this.payment,
+    required this.stamp,
   });
 
   factory UserInfoResponseDto.fromJson(Map<String, dynamic> json) {
@@ -79,7 +81,9 @@ class UserInfoResponseDto {
       userId: (json['userId'] as num).toInt(),
       id: json['id'] as String,
       name: json['name'] as String,
-      payment: (json['payment'] as num).toInt(),
+      stamp: (json['stamp'] as num?)?.toInt() ??
+          (json['payment'] as num?)?.toInt() ??
+          0,
     );
   }
 }

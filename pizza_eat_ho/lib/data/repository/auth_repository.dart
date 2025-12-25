@@ -25,6 +25,10 @@ class AuthRepository {
     await _localDataSource.clear();
   }
 
+  Future<void> saveUser(UserLoginResponseDto user) async {
+    await _localDataSource.saveUser(user);
+  }
+
   // 회원가입
   Future<void> signup(UserSignupRequestDto dto) async{
     await _remoteDataSource.signup(dto);

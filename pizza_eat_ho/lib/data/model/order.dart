@@ -25,6 +25,7 @@ class OrderCreateRequestDto {
   final int doughId;
   final int crustId;
   final List<OrderCreateToppingReqDto> toppings;
+  final int quantity;
   final int unitPrice;
   final String? fcmToken;
 
@@ -35,6 +36,7 @@ class OrderCreateRequestDto {
     required this.doughId,
     required this.crustId,
     required this.toppings,
+    required this.quantity,
     required this.unitPrice,
     this.fcmToken,
   });
@@ -47,6 +49,7 @@ class OrderCreateRequestDto {
       'doughId': doughId,
       'crustId': crustId,
       'toppings': toppings.map((e) => e.toJson()).toList(),
+      'quantity': quantity,
       'unitPrice': unitPrice,
     };
     if (fcmToken != null && fcmToken!.isNotEmpty) {

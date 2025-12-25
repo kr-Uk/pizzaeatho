@@ -26,5 +26,11 @@
         INSERT INTO `USER` (id, pw, name, stamp)
         VALUES (#{id}, #{pw}, #{name}, #{stamp})
     </insert>
+
+    <update id="addStamp">
+        UPDATE `USER`
+        SET stamp = stamp + #{count}
+        WHERE user_id = #{userId}
+    </update>
 </mapper>
 

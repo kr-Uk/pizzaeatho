@@ -33,8 +33,11 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     private OrderDetailDao dDao;
 
-//    @Autowired
-//    private FcmPushService fcmPushService;
+    @Autowired
+    private UserService uService;
+
+    @Autowired
+    private FcmPushService fcmPushService;
 
     @Override
     @Transactional
@@ -51,15 +54,19 @@ public class OrderServiceImpl implements OrderService {
         order.setFcmToken(first.getFcmToken());
         oDao.insertOrder(order);
 
+        int totalQuantity = 0;
+
         for (OrderCreateRequest request : requests) {
             OrderDetail detail = new OrderDetail();
             detail.setOrderId(order.getOrderId());
             detail.setProductId(request.getProductId());
             detail.setDoughId(request.getDoughId());
             detail.setCrustId(request.getCrustId());
-            detail.setQuantity(1);
+            int quantity = request.getQuantity() == null ? 1 : request.getQuantity();
+            detail.setQuantity(quantity);
             detail.setUnitPrice(request.getUnitPrice());
             dDao.insertOrderDetail(detail);
+            totalQuantity += quantity;
 
             List<OrderToppingRequest> toppings = request.getToppings();
             if (toppings != null) {
@@ -71,6 +78,10 @@ public class OrderServiceImpl implements OrderService {
                     dDao.insertOrderDetailTopping(detailTopping);
                 }
             }
+        }
+
+        if (totalQuantity > 0) {
+            uService.addStamp(order.getUserId(), totalQuantity);
         }
 
         return new OrderCreateResponse(order.getOrderId(), order.getStatus());
@@ -121,7 +132,7 @@ public class OrderServiceImpl implements OrderService {
             String fcmToken = oDao.selectFcmTokenByOrderId(orderId);
             if (fcmToken != null && !fcmToken.isBlank()) {
                 try {
-//                    fcmPushService.sendOrderReadyPush(fcmToken, orderId);
+                    fcmPushService.sendOrderReadyPush(fcmToken, orderId);
                 } catch (Exception e) {
                     log.warn("FCM send failed for order {}", orderId, e);
                 }

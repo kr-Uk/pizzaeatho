@@ -45,7 +45,7 @@ class _MypageViewState extends State<MypageView> {
       ),
       backgroundColor: _snowBackground,
       body: authViewModel.isLoggedIn
-          ? _UserLogin(userName: user!.name)
+          ? _UserLogin(userName: user!.name, stamp: user.stamp)
           : const _NotUserLogin(),
     );
   }
@@ -110,9 +110,10 @@ class _NotUserLogin extends StatelessWidget {
 }
 
 class _UserLogin extends StatelessWidget {
-  const _UserLogin({super.key, required this.userName});
+  const _UserLogin({super.key, required this.userName, required this.stamp});
 
   final String userName;
+  final int stamp;
 
   @override
   Widget build(BuildContext context) {
@@ -176,6 +177,51 @@ class _UserLogin extends StatelessWidget {
                     ),
                   ],
                 ),
+                SizedBox(height: 36.h),
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFFFE6E2),
+                    borderRadius: BorderRadius.circular(24.r),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        '멤버십 등급: ${_gradeForStamp(stamp)}',
+                        style: TextStyle(
+                          fontSize: 54.sp,
+                          color: Colors.grey.shade700,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      SizedBox(height: 10.h),
+                      Text(
+                        '스탬프 ${stamp}개',
+                        style: TextStyle(
+                          fontSize: 48.sp,
+                          color: Colors.grey.shade700,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      SizedBox(height: 14.h),
+                      _StampGauge(
+                        stamp: stamp,
+                        color: redBackground,
+                      ),
+                      SizedBox(height: 8.h),
+                      Text(
+                        _nextGradeMessage(stamp),
+                        style: TextStyle(
+                          fontSize: 44.sp,
+                          color: Colors.grey.shade700,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
                 SizedBox(height: 40.h),
                 SizedBox(
                   width: double.infinity,
@@ -237,6 +283,18 @@ class _UserLogin extends StatelessWidget {
     );
   }
 
+  String _gradeForStamp(int stamp) {
+    if (stamp >= 10) return '피짜잇호잇짜';
+    if (stamp >= 5) return '피짜잇';
+    return '피짜';
+  }
+
+  String _nextGradeMessage(int stamp) {
+    if (stamp >= 10) return '최고 등급입니다.';
+    if (stamp >= 5) return '다음 등급까지 ${10 - stamp}개 남았습니다.';
+    return '다음 등급까지 ${5 - stamp}개 남았습니다.';
+  }
+
   Widget _buildMenuCard({
     required IconData icon,
     required String title,
@@ -281,6 +339,45 @@ class _UserLogin extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class _StampGauge extends StatelessWidget {
+  const _StampGauge({
+    required this.stamp,
+    required this.color,
+  });
+
+  final int stamp;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    final isMax = stamp >= 10;
+    final int maxStamp = stamp >= 5 ? 10 : 5;
+    final double value = isMax ? 1 : (stamp / maxStamp).clamp(0, 1).toDouble();
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        LinearProgressIndicator(
+          value: value,
+          minHeight: 14,
+          backgroundColor: color.withOpacity(0.15),
+          valueColor: AlwaysStoppedAnimation<Color>(color),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        SizedBox(height: 6.h),
+        Text(
+          isMax ? 'MAX' : '$stamp / $maxStamp',
+          style: TextStyle(
+            fontSize: 38.sp,
+            color: Colors.grey.shade700,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ],
     );
   }
 }

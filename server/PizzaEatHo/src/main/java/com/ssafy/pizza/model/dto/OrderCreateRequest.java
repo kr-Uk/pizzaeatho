@@ -9,6 +9,7 @@ public class OrderCreateRequest {
     private Integer doughId;
     private Integer crustId;
     private List<OrderToppingRequest> toppings;
+    private Integer quantity;
     private Integer unitPrice;
     private String fcmToken;
 
@@ -60,6 +61,14 @@ public class OrderCreateRequest {
 
     public void setToppings(List<OrderToppingRequest> toppings) {
         this.toppings = toppings;
+    }
+
+    public Integer getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(Integer quantity) {
+        this.quantity = quantity;
     }
 
     public Integer getUnitPrice() {

@@ -31,5 +31,10 @@ public class UserServiceImpl implements UserService {
     public boolean isUserIdAvailable(String id) {
         return userDao.countById(id) == 0;
     }
+
+    @Override
+    public int addStamp(Integer userId, Integer count) {
+        return userDao.addStamp(userId, count);
+    }
 }
 

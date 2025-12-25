@@ -53,6 +53,8 @@ class ShoppingcartViewModel with ChangeNotifier {
 
     if (user == null || _items.isEmpty) return false;
 
+    final totalQuantity = _items.fold(0, (sum, item) => sum + item.quantity);
+
     String? fcmToken;
     try {
       fcmToken = await FcmService.instance.ensureToken();
@@ -72,6 +74,7 @@ class ShoppingcartViewModel with ChangeNotifier {
         quantity: 1,
       ))
           .toList(),
+      quantity: item.quantity,
       unitPrice: item.totalPrice,
       fcmToken: fcmToken,
     )).toList();
@@ -79,6 +82,7 @@ class ShoppingcartViewModel with ChangeNotifier {
     try {
       await _orderRepository.placeOrder(orderRequest);
       await clearCart();
+      await _authViewModel.incrementStamp(totalQuantity);
 
       // 주문 성공 메시지 출력
       debugPrint("주문이 성공적으로 완료되었습니다!");
