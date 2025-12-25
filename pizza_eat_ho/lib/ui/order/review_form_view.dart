@@ -5,6 +5,9 @@ import 'package:provider/provider.dart';
 
 import 'review_form_viewmodel.dart';
 
+const Color _christmasGreen = redBackground;
+const Color _snowBackground = Color(0xFFF9F6F1);
+
 class ReviewFormView extends StatefulWidget {
   const ReviewFormView({super.key});
 
@@ -34,52 +37,69 @@ class _ReviewFormViewState extends State<ReviewFormView> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(viewModel.isEdit ? '리뷰 수정' : '리뷰 작성'),
-        backgroundColor: redBackground,
+        title: Text(
+          viewModel.isEdit ? '리뷰 수정' : '리뷰 작성',
+          style: const TextStyle(color: Colors.white),
+        ),
+        backgroundColor: const Color(0xFFB91D2A),
         foregroundColor: Colors.white,
         elevation: 0,
         surfaceTintColor: Colors.transparent,
       ),
+      backgroundColor: _snowBackground,
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildProductSection(viewModel),
-              const SizedBox(height: 16),
-              DropdownButtonFormField<int>(
-                value: viewModel.rating,
-                decoration: const InputDecoration(
-                  labelText: '평점',
-                  border: OutlineInputBorder(),
+              _buildSectionTitle(
+                '리뷰 정보',
+                showAccent: false,
+                showAccentLine: true,
+              ),
+              const SizedBox(height: 12),
+              _buildCard(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildProductSection(viewModel),
+                    const SizedBox(height: 16),
+                    DropdownButtonFormField<int>(
+                      value: viewModel.rating,
+                      decoration: const InputDecoration(
+                        labelText: '평점',
+                        border: OutlineInputBorder(),
+                      ),
+                      items: List.generate(
+                        5,
+                        (index) => DropdownMenuItem(
+                          value: index + 1,
+                          child: Text('${index + 1}점'),
+                        ),
+                      ),
+                      onChanged: viewModel.isSubmitting
+                          ? null
+                          : (value) {
+                              if (value == null) return;
+                              viewModel.setRating(value);
+                            },
+                    ),
+                    const SizedBox(height: 16),
+                    TextField(
+                      controller: _controller,
+                      maxLines: 4,
+                      onChanged: viewModel.setComment,
+                      decoration: const InputDecoration(
+                        labelText: '리뷰 내용',
+                        hintText: '리뷰 내용을 입력해주세요.',
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
+                  ],
                 ),
-                items: List.generate(
-                  5,
-                  (index) => DropdownMenuItem(
-                    value: index + 1,
-                    child: Text('${index + 1}점'),
-                  ),
-                ),
-                onChanged: viewModel.isSubmitting
-                    ? null
-                    : (value) {
-                        if (value == null) return;
-                        viewModel.setRating(value);
-                      },
               ),
               const SizedBox(height: 16),
-              TextField(
-                controller: _controller,
-                maxLines: 4,
-                onChanged: viewModel.setComment,
-                decoration: const InputDecoration(
-                  labelText: '한줄평',
-                  hintText: '한줄평을 입력해주세요.',
-                  border: OutlineInputBorder(),
-                ),
-              ),
-              const SizedBox(height: 24),
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
@@ -160,6 +180,75 @@ class _ReviewFormViewState extends State<ReviewFormView> {
         viewModel.productName.isEmpty ? '-' : viewModel.productName,
         style: const TextStyle(fontWeight: FontWeight.w600),
       ),
+    );
+  }
+
+  Widget _buildSectionTitle(
+    String title, {
+    bool showAccent = true,
+    bool showAccentLine = false,
+  }) {
+    final accentColor = showAccent ? _christmasGreen : Colors.transparent;
+
+    return Row(
+      children: [
+        if (showAccentLine) ...[
+          Container(
+            width: 4,
+            height: 24,
+            decoration: BoxDecoration(
+              color: _christmasGreen,
+              borderRadius: BorderRadius.circular(4),
+            ),
+          ),
+          const SizedBox(width: 8),
+        ],
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+          decoration: BoxDecoration(
+            color: redBackground,
+            borderRadius: BorderRadius.circular(30),
+            border: Border.all(color: accentColor, width: 2),
+          ),
+          child: Text(
+            title,
+            style: const TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Container(
+            height: 2,
+            color: showAccentLine
+                ? _christmasGreen.withOpacity(0.3)
+                : (showAccent
+                    ? _christmasGreen.withOpacity(0.3)
+                    : Colors.transparent),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildCard({required Widget child}) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(18),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.06),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: child,
     );
   }
 }

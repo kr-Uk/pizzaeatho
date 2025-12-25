@@ -58,10 +58,30 @@ class _NotUserLogin extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
         children: [
+          Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(20.r),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.08),
+                  blurRadius: 10,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
+            child: const Icon(
+              Icons.lock_outline,
+              color: redBackground,
+              size: 40,
+            ),
+          ),
+          SizedBox(height: 16.h),
           Text(
-            '로그인이 필요한 서비스입니다.',
+            '로그인이 필요합니다.',
             style: TextStyle(
               fontSize: 40.sp,
               fontWeight: FontWeight.w600,
@@ -81,7 +101,7 @@ class _NotUserLogin extends StatelessWidget {
                 borderRadius: BorderRadius.circular(24.r),
               ),
             ),
-            child: const Text('로그인 하기'),
+            child: const Text('로그인'),
           ),
         ],
       ),

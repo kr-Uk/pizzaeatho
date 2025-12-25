@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 
 import '../../util/common.dart';
 
+const Color _christmasGreen = redBackground;
 const Color _snowBackground = Color(0xFFF9F6F1);
 
 class ShoppingcartView extends StatefulWidget {
@@ -80,8 +81,10 @@ class _ShoppingcartViewState extends State<ShoppingcartView> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
+            _emptyStateIcon(Icons.lock_outline),
+            SizedBox(height: 16.h),
             Text(
-              '로그인이 필요한 서비스입니다.',
+              '로그인이 필요합니다.',
               style: TextStyle(
                 fontSize: 40.sp,
                 fontWeight: FontWeight.w600,
@@ -101,7 +104,7 @@ class _ShoppingcartViewState extends State<ShoppingcartView> {
                   borderRadius: BorderRadius.circular(24.r),
                 ),
               ),
-              child: const Text('로그인 하기'),
+              child: const Text('로그인'),
             ),
           ],
         ),
@@ -110,12 +113,14 @@ class _ShoppingcartViewState extends State<ShoppingcartView> {
 
     final items = shoppingcartViewModel.items;
     final itemCount = items.length;
-    final BASE_URL = "http://${IP_PORT}/imgs/pizza/";
+    final baseUrl = "http://${IP_PORT}/imgs/pizza/";
     if (itemCount == 0) {
       return Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
+            _emptyStateIcon(Icons.shopping_bag_outlined),
+            SizedBox(height: 16.h),
             Text(
               '장바구니가 비었습니다.',
               style: TextStyle(
@@ -172,21 +177,40 @@ class _ShoppingcartViewState extends State<ShoppingcartView> {
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(20.r),
                     image: DecorationImage(
-                      image: NetworkImage("${BASE_URL}${item.product.image}"),
+                      image: NetworkImage("${baseUrl}${item.product.image}"),
                       fit: BoxFit.cover,
                     ),
                   ),
                 ),
                 SizedBox(height: 12.h),
-                Text('${item.product.name}'),
-                Text('도우 : ${item.dough.name}'),
-                Text('크러스트 : ${item.crust.name}'),
                 Row(
                   children: [
-                    const Text('토핑 : '),
                     Expanded(
                       child: Text(
-                        item.toppings.map((t) => "${t.name} ").join(),
+                        item.product.name,
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                    _priceChip('${item.totalPrice}원'),
+                  ],
+                ),
+                SizedBox(height: 8.h),
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: [
+                    _infoChip('도우 ${item.dough.name}'),
+                    _infoChip('크러스트 ${item.crust.name}'),
+                    _infoChip('수량 ${item.quantity}개'),
+                  ],
+                ),
+                SizedBox(height: 8.h),
+                Row(
+                  children: [
+                    const Text('토핑: '),
+                    Expanded(
+                      child: Text(
+                        item.toppings.map((t) => t.name).join(', '),
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
@@ -204,6 +228,63 @@ class _ShoppingcartViewState extends State<ShoppingcartView> {
           ),
         );
       },
+    );
+  }
+
+  Widget _emptyStateIcon(IconData icon) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20.r),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.08),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Icon(
+        icon,
+        color: _christmasGreen,
+        size: 40,
+      ),
+    );
+  }
+
+  Widget _infoChip(String text) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      decoration: BoxDecoration(
+        color: const Color(0xFFFFE6E2),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: _christmasGreen.withOpacity(0.3),
+        ),
+      ),
+      child: Text(
+        text,
+        style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+      ),
+    );
+  }
+
+  Widget _priceChip(String text) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      decoration: BoxDecoration(
+        color: redBackground,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: _christmasGreen, width: 1.2),
+      ),
+      child: Text(
+        text,
+        style: const TextStyle(
+          color: Colors.white,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
     );
   }
 }

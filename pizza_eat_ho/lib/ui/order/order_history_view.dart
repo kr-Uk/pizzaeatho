@@ -9,7 +9,7 @@ import 'order_history_detail_page.dart';
 import 'order_history_viewmodel.dart';
 import 'review_form_page.dart';
 
-const Color _christmasGreen = Color(0xFF0F6B3E);
+const Color _christmasGreen = redBackground;
 const Color _snowBackground = Color(0xFFF9F6F1);
 
 class OrderHistoryView extends StatelessWidget {
@@ -50,6 +50,26 @@ class OrderHistoryView extends StatelessWidget {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
+                  Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(20.r),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.08),
+                          blurRadius: 10,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    child: const Icon(
+                      Icons.lock_outline,
+                      color: _christmasGreen,
+                      size: 40,
+                    ),
+                  ),
+                  SizedBox(height: 16.h),
                   Text(
                     '로그인이 필요합니다.',
                     style: TextStyle(
@@ -85,17 +105,32 @@ class OrderHistoryView extends StatelessWidget {
                   length: 2,
                   child: Column(
                     children: [
-                      Container(
-                        color: const Color(0xFFB91D2A),
-                        child: const TabBar(
-                          labelColor: Colors.white,
-                          indicatorColor: Colors.white,
-                          tabs: [
-                            Tab(text: '주문 현황'),
-                            Tab(text: '주문 완료'),
-                          ],
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 0),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFB91D2A),
+                            borderRadius: BorderRadius.circular(0.r),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.08),
+                                blurRadius: 10,
+                                offset: const Offset(0, 4),
+                              ),
+                            ],
+                          ),
+                          child: const TabBar(
+                            labelColor: Colors.white,
+                            unselectedLabelColor: Colors.white70,
+                            indicatorColor: Colors.white,
+                            tabs: [
+                              Tab(text: '주문 현황'),
+                              Tab(text: '주문 완료'),
+                            ],
+                          ),
                         ),
                       ),
+                      SizedBox(height: 12.h),
                       Expanded(
                         child: TabBarView(
                           children: [
@@ -147,7 +182,7 @@ class OrderHistoryView extends StatelessWidget {
       );
     }
 
-    return ListView.builder(
+      return ListView.builder(
       padding: EdgeInsets.symmetric(vertical: 16.h, horizontal: 16.w),
       itemCount: orders.length,
       itemBuilder: (_, index) {
@@ -158,9 +193,6 @@ class OrderHistoryView extends StatelessWidget {
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(20.r),
-            border: Border(
-              left: BorderSide(color: _christmasGreen, width: 4),
-            ),
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withOpacity(0.08),
@@ -185,44 +217,75 @@ class OrderHistoryView extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Container(
-                      height: 600.h,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(30.r),
-                        image: DecorationImage(
-                          image: NetworkImage(
-                            "${baseUrl}${order.products[0].image}",
+                    Stack(
+                      children: [
+                        Container(
+                          height: 600.h,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(30.r),
+                            image: DecorationImage(
+                              image: NetworkImage(
+                                "${baseUrl}${order.products[0].image}",
+                              ),
+                              fit: BoxFit.cover,
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.08),
+                                blurRadius: 12,
+                                offset: const Offset(0, 6),
+                              ),
+                            ],
                           ),
-                          fit: BoxFit.cover,
                         ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.08),
-                            blurRadius: 12,
-                            offset: const Offset(0, 6),
-                          ),
-                        ],
-                      ),
+                        Positioned(
+                          right: 12,
+                          top: 12,
+                          child: _buildStatusChip(order.status.name),
+                        ),
+                      ],
                     ),
+                    SizedBox(height: 12.h),
                     Text(
                       '주문 #${order.orderId}',
                       style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
-                    SizedBox(height: 8.h),
+                    SizedBox(height: 6.h),
                     Text(
                       '주문시간: ${order.orderTime.toLocal()}',
                       style: const TextStyle(fontSize: 12),
                     ),
-                    SizedBox(height: 8.h),
-                    Text(
-                      '총액: ${order.totalPrice}',
-                      style: const TextStyle(fontSize: 12),
-                    ),
-                    SizedBox(height: 4.h),
-                    Text(
-                      '상태: ${order.status.name}',
-                      style: const TextStyle(fontSize: 12),
+                    SizedBox(height: 6.h),
+                    Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 6,
+                          ),
+                          decoration: BoxDecoration(
+                            color: redBackground,
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(
+                              color: _christmasGreen,
+                              width: 1.2,
+                            ),
+                          ),
+                          child: Text(
+                            '${order.totalPrice}원',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                        const Spacer(),
+                        const Icon(
+                          Icons.chevron_right,
+                          color: _christmasGreen,
+                        ),
+                      ],
                     ),
                   ],
                 ),
@@ -232,7 +295,7 @@ class OrderHistoryView extends StatelessWidget {
                   padding: EdgeInsets.only(top: 8.h),
                   child: Align(
                     alignment: Alignment.centerRight,
-                    child: TextButton(
+                    child: ElevatedButton(
                       onPressed: () async {
                         final user = authViewModel.user;
                         if (user == null) {
@@ -268,6 +331,17 @@ class OrderHistoryView extends StatelessWidget {
                           const SnackBar(content: Text('리뷰가 등록되었습니다.')),
                         );
                       },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: redBackground,
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 8,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
                       child: const Text('리뷰 작성하기'),
                     ),
                   ),
@@ -279,4 +353,21 @@ class OrderHistoryView extends StatelessWidget {
     );
   }
 
+  Widget _buildStatusChip(String status) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      decoration: BoxDecoration(
+        color: Colors.black.withOpacity(0.5),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Text(
+        status,
+        style: const TextStyle(
+          color: Colors.white,
+          fontSize: 12,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+    );
+  }
 }

@@ -9,6 +9,9 @@ import '../auth/auth_viewmodel.dart';
 import 'order_history_detail_viewmodel.dart';
 import 'review_form_page.dart';
 
+const Color _christmasGreen = redBackground;
+const Color _snowBackground = Color(0xFFF9F6F1);
+
 class OrderHistoryDetailView extends StatelessWidget {
   const OrderHistoryDetailView({super.key});
 
@@ -28,15 +31,37 @@ class OrderHistoryDetailView extends StatelessWidget {
     }
 
     return Scaffold(
-      appBar: AppBar(title: const Text('주문 상세')),
+      appBar: AppBar(
+        title: const Text('주문 상세', style: TextStyle(color: Colors.white)),
+        centerTitle: true,
+        backgroundColor: const Color(0xFFB91D2A),
+        elevation: 0,
+        surfaceTintColor: Colors.transparent,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
+          onPressed: () => Navigator.pop(context),
+        ),
+      ),
+      backgroundColor: _snowBackground,
       body: ListView.builder(
         scrollDirection: Axis.vertical,
         itemCount: orderHistoryDetail.length,
         itemBuilder: (_, index) {
           final item = orderHistoryDetail[index];
           return Container(
-            margin: const EdgeInsets.symmetric(horizontal: 12.0),
-            padding: const EdgeInsets.only(bottom: 12.0),
+            margin: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8),
+            padding: const EdgeInsets.all(12.0),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(20.r),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.08),
+                  blurRadius: 10,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -60,13 +85,27 @@ class OrderHistoryDetailView extends StatelessWidget {
                   ),
                 ),
                 SizedBox(height: 12.h),
-                Text(item.product.name),
-                Text("주문 가격 ${item.unitPrice}"),
-                Text("상태: ${item.status.name}"),
-                Text("크러스트: ${item.crust}"),
-                Text("도우: ${item.dough}"),
-                const SizedBox(height: 8),
-                const Text('토핑'),
+                _buildSectionTitle(
+                  item.product.name,
+                  showAccent: false,
+                  showAccentLine: true,
+                ),
+                SizedBox(height: 8.h),
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: [
+                    _infoChip('주문 가격 ${item.unitPrice}원'),
+                    _infoChip('상태 ${item.status.name}'),
+                    _infoChip('크러스트 ${item.crust}'),
+                    _infoChip('도우 ${item.dough}'),
+                  ],
+                ),
+                const SizedBox(height: 10),
+                const Text(
+                  '토핑',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
                 Wrap(
                   spacing: 6,
                   children: item.toppings.map((topping) {
@@ -76,8 +115,11 @@ class OrderHistoryDetailView extends StatelessWidget {
                         vertical: 4,
                       ),
                       decoration: BoxDecoration(
-                        color: Colors.grey.shade200,
+                        color: const Color(0xFFFFE6E2),
                         borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                          color: _christmasGreen.withOpacity(0.3),
+                        ),
                       ),
                       child: Text(
                         topping.name,
@@ -98,6 +140,13 @@ class OrderHistoryDetailView extends StatelessWidget {
                         }
                         _openReviewPage(context, item, user.userId);
                       },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: redBackground,
+                        foregroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
                       child: const Text('리뷰 작성하기'),
                     ),
                   ),
@@ -128,5 +177,72 @@ class OrderHistoryDetailView extends StatelessWidget {
         const SnackBar(content: Text('리뷰가 등록되었습니다.')),
       );
     });
+  }
+
+  Widget _buildSectionTitle(
+    String title, {
+    bool showAccent = true,
+    bool showAccentLine = false,
+  }) {
+    final accentColor = showAccent ? _christmasGreen : Colors.transparent;
+
+    return Row(
+      children: [
+        if (showAccentLine) ...[
+          Container(
+            width: 4,
+            height: 24,
+            decoration: BoxDecoration(
+              color: _christmasGreen,
+              borderRadius: BorderRadius.circular(4),
+            ),
+          ),
+          const SizedBox(width: 8),
+        ],
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+          decoration: BoxDecoration(
+            color: redBackground,
+            borderRadius: BorderRadius.circular(30.r),
+            border: Border.all(color: accentColor, width: 2),
+          ),
+          child: Text(
+            title,
+            style: const TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Container(
+            height: 2,
+            color: showAccentLine
+                ? _christmasGreen.withOpacity(0.3)
+                : (showAccent
+                    ? _christmasGreen.withOpacity(0.3)
+                    : Colors.transparent),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _infoChip(String text) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: _christmasGreen.withOpacity(0.4),
+        ),
+      ),
+      child: Text(
+        text,
+        style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+      ),
+    );
   }
 }

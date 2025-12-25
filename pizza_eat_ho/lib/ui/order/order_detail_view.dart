@@ -11,7 +11,7 @@ import '../auth/auth_viewmodel.dart';
 import 'order_detail_viewmodel.dart';
 import 'review_form_page.dart';
 
-const Color _christmasGreen = Color(0xFF0F6B3E);
+const Color _christmasGreen = redBackground;
 const Color _snowBackground = Color(0xFFF9F6F1);
 
 class OrderDetailView extends StatefulWidget {
@@ -131,14 +131,18 @@ class _OrderDetailViewState extends State<OrderDetailView> {
         children: [
           Stack(
             children: [
-              Container(
-                height: 800.h,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(24.r),
-                  image: DecorationImage(
-                    image: NetworkImage("${baseUrl}${product.image}"),
-                    fit: BoxFit.cover,
+              ClipRRect(
+                borderRadius: BorderRadius.vertical(
+                  bottom: Radius.circular(26.r),
+                ),
+                child: Container(
+                  height: 800.h,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: NetworkImage("${baseUrl}${product.image}"),
+                      fit: BoxFit.cover,
+                    ),
                   ),
                 ),
               ),
@@ -158,12 +162,22 @@ class _OrderDetailViewState extends State<OrderDetailView> {
               Positioned(
                 left: 16,
                 bottom: 16,
-                child: Text(
-                  product.name,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 14,
+                    vertical: 8,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.black.withOpacity(0.45),
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                  child: Text(
+                    product.name,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
               ),
@@ -174,11 +188,61 @@ class _OrderDetailViewState extends State<OrderDetailView> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(product.description),
-                const SizedBox(height: 8),
-                Text("${product.price}", style: textProductPrice),
-                const Divider(),
-                Text("리뷰", style: textProductName),
+                _buildSectionTitle(
+                  '상품 정보',
+                  showAccent: false,
+                  showAccentLine: true,
+                ),
+                const SizedBox(height: 12),
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(14),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(18),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.06),
+                        blurRadius: 8,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(product.description),
+                      const SizedBox(height: 10),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 6,
+                        ),
+                        decoration: BoxDecoration(
+                          color: redBackground,
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color: _christmasGreen,
+                            width: 1.4,
+                          ),
+                        ),
+                        child: Text(
+                          '${product.price}원',
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 18),
+                _buildSectionTitle(
+                  '리뷰',
+                  showAccent: false,
+                  showAccentLine: true,
+                ),
                 SizedBox(height: 16),
                 SizedBox(
                   height: 420.h,
@@ -199,7 +263,11 @@ class _OrderDetailViewState extends State<OrderDetailView> {
                         ),
                 ),
                 const SizedBox(height: 16),
-                const Divider(),
+                _buildSectionTitle(
+                  '옵션 선택',
+                  showAccent: false,
+                  showAccentLine: true,
+                ),
                 const SizedBox(height: 16),
                 _sectionCard(
                   title: "도우",
@@ -476,6 +544,56 @@ class _OrderDetailViewState extends State<OrderDetailView> {
           child,
         ],
       ),
+    );
+  }
+
+  Widget _buildSectionTitle(
+    String title, {
+    bool showAccent = true,
+    bool showAccentLine = false,
+  }) {
+    final accentColor = showAccent ? _christmasGreen : Colors.transparent;
+
+    return Row(
+      children: [
+        if (showAccentLine) ...[
+          Container(
+            width: 4,
+            height: 24,
+            decoration: BoxDecoration(
+              color: _christmasGreen,
+              borderRadius: BorderRadius.circular(4),
+            ),
+          ),
+          const SizedBox(width: 8),
+        ],
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+          decoration: BoxDecoration(
+            color: redBackground,
+            borderRadius: BorderRadius.circular(30.r),
+            border: Border.all(color: accentColor, width: 2),
+          ),
+          child: Text(
+            title,
+            style: const TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Container(
+            height: 2,
+            color: showAccentLine
+                ? _christmasGreen.withOpacity(0.3)
+                : (showAccent
+                    ? _christmasGreen.withOpacity(0.3)
+                    : Colors.transparent),
+          ),
+        ),
+      ],
     );
   }
 }

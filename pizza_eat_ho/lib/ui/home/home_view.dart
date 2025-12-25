@@ -14,7 +14,7 @@ import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 import '../order/order_history_detail_page.dart';
 
-const Color _christmasGreen = Color(0xFF0F6B3E);
+const Color _christmasGreen = redBackground;
 const Color _snowBackground = Color(0xFFF9F6F1);
 
 class HomeView extends StatefulWidget {
@@ -409,97 +409,348 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
                 ),
               ),
             ),
-            SizedBox(height: 24.h),
+                        SizedBox(height: 24.h),
             _buildSectionTitle("최근 주문 내역", showAccent: false, showAccentLine: true),
-            SizedBox(height: 20.h),
-            SizedBox(
-              height: 620.h,
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: orderListCount,
-                itemBuilder: (_, index) {
-                  final item = orderList[index];
-                  return GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => OrderHistoryDetailPage(orderId: item.orderId),
-                        ),
-                      );
-                    },
+            SizedBox(height: 16.h),
+            orderListCount == 0
+                ? Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
                     child: Container(
-                      width: 400.w,
-                      margin: index == orderListCount-1
-                          ? const EdgeInsets.symmetric(horizontal: 12.0)
-                          : const EdgeInsets.only(left: 12.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(20.r),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.08),
+                            blurRadius: 10,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                      ),
+                      child: Row(
                         children: [
-                          Expanded(
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(30.r),
-                                image: DecorationImage(
-                                  image: NetworkImage("${BASE_URL}${item.products[0].image}"),
-                                  fit: BoxFit.cover,
-                                ),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black.withOpacity(0.08),
-                                    blurRadius: 12,
-                                    offset: const Offset(0, 6),
-                                  ),
-                                ],
-                              ),
+                          Container(
+                            padding: const EdgeInsets.all(12),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFFFE6E2),
+                              borderRadius: BorderRadius.circular(14),
+                            ),
+                            child: const Icon(
+                              Icons.receipt_long,
+                              color: redBackground,
                             ),
                           ),
-                          SizedBox(height: 16.h),
-                          Text(item.products.length == 1 ? "${item.products[0].name}" : "${item.products[0].name} 외${item.products.length-1}건"),
-                          SizedBox(height: 6.h),
-                          Text("${item.totalPrice}원"),
+                          const SizedBox(width: 12),
+                          const Expanded(
+                            child: Text(
+                              '최근 주문이 없습니다. 지금 맛있는 피자를 주문해보세요!',
+                              style: TextStyle(fontWeight: FontWeight.w600),
+                            ),
+                          ),
                         ],
                       ),
                     ),
-                  );
-                },
-              ),
-            ),
+                  )
+                : SizedBox(
+                    height: 640.h,
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: orderListCount,
+                      itemBuilder: (_, index) {
+                        final item = orderList[index];
+                        final title = item.products.length == 1
+                            ? item.products[0].name
+                            : "${item.products[0].name} 외${item.products.length - 1}건";
+                        return GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => OrderHistoryDetailPage(
+                                  orderId: item.orderId,
+                                ),
+                              ),
+                            );
+                          },
+                          child: Container(
+                            width: 420.w,
+                            margin: index == orderListCount - 1
+                                ? const EdgeInsets.symmetric(horizontal: 12.0)
+                                : const EdgeInsets.only(left: 12.0),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(26.r),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.08),
+                                  blurRadius: 12,
+                                  offset: const Offset(0, 6),
+                                ),
+                              ],
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Expanded(
+                                  child: Stack(
+                                    children: [
+                                      ClipRRect(
+                                        borderRadius: BorderRadius.vertical(
+                                          top: Radius.circular(26.r),
+                                        ),
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                            image: DecorationImage(
+                                              image: NetworkImage(
+                                                "${BASE_URL}${item.products[0].image}",
+                                              ),
+                                              fit: BoxFit.cover,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      Positioned.fill(
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.vertical(
+                                              top: Radius.circular(26.r),
+                                            ),
+                                            gradient: LinearGradient(
+                                              colors: [
+                                                Colors.black.withOpacity(0.55),
+                                                Colors.transparent,
+                                              ],
+                                              begin: Alignment.bottomCenter,
+                                              end: Alignment.topCenter,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      Positioned(
+                                        left: 14,
+                                        bottom: 14,
+                                        child: Container(
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 12,
+                                            vertical: 6,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            color:
+                                                Colors.black.withOpacity(0.55),
+                                            borderRadius:
+                                                BorderRadius.circular(12),
+                                          ),
+                                          child: Text(
+                                            title,
+                                            style: const TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      Positioned(
+                                        right: 14,
+                                        top: 14,
+                                        child: Container(
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 10,
+                                            vertical: 6,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            color:
+                                                Colors.black.withOpacity(0.55),
+                                            borderRadius:
+                                                BorderRadius.circular(12),
+                                          ),
+                                          child: Text(
+                                            '주문 #${item.orderId}',
+                                            style: const TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(14.0),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Container(
+                                            padding: const EdgeInsets.symmetric(
+                                              horizontal: 10,
+                                              vertical: 6,
+                                            ),
+                                            decoration: BoxDecoration(
+                                              color: redBackground,
+                                              borderRadius:
+                                                  BorderRadius.circular(12),
+                                            ),
+                                            child: Text(
+                                              '${item.totalPrice}원',
+                                              style: const TextStyle(
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ),
+                                          const Spacer(),
+                                          const Icon(
+                                            Icons.chevron_right,
+                                            color: redBackground,
+                                          ),
+                                        ],
+                                      ),
+                                      const SizedBox(height: 8),
+                                      Text(
+                                        '주문 상세 보기',
+                                        style: TextStyle(
+                                          color: Colors.grey.shade700,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
             SizedBox(height: 20.h),
             _buildSectionTitle("인기 메뉴", showAccent: false, showAccentLine: true),
-            SizedBox(height: 20.h),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                  child: Column(
-                    crossAxisAlignment: .start,
+            SizedBox(height: 16.h),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12.0),
+              child: Column(
+                crossAxisAlignment: .start,
+                children: [
+                  Stack(
                     children: [
-                      Container(
-                        width: double.infinity,
-                        height: 600.w,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(30.r),
-                          image: DecorationImage(
-                            image: AssetImage("assets/best_pizza.png"),
-                            fit: BoxFit.cover,
-                          ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.08),
-                              blurRadius: 12,
-                              offset: const Offset(0, 6),
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(30.r),
+                        child: Container(
+                          width: double.infinity,
+                          height: 600.w,
+                          decoration: const BoxDecoration(
+                            image: DecorationImage(
+                              image: AssetImage("assets/best_pizza.png"),
+                              fit: BoxFit.cover,
                             ),
-                          ],
+                          ),
                         ),
                       ),
-                      Text("치즈덕후를 위한 도우부터 크러스트까지, 한 입마다 치즈가 터지는 궁극의 피자!! 🧀🍕"),
-                      Text("도우: 치즈"),
-                      Text("크러스트: 스윗 포테이토 크러스트"),
-                      Text("토핑: 포테이토, 양파, 버섯, 페퍼로니, 올리브"),
+                      Positioned.fill(
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(30.r),
+                            gradient: LinearGradient(
+                              colors: [
+                                Colors.black.withOpacity(0.55),
+                                Colors.transparent,
+                              ],
+                              begin: Alignment.bottomCenter,
+                              end: Alignment.topCenter,
+                            ),
+                          ),
+                        ),
+                      ),
+                      Positioned(
+                        left: 16,
+                        bottom: 16,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 6,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Colors.black.withOpacity(0.6),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: const Text(
+                            '치즈 폭탄 스페셜',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                      Positioned(
+                        right: 16,
+                        top: 16,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 6,
+                          ),
+                          decoration: BoxDecoration(
+                            color: redBackground,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: const Text(
+                            'BEST',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
                     ],
                   ),
-                ),
+                  const SizedBox(height: 12),
+                  Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(20.r),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.08),
+                          blurRadius: 10,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          "치즈덕후를 위한 도우부터 크러스트까지, 한 입마다 치즈가 터지는 궁극의 피자!!",
+                          style: TextStyle(fontWeight: FontWeight.w600),
+                        ),
+                        const SizedBox(height: 12),
+                        Wrap(
+                          spacing: 8,
+                          runSpacing: 8,
+                          children: [
+                            _buildInfoChip('도우 치즈'),
+                            _buildInfoChip('크러스트 스윗 포테이토'),
+                            _buildInfoChip('토핑 포테이토'),
+                            _buildInfoChip('토핑 양파'),
+                            _buildInfoChip('토핑 버섯'),
+                            _buildInfoChip('토핑 페퍼로니'),
+                            _buildInfoChip('토핑 올리브'),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
 
 
               SizedBox(height: 24.h),
@@ -692,6 +943,23 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildInfoChip(String text) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      decoration: BoxDecoration(
+        color: const Color(0xFFFFE6E2),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: redBackground.withOpacity(0.3),
+        ),
+      ),
+      child: Text(
+        text,
+        style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
       ),
     );
   }
